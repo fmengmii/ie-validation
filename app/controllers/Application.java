@@ -238,7 +238,7 @@ public class Application extends Controller
     	}
     	
     	//launch frame filler thread
-    	FrameFillerThread ffThread = new FrameFillerThread();
+    	//FrameFillerThread ffThread = new FrameFillerThread();
     	
 
         return ok(viewer.render(array, colNames, colValues));
