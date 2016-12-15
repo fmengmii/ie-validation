@@ -14,8 +14,7 @@ import java.util.*;
 import com.google.gson.Gson;
 
 import db.DataAccess;
-import frames.CRFProcessor;
-//import scala.collection.immutable.List;
+import frames.CRFReader;
 
 @SuppressWarnings("deprecation")
 public class Application extends Controller
@@ -381,7 +380,7 @@ public class Application extends Controller
     		gson = new Gson();
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-    		CRFProcessor reader = new CRFProcessor(session("schemaName"));
+    		CRFReader reader = new CRFReader(session("schemaName"));
     		//crfStr = reader.readCRFFile("/Users/frankmeng/Documents/Projects/nlp-workspace/ie-validation/public/crfs/lung-cancer-screening.json");
     		crfStr = reader.readCRFDB(crfID, sectionList);
 
@@ -408,7 +407,7 @@ public class Application extends Controller
 	    		gson = new Gson();
 		    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 		    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-	    		CRFProcessor crfProc = new CRFProcessor(session("schemaName"));
+	    		CRFReader crfProc = new CRFReader(session("schemaName"));
 	    		crfStr = crfProc.addRemoveSection(crfID, frameInstanceID, sectionName, 1, sectionList);
 
 	    		String sectionListStr = gson.toJson(sectionList);
@@ -434,7 +433,7 @@ public class Application extends Controller
 	    		gson = new Gson();
 		    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 		    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-	    		CRFProcessor crfProc = new CRFProcessor(session("schemaName"));
+	    		CRFReader crfProc = new CRFReader(session("schemaName"));
 	    		crfStr = crfProc.addRemoveSection(crfID, frameInstanceID, sectionName, -1, sectionList);
 
 	    		DataAccess da = new DataAccess(session("schemaName"), sectionList);
@@ -671,7 +670,7 @@ public class Application extends Controller
 		    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 		    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
 
-	    		CRFProcessor crfProc = new CRFProcessor(session("schemaName"));
+	    		CRFReader crfProc = new CRFReader(session("schemaName"));
 	    		crfStr = crfProc.addRemoveElement(crfID, frameInstanceID, htmlID, 1, sectionList);
 	    	}
 	    	catch(Exception e)
@@ -697,7 +696,7 @@ public class Application extends Controller
 		    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 		    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
 
-	    		CRFProcessor crfProc = new CRFProcessor(session("schemaName"));
+	    		CRFReader crfProc = new CRFReader(session("schemaName"));
 	    		String crfStr = crfProc.addRemoveElement(crfID, frameInstanceID, htmlID, -1, sectionList);
 	    		DataAccess da = new DataAccess(session("schemaName"), sectionList);
 

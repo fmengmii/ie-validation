@@ -69,6 +69,9 @@ $(document).ready(function () {
 
    //$('#crfPanel').jqxPanel({ width: '100%', height: '100%', autoUpdate: true, sizeMode: 'fixed'});
    //$('#docPanel').jqxPanel({ width: '90%', height: '90%', autoUpdate: true, sizeMode : 'fixed'});
+   
+   
+
 
    $('#dialogLoadInstance').jqxWindow({
 	   width: 200,
@@ -233,6 +236,9 @@ $(document).ready(function () {
 
    //jquery-fieldselection
    $('textarea').keyup(update).mousedown(update).mousemove(update).mouseup(update);
+   
+   
+   $('#docPanel').highlightWithinTextarea(onInput);
 
    //$('#tokenSelectButton').button();
 
@@ -769,6 +775,7 @@ function rowSelect(row)
 		end = 0;
 	}
 
+
 	//var rowStart = rowData["start"];
 	//var rowEnd = rowData["end"];
 
@@ -791,6 +798,7 @@ function rowSelect(row)
 		console.log("rowStart: " + rowStart);
 		console.log("rowEnd: " + rowEnd);
 		console.log("element: " + rowData['element']);
+		
 
 		//clear any existing selections highlights for doc metadata
 		$('[name=docfeature]').each(function() {
@@ -1136,6 +1144,7 @@ function highlightText()
 
 
 	if (highlightRangeList == undefined) {
+		//$('#docPanel').data('hwt').destroy();
 		$('#docPanel').highlightWithinTextarea(onInput);
 		$('.hwt-content mark').css("background-color","lightgray");
 	}
@@ -1150,8 +1159,10 @@ function highlightText()
 		console.log("highlightRanges: " + JSON.stringify(highlightRanges));
 		console.log("highlightIndexes: " + JSON.stringify(highlightIndexes));
 
+		//$('#docPanel').data('hwt').destroy();
 		$('#docPanel').highlightWithinTextarea(onInput);
-
+		//$('.hwt-content mark').css("background-color","yellow");
+		
 		for (i=0; i<highlightRanges.length; i++) {
 			var end = highlightRangeList[highlightIndex]["end"];
 
@@ -1162,8 +1173,11 @@ function highlightText()
 
 			if (i == highlightIndexes[highlightIndex]) {
 
-				$('.hwt-content mark:nth-of-type(' + (i+1) + ')').css("background-color","yellow");
-				console.log('.hwt-content mark:nth-of-type(' + (i+1) + ') yellow');
+				//$('#docPanel').highlightWithinTextarea(onInput);
+				//$('.hwt-content mark:nth-of-type(' + (i+1) + ')').css("background-color","yellow");
+				//$('.hwt-content mark').css("background-color","yellow");
+				//console.log('.hwt-content mark:nth-of-type(' + (i+1) + ') yellow');
+				
 				if (i > 0) {
 					if (i-lastIndex == 2) {
 						console.log('== 2: .hwt-content mark:nth-of-type(' + i + ') lightgray');
@@ -1174,6 +1188,7 @@ function highlightText()
 						$('.hwt-content mark:nth-of-type(n+' + (lastIndex+2) + '):nth-of-type(-n+' + i + ')').css("background-color","lightgray");
 					}
 				}
+				
 
 				lastIndex = i;
 				highlightIndex++;
@@ -1185,15 +1200,21 @@ function highlightText()
 					break;
 			}
 		}
-
+		
+		
 		if (i < highlightRanges.length-1) {
 			$('.hwt-content mark:nth-of-type(n+' + (i+2) + ')').css("background-color","lightgray");
 			console.log('end: .hwt-content mark:nth-of-type(n+' + (i+2) + ') lightgray');
 		}
 
 
+		//$(window).resize();
+		//$('#docPanel').resize();
+		$('#docPanel').width($('#docDiv').width() * .9);
 		$('#docPanel').width($('#docDiv').width() * .95);
 		scrollTextareaToPosition($('#docPanel'), lastEnd+10);
+		
+
 	}
 
 }
@@ -2347,6 +2368,8 @@ function onInput(input) {
     //return [[highlightRange.start, highlightRange.end]];
 	return highlightRanges;
 }
+
+
 
 function openClearAllDialog()
 {

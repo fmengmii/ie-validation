@@ -16,8 +16,7 @@ import java.util.*;
 import com.google.gson.Gson;
 
 import db.DataAccess;
-import frames.CRFProcessor;
-//import scala.collection.immutable.List;
+import frames.CRFReader;
 
 public class Secured extends Security.Authenticator{
     

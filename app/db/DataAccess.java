@@ -8,16 +8,15 @@ import java.util.*;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import annotation.data.*;
+import frames.CRFReader;
 
 import com.google.gson.*;
-
-import frames.CRFProcessor;
 
 
 public class DataAccess
 {
 	private Gson gson;
-	private CRFProcessor crfProc;
+	private CRFReader crfReader;
 	private String schema;
 	//private String rq;
 	private List<Map<String, Object>> sectionList;
@@ -37,7 +36,7 @@ public class DataAccess
 		this.schema = schema;
 		this.sectionList = sectionList;
 		gson = new Gson();
-		crfProc = new CRFProcessor(schema);
+		crfReader = new CRFReader(schema);
 	}
 
 	//new code
@@ -364,7 +363,7 @@ public class DataAccess
 		System.out.println("projID: " + projID + " crfID: " + crfID);
 
 		//sectionList = new ArrayList<Map<String, Object>>();
-		String crfStr = crfProc.readCRFDB(crfID, sectionList, frameInstanceID);
+		String crfStr = crfReader.readCRFDB(crfID, sectionList, frameInstanceID);
 
 		conn.close();
 
