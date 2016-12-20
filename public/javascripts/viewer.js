@@ -1158,19 +1158,35 @@ function highlightText()
 		console.log("highlightrangelist: " + JSON.stringify(highlightRangeList));
 		console.log("highlightRanges: " + JSON.stringify(highlightRanges));
 		console.log("highlightIndexes: " + JSON.stringify(highlightIndexes));
+		console.log("hwt contents: " + $('#docPanel .hwt-content').length);
+		
 
 		//$('#docPanel').data('hwt').destroy();
 		$('#docPanel').highlightWithinTextarea(onInput);
 		//$('.hwt-content mark').css("background-color","yellow");
 		
+		if (highlightIndexes.length == 0) {
+			$('.hwt-content mark').css("background-color","lightgray");	
+		}
+		
+		$('.hwt-content mark').each(function (index) {
+			if (index != highlightIndexes[highlightIndex]) {
+				console.log("setting " + index + " to lightgray");
+				$(this).css("background-color","lightgray");
+			}
+		});
+		
+		/*
 		for (i=0; i<highlightRanges.length; i++) {
 			var end = highlightRangeList[highlightIndex]["end"];
+			
+			if (i != highlightIndexes[highlightIndex]) {
+				console.log('.hwt-content mark:nth-of-type(' + (i+1) + ') lightgray');
+				$('.hwt-content mark:nth-of-type(' + (i+1) + ')').css("background-color","lightgray");
+			}
 
-			/*
-			if (highlightRanges[i][0] == highlightRangeList[highlightIndex]["start"] &&
-				highlightRanges[i][1] == end) {
-				*/
-
+	
+			
 			if (i == highlightIndexes[highlightIndex]) {
 
 				//$('#docPanel').highlightWithinTextarea(onInput);
@@ -1181,11 +1197,11 @@ function highlightText()
 				if (i > 0) {
 					if (i-lastIndex == 2) {
 						console.log('== 2: .hwt-content mark:nth-of-type(' + i + ') lightgray');
-						$('.hwt-content mark:nth-of-type(' + i + ')').css("background-color","lightgray");
+						$('#docPanel .hwt-content mark:nth-of-type(' + i + ')').css("background-color","lightgray");
 					}
 					else if (i-lastIndex > 2) {
 						console.log('>2: .hwt-content mark:nth-of-type(n+' + (lastIndex+2) + '):nth-of-type(-n+' + i + ') lightgray');
-						$('.hwt-content mark:nth-of-type(n+' + (lastIndex+2) + '):nth-of-type(-n+' + i + ')').css("background-color","lightgray");
+						$('#docPanel .hwt-content mark:nth-of-type(n+' + (lastIndex+2) + '):nth-of-type(-n+' + i + ')').css("background-color","lightgray");
 					}
 				}
 				
@@ -1199,13 +1215,17 @@ function highlightText()
 				if (highlightIndex == highlightRangeList.length)
 					break;
 			}
+			
 		}
+		*/
 		
 		
+		/*
 		if (i < highlightRanges.length-1) {
 			$('.hwt-content mark:nth-of-type(n+' + (i+2) + ')').css("background-color","lightgray");
 			console.log('end: .hwt-content mark:nth-of-type(n+' + (i+2) + ') lightgray');
 		}
+		*/
 
 
 		//$(window).resize();
@@ -1899,6 +1919,7 @@ function clearAll()
 	}).done(function(data) {
 		highlightRangeList = undefined;
 		highlightRanges = undefined;
+		highlightRangeMap = {};
 	    highlightText();
 	    frameInstanceData = [];
 	    setHTMLElements();
@@ -1962,7 +1983,7 @@ function valueClickCallback(add)
 		annotFeatures = '{"key":"' + docFeatureKey + '","value":"' + clickValue + '"}';
 	}
 
-	console.log("value click highlighted: " + start + "," + end + " selectFlag: " + selectFlag);
+	console.log("value click highlighted: " + start + "," + end + " selectFlag: " + selectFlag + " docFeatureValue: " + docFeatureValue);
     //console.log(precedingRange.toString());
 
 	var htmlID = clickValueElement.id;
@@ -1989,6 +2010,7 @@ function valueClickCallback(add)
 			return;
 		}
 		else {
+			//allow a form element to be set without a corresponding highlight or doc feature
 			start = -1;
 			end = -1;
 			clickValue = '';
