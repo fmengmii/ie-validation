@@ -222,8 +222,8 @@ public class DataAccess
 		}
 
 
-		System.out.println("select " + docTextColumn + " from " + docTable + " where " + docKey + " = " + docID);
-		rs = stmt.executeQuery("select " + docTextColumn + " from " + docTable + " where " + docKey + " = " + docID);
+		System.out.println("select " + docTextColumn + " from " + schema + docTable + " where " + docKey + " = " + docID);
+		rs = stmt.executeQuery("select " + docTextColumn + " from " + schema + docTable + " where " + docKey + " = " + docID);
 		if (rs.next()) {
 			docText = rs.getString(1);
 			//docText = StringEscapeUtils.escapeHtml4(docText);
