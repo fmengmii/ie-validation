@@ -440,9 +440,8 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		if (callback != null)
 			callback(options);
 
-        var docStatus = docData["docStatus"];
         var frameInstanceStatus = docData["frameInstanceStatus"];
-        if( docStatus == 1 && frameInstanceStatus == 1 ) {
+        if( frameInstanceStatus == 1 ) {
             //docListBox item background color from powderblue to green  #228B22; or #4CAF50;
             $('#docListBox font').css("background-color", "#32CD32");
         }

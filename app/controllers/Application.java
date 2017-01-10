@@ -307,7 +307,7 @@ public class Application extends Controller
 	    	resultMap.put("docText", docMap.get("docText"));
 	    	resultMap.put("docFeatures", docMap.get("docFeatures"));
 	    	resultMap.put("annotList", annotList);
-			resultMap.put("docStatus", docMap.get("docStatus"));
+			//resultMap.put("docStatus", docMap.get("docStatus"));
 			resultMap.put("frameInstanceStatus", docMap.get("frameInstanceStatus"));
 
 	    	String sectionListStr = gson.toJson(sectionList);

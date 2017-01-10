@@ -225,12 +225,6 @@ public class DataAccess
 			frameInstanceID = rs.getInt(5);
 		}
 		long crfID = frameInstanceID;
-		rs = stmt2.executeQuery("select status from " + schema + "document_status " +
-				"where document_namespace = '" + docNamespace + "' and document_table = '" + docTable + "' and document_id = " + docID);
-		if( rs.next() ) {
-			docMap.put("docStatus", String.valueOf(rs.getInt(1)));
-		}
-		Logger.info("getDocument: docStatus=" + docMap.get("docStatus"));
 
 		rs = stmt2.executeQuery("select status from " + schema + "frame_instance_status " +
 				"where frame_instance_id = " + crfID );
@@ -240,7 +234,10 @@ public class DataAccess
 		Logger.info("getDocument: frameInstanceStatus=" + docMap.get("frameInstanceStatus"));
 
 		System.out.println("select " + docTextColumn + " from " + schema + docTable + " where " + docKey + " = " + docID);
-		rs = stmt.executeQuery("select " + docTextColumn + " from " + schema + docTable + " where " + docKey + " = " + docID);
+
+		//rs = stmt.executeQuery("select " + docTextColumn + " from " + schema + docTable + " where " + docKey + " = " + docID);
+		rs = stmt.executeQuery("select " + docTextColumn + " from " + "lungscreeningregistry." + docTable + " where " + docKey + " = " + docID);
+
 		if (rs.next()) {
 			docText = rs.getString(1);
 			//docText = StringEscapeUtils.escapeHtml4(docText);
@@ -1844,9 +1841,6 @@ public class DataAccess
 			stmt.executeUpdate("update " + schema + "frame_instance_status set status = 1 "
 					+ "where frame_instance_id = " + frameInstanceID);
 			Logger.info("update status for frameInstanceID=" + frameInstanceID );
-
-			stmt.executeUpdate("update " + schema + "document_status set status = 1 "
-					+ "where document_id = " + docID);
 			conn.close();
 			return true;
 		} catch ( SQLException ex ) {
