@@ -307,6 +307,8 @@ public class Application extends Controller
 	    	resultMap.put("docText", docMap.get("docText"));
 	    	resultMap.put("docFeatures", docMap.get("docFeatures"));
 	    	resultMap.put("annotList", annotList);
+			resultMap.put("docStatus", docMap.get("docStatus"));
+			resultMap.put("frameInstanceStatus", docMap.get("frameInstanceStatus"));
 
 	    	String sectionListStr = gson.toJson(sectionList);
     		session("sectionList", sectionListStr);
@@ -474,15 +476,15 @@ public class Application extends Controller
 	    	//sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
     		DataAccess da = new DataAccess(session("schemaName"), sectionList);
     		frameList = da.loadProject(un, projID); // was changed
-
     		int crfID = da.getCRFID(projID);
     		session("crfID", Integer.toString(crfID));
 
-
     		//Load the CRF into the view
+			Logger.info("loadProject: before da.loadCRF, sectionListSize=" + sectionList.size() );
     		String crfStr = da.loadCRF(projID, -1);
-
+			Logger.info("loadProject: before json, sectionListSize=" + sectionList.size() );
     		String sectionListStr = gson.toJson(sectionList);
+			Logger.info("loadProject: sectionListStr=" + sectionListStr.substring(0, 60));
     		session("sectionList", sectionListStr);
     		session("frameInstanceID", "-1");
 
@@ -845,4 +847,23 @@ public class Application extends Controller
 
     	return ok(ret);
     }
+
+	public Result docValidated() {
+		if( session("docID") == null ) {
+			return ok("Error:The document didn't exist.");
+		}
+		int docID = Integer.parseInt(session("docID"));
+
+		Logger.info("docValidated: docID=" + docID);
+		List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
+		sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
+		DataAccess da = new DataAccess(session("schemaName"), sectionList);
+
+		if( da.updateValidationStatus(docID)) {
+			return ok("Success:This document has been validated successfully.");
+		} else {
+			return ok("Error:There is an error during updating validation status.");
+		}
+
+	}
 }

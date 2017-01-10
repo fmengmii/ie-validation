@@ -1,5 +1,6 @@
 package db;
 
+import play.Logger;
 import play.db.DB;
 
 import java.sql.*;
@@ -204,23 +205,39 @@ public class DataAccess
 		Statement stmt = conn.createStatement();
 		Connection conn2 = DB.getConnection();
 		Statement stmt2 = conn2.createStatement();
+		Map<String, String> docMap = new HashMap<String, String>();
 
 		//get the key and text column names
-		ResultSet rs = stmt2.executeQuery("select document_key, document_text_column, document_name, document_features from " + schema + "frame_instance_document "
+		ResultSet rs = stmt2.executeQuery("select document_key, document_text_column, document_name, document_features, frame_instance_id from " + schema + "frame_instance_document "
 			+ "where document_namespace = '" + docNamespace + "' and document_table = '" + docTable + "' and document_id = " + docID);
 
 		String docKey = "";
 		String docTextColumn = "";
 		String docName = "";
 		String docFeaturesStr = "";
+		int frameInstanceID = 0;
 
 		if (rs.next()) {
 			docKey = rs.getString(1);
 			docTextColumn = rs.getString(2);
 			docName = rs.getString(3);
 			docFeaturesStr = rs.getString(4);
+			frameInstanceID = rs.getInt(5);
 		}
+		long crfID = frameInstanceID;
+		rs = stmt2.executeQuery("select status from " + schema + "document_status " +
+				"where document_namespace = '" + docNamespace + "' and document_table = '" + docTable + "' and document_id = " + docID);
+		if( rs.next() ) {
+			docMap.put("docStatus", String.valueOf(rs.getInt(1)));
+		}
+		Logger.info("getDocument: docStatus=" + docMap.get("docStatus"));
 
+		rs = stmt2.executeQuery("select status from " + schema + "frame_instance_status " +
+				"where frame_instance_id = " + crfID );
+		if( rs.next() ) {
+			docMap.put("frameInstanceStatus", String.valueOf(rs.getInt(1)));
+		}
+		Logger.info("getDocument: frameInstanceStatus=" + docMap.get("frameInstanceStatus"));
 
 		System.out.println("select " + docTextColumn + " from " + schema + docTable + " where " + docKey + " = " + docID);
 		rs = stmt.executeQuery("select " + docTextColumn + " from " + schema + docTable + " where " + docKey + " = " + docID);
@@ -241,7 +258,7 @@ public class DataAccess
 		stmt2.close();
 		conn2.close();
 
-		Map<String, String> docMap = new HashMap<String, String>();
+
 		docMap.put("docName", docName);
 		docMap.put("docText", docText + "\n\n");
 		docMap.put("docFeatures", docFeaturesStr);
@@ -1809,6 +1826,33 @@ public class DataAccess
 		stmt.close();
 
 		return lastIndex;
+	}
+
+	public boolean updateValidationStatus ( int docID ) {
+		try {
+			Connection conn = DB.getConnection();
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery("select frame_instance_id from " + schema + "frame_instance_document where document_id = " + docID);
+			int frameInstanceID = 0;
+			if (rs.next()) {
+				frameInstanceID = rs.getInt(1);
+			}
+			if( frameInstanceID == 0 ) {
+				return false;
+			}
+
+			stmt.executeUpdate("update " + schema + "frame_instance_status set status = 1 "
+					+ "where frame_instance_id = " + frameInstanceID);
+			Logger.info("update status for frameInstanceID=" + frameInstanceID );
+
+			stmt.executeUpdate("update " + schema + "document_status set status = 1 "
+					+ "where document_id = " + docID);
+			conn.close();
+			return true;
+		} catch ( SQLException ex ) {
+			Logger.error("updateValidationStatus got error: " + ex.toString() );
+			return false;
+		}
 	}
 
 }
