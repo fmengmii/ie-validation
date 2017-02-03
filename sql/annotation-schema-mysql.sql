@@ -34,6 +34,7 @@ CREATE TABLE `crf_project` (
   `crf_project_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(500) DEFAULT NULL,
   `crf_id` int(11) DEFAULT NULL,
+  `project_id` int(11) DEFAULT NULL,
   `document_table` varchar(100) DEFAULT NULL,
   `document_id_column` varchar(100) DEFAULT NULL,
   `document_text_column` varchar(100) DEFAULT NULL,
