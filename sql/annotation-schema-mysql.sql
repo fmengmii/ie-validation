@@ -231,10 +231,11 @@ CREATE TABLE `value` (
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `user` (
-	`user_id` int(11) DEFAULT NULL,
+	`user_id` int(11) NOT NULL AUTO_INCREMENT,
 	`user_name` varchar(500) DEFAULT NULL,
 	`project_id` int(11) DEFAULT NULL,
 	`frame_instance_id` int(11) DEFAULT NULL,
-	`pw` text DEFAULT NULL
+	`pw` text DEFAULT NULL,
+	PRIMARY KEY(`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8;
 
