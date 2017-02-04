@@ -382,6 +382,7 @@ CREATE TABLE `project` (
   PRIMARY KEY (`project_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+-- comment
 
 --
 -- Table structure for table `project_frame_instance`
