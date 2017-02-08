@@ -370,7 +370,9 @@ public class DataAccess
 		crfID = -1;
 		//schema = (String) Cache.get("schemaName");
 
-		ResultSet rs = stmt.executeQuery("select crf_id from " + schema + "crf_project where crf_project_id = " + projID);
+		//ResultSet rs = stmt.executeQuery("select crf_id from " + schema + "crf_project where crf_project_id = " + projID);
+		//modify by wyu on Feb 4, 2017
+		ResultSet rs = stmt.executeQuery("select crf_id from " + schema + "crf_project where project_id = " + projID);
 		if (rs.next())
 			crfID = rs.getInt(1);
 
@@ -1622,12 +1624,21 @@ public class DataAccess
 
 		strBlder.insert(0, "(");
 		strBlder.append(")");
-
+		System.out.println("getDocumentAnnotation: strBlder=" + strBlder.toString());
 		//get annotations for these documents
 		List<Map<String, Object>> annotList = new ArrayList<Map<String, Object>>();
-		rs = stmt.executeQuery("select distinct start, " + rq + "end" + rq + ", annotation_type from " + schema + "annotation where document_namespace = '" + docNamespace + "' and "
-			+ "document_table = '" + docTable + "' and document_id = " + docID + " and score > " + annotThreshold + " and annotation_type in " + strBlder.toString() + " order by start");
-
+		//rs = stmt.executeQuery("select distinct start, " + rq + "end" + rq + ", annotation_type from " + schema + "annotation where document_namespace = '" + docNamespace + "' and "
+		/*rs = stmt.executeQuery("select start, " + rq + "end" + rq + ", annotation_type from "
+				+ schema + "annotation where document_namespace = '" + docNamespace + "' and "
+				+ "document_table = '" + docTable + "' and document_id = " + docID
+				+ " and score > " + annotThreshold + " and annotation_type in "
+				+ strBlder.toString() + " order by start");
+		*/
+		//*** modify by wyu on Feb 4, 2017  ****
+		rs = stmt.executeQuery("select start, end, annotation_type from "
+				+ schema + "annotation where document_namespace = '" + docNamespace + "' and "
+				+ "document_table = '" + docTable + "' and document_id = " + docID
+				+ " and score > " + annotThreshold + " order by start ");
 		while (rs.next()) {
 			long start = rs.getLong(1);
 			long end = rs.getLong(2);
@@ -1829,7 +1840,8 @@ public class DataAccess
 		try {
 			Connection conn = DB.getConnection();
 			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery("select frame_instance_id from " + schema + "frame_instance_document where document_id = " + docID);
+			ResultSet rs = stmt.executeQuery("select frame_instance_id from "
+					+ schema + "frame_instance_document where document_id = " + docID);
 			int frameInstanceID = 0;
 			if (rs.next()) {
 				frameInstanceID = rs.getInt(1);
@@ -1838,9 +1850,46 @@ public class DataAccess
 				return false;
 			}
 
+			/* update frame_instance_status table */
 			stmt.executeUpdate("update " + schema + "frame_instance_status set status = 1 "
 					+ "where frame_instance_id = " + frameInstanceID);
-			Logger.info("update status for frameInstanceID=" + frameInstanceID );
+
+			ResultSet rsFrameInstanceDocument = stmt.executeQuery("select "
+					+ "document_namespace, document_table from " + schema
+					+ "frame_instance_document where document_id = " + docID
+					+ " and frame_instance_id = "  + frameInstanceID );
+
+			if( rsFrameInstanceDocument.next() ) {
+				/* update document_status table */
+				String docNamespace = rsFrameInstanceDocument.getString(1);
+				String docTable = rsFrameInstanceDocument.getString(2);
+				ResultSet rsDocStatus = stmt.executeQuery("select status from "
+					+ schema + "document_status where document_id = " + docID
+					+ " and document_namespace = '" + docNamespace
+						+ "' and document_table = '" + docTable + "'" );
+
+				if( rsDocStatus.next() ) {
+					int status = rsDocStatus.getInt(1);
+					//Logger.info("docStatus return = " + status );
+					if( status != 1 ) {
+						stmt.executeUpdate("update " + schema + "document_status "
+							+ "set status = 1 where document_id = " + docID
+							+ " and document_namespace = " + docNamespace
+							+ " and document_table = " + docTable );
+					}
+				} else {
+					PreparedStatement preparedStat = conn.prepareStatement(
+							"insert into " + schema + "document_status ("
+							+ "document_namespace, document_table, document_id, status ) "
+							+ "values(?, ?, ?, ?) " );
+					preparedStat.setString(1, docNamespace);
+					preparedStat.setString(2, docTable);
+					preparedStat.setInt( 3, docID);
+					preparedStat.setInt(4, 1);
+					preparedStat.execute();
+				}
+			}
+
 			conn.close();
 			return true;
 		} catch ( SQLException ex ) {
