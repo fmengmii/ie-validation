@@ -118,6 +118,12 @@ CREATE TABLE `data_type` (
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+INSERT INTO validator.data_type (name) VALUES ('number');
+INSERT INTO validator.data_type (name) VALUES ('string');
+INSERT INTO validator.data_type (name) VALUES ('date');
+INSERT INTO validator.data_type (name) VALUES ('categorical');
+
+
 --
 -- Table structure for table `document_status`
 --
@@ -169,6 +175,14 @@ CREATE TABLE `element_type` (
   PRIMARY KEY (`element_type_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+INSERT INTO validator.element_type (element_type_name) VALUES ('text');
+INSERT INTO validator.element_type (element_type_name) VALUES ('number');
+INSERT INTO validator.element_type (element_type_name) VALUES ('radio');
+INSERT INTO validator.element_type  element_type_name) VALUES ('checkbox');
+INSERT INTO validator.element_type (element_type_name) VALUES ('date');
+INSERT INTO validator.element_type (element_type_name) VALUES ('select');
+INSERT INTO validator.element_type (element_type_name) VALUES ('textarea');
 
 --
 -- Table structure for table `element_value`
