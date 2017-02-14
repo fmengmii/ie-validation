@@ -119,10 +119,10 @@ CREATE TABLE `data_type` (
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
-INSERT INTO validator.data_type (name) VALUES ('number');
-INSERT INTO validator.data_type (name) VALUES ('string');
-INSERT INTO validator.data_type (name) VALUES ('date');
-INSERT INTO validator.data_type (name) VALUES ('categorical');
+INSERT INTO data_type (name) VALUES ('number');
+INSERT INTO data_type (name) VALUES ('string');
+INSERT INTO data_type (name) VALUES ('date');
+INSERT INTO data_type (name) VALUES ('categorical');
 
 
 --
@@ -177,13 +177,13 @@ CREATE TABLE `element_type` (
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
-INSERT INTO validator.element_type (element_type_name) VALUES ('text');
-INSERT INTO validator.element_type (element_type_name) VALUES ('number');
-INSERT INTO validator.element_type (element_type_name) VALUES ('radio');
-INSERT INTO validator.element_type (element_type_name) VALUES ('checkbox');
-INSERT INTO validator.element_type (element_type_name) VALUES ('date');
-INSERT INTO validator.element_type (element_type_name) VALUES ('select');
-INSERT INTO validator.element_type (element_type_name) VALUES ('textarea');
+INSERT INTO element_type (element_type_name) VALUES ('text');
+INSERT INTO element_type (element_type_name) VALUES ('number');
+INSERT INTO element_type (element_type_name) VALUES ('radio');
+INSERT INTO element_type (element_type_name) VALUES ('checkbox');
+INSERT INTO element_type (element_type_name) VALUES ('date');
+INSERT INTO element_type (element_type_name) VALUES ('select');
+INSERT INTO element_type (element_type_name) VALUES ('textarea');
 
 --
 -- Table structure for table `element_value`
