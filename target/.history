@@ -1,0 +1,78 @@
+clean
+compile
+run -Dhttp.port=9004
+clean
+compile
+run -Dhttp.port=9004
+clean
+compile
+run -Dhttp.port=9004
+clean
+compile
+run -Dhttp.port=9004
+clean
+compile
+run -Dhttp.port=9004
+clean
+compile
+clean
+compile
+run -Dhttp.port=9004
+activator
+clean
+compile
+run -Dhttp.port=9004
+clean
+compile
+run -Dhttp.port=9004
+clean
+compile
+run -Dhttp.port=9004
+clean
+compile
+run -Dhttp.port=9004
+clean
+compile
+run -Dhttp.port=9004
+clean
+compile
+clean
+compile
+run -Dhttp.port=9004
+clean
+compile
+run -Dhttp.port=9004
+clean
+compile
+run -Dhttp.port=9004
+clean
+compile
+run -Dhttp.port=9004
+clean
+compile
+exit
+clean
+compile
+run -Dhttp.port=9004
+exit
+clean
+compile
+run -Dhttp.port=9004
+exit
+clean
+compile
+run -Dhttp.port=9004
+clean
+compile
+run -Dhttp.port=9004
+clean
+compile
+run -Dhttp.port=9004
+exit
+clean
+compile
+run -Dhttp.port=9004
+exit
+clean
+compile
+run -Dhttp.port=9010

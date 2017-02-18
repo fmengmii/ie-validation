@@ -3,6 +3,7 @@ package frames;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
+import java.util.logging.Logger;
 
 import play.db.DB;
 import utils.db.DBConnection;
@@ -80,7 +81,8 @@ public class CRFReader
 		
 		//sectionList = (List<Map<String, Object>>) Cache.get("sectionList");
 		//int crfID = (Integer) Cache.get("crfID");
-		
+
+		int sectionListIndex = 0; // add by wyu on Feb 10 for adding repeat seq num
 		for (Map<String, Object> sectionMap : sectionList) {
 			String sectionName2 = (String) sectionMap.get("name");
 			System.out.println("addremove: " + sectionName + ", " + sectionName2);
@@ -92,6 +94,7 @@ public class CRFReader
 					repeatNum = 0;
 				
 				sectionMap.put("repeatNumber", repeatNum);
+				sectionList.set(sectionListIndex, sectionMap); //add by wyu on Feb 10 for adding repeat seq num
 				int sectionID = ((Number) sectionMap.get("sectionID")).intValue();
 				
 				Statement stmt = conn.createStatement();
@@ -115,6 +118,7 @@ public class CRFReader
 				
 				stmt.close();
 			}
+			sectionListIndex++; //add by wyu on Feb 10 for adding repeat seq num
 		}
 		
 		conn.close();
@@ -583,16 +587,38 @@ public class CRFReader
 			*/
 		
 		Statement stmt = conn.createStatement();
-		
+		Statement stmtRepeatNum = conn.createStatement();
+		System.out.println("readCRFFromDB: coming sectionList size=" + sectionList.size());
 		if (sectionList.size() == 0) {
+			System.out.println("CRFReader.readCRFFromDB: sectionList size=0");
 			//sectionList = new ArrayList<Map<String, Object>>();
 			ResultSet rs = stmt.executeQuery("select section_id, name, " + rq + "repeat" + rq + " from " + schema + "crf_section where crf_id = " + crfID + " order by section_id");
 			while (rs.next()) {
 				Map<String, Object> sectionMap = new HashMap<String, Object>();
+				int sectionID = rs.getInt(1);
 				sectionMap.put("sectionID", rs.getInt(1));
 				sectionMap.put("name", rs.getString(2));
 				sectionMap.put("repeat", rs.getInt(3));
+
+				/* ***** add by wyu on Feb 10 for adding repeat seq num ********* */
 				sectionMap.put("repeatNumber", 0);
+				if( frameInstanceID != -1 ) {
+					ResultSet rsRepeatNum = stmtRepeatNum.executeQuery("select repeat_num from "
+							+ schema + "frame_instance_section_repeat where section_id = " + sectionID
+							+ " and frame_instance_id = " + frameInstanceID);
+					if (rsRepeatNum.next()) {
+						sectionMap.put("repeatNumber", rsRepeatNum.getInt(1));
+						System.out.println("CRFReader.readCRFFromDB: setctionID=" + sectionID + " and repeatNum=" + rsRepeatNum.getInt(1));
+					} else {
+						sectionMap.put("repeatNumber", 0);
+						System.out.println("CRFReader.readCRFFromDB: setctionID=" + sectionID + " and frame_instance_id= "
+								+ frameInstanceID + " and repeatNum=0");
+					}
+				} else {
+					System.out.println("CRFReader.readCRFFromDB: frameInstanceID == -1.");
+				}
+				/* ****** end ********** */
+
 				sectionList.add(sectionMap);
 			}
 		}
@@ -605,8 +631,8 @@ public class CRFReader
 			int repeat = ((Number) sectionMap.get("repeat")).intValue();
 			int repeatNum = ((Number) sectionMap.get("repeatNumber")).intValue();
 			
-			System.out.println("sectionID: " + sectionID + " sectionName: " + sectionName + " repeatNumber: " + repeatNum);
-		
+			System.out.println("CRFReader.readCRFFromDB: sectionID: " + sectionID + " sectionName: " + sectionName + " repeatNumber: " + repeatNum);
+
 			ResultSet rs = stmt.executeQuery("select a.element_id, a.display_name, a.html_id, c.element_type_name, a.repeat "
 				+ "from " + schema + "element a, " + schema + "crf_section b, " + schema + "element_type c "
 				+ "where a.section_id = b.section_id and b.crf_id = " + crfID + " and "
@@ -641,7 +667,6 @@ public class CRFReader
 				for (Map<String, Object> element : sectionDataList) {
 					element.put("section", "{\"sectionID\":\"" + sectionIndex + "\",\"sectionName\":\"" + sectionNameIndex + "\",\"repeat\":" + repeat + ",\"repeatIndex\":" + i + "}");
 
-					
 					/*
 					Map<String, Object> dataListElement = new HashMap<String, Object>();
 					dataListElement.put("section", element.get("section"));

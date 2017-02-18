@@ -10,6 +10,8 @@ import views.html.*;
 
 import java.sql.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
 
@@ -307,7 +309,7 @@ public class Application extends Controller
 	    	resultMap.put("docText", docMap.get("docText"));
 	    	resultMap.put("docFeatures", docMap.get("docFeatures"));
 	    	resultMap.put("annotList", annotList);
-
+			resultMap.put("frameInstanceStatus", docMap.get("frameInstanceStatus")); // add by wyu
 	    	String sectionListStr = gson.toJson(sectionList);
     		session("sectionList", sectionListStr);
     	}
@@ -475,12 +477,28 @@ public class Application extends Controller
     		DataAccess da = new DataAccess(session("schemaName"), sectionList);
     		frameList = da.loadProject(un, projID); // was changed
 
+			// **** add by wyu for repeat number ****
+			//,{"lastFrameInstanceID":" + lastFrameInstanceID + ",\"lastFrameInstanceIndex\":" + lastFrameInstanceIndex + "}
+			String queryPatternString = "\\{\"lastFrameInstanceID\":(\\d+),\"lastFrameInstanceIndex\":(\\d+)\\}$";
+			//Logger.info("Application.loadProject: queryPatternString=" + queryPatternString);
+			Pattern pattern = Pattern.compile(queryPatternString);
+			Matcher matcher = pattern.matcher(frameList);
+			int lastFrameInstanceID = -1;
+			int lastFrameInstanceIndex = -1;
+			if( matcher.find() ) {
+				lastFrameInstanceID = Integer.parseInt(matcher.group(1));
+				lastFrameInstanceIndex = Integer.parseInt(matcher.group(2));
+				Logger.info("Application.loadProject: lastFrameInstanceID=" + lastFrameInstanceID);
+				Logger.info("Application.loadProject: lastFrameInstanceIndex=" + lastFrameInstanceIndex);
+			}
+			// **** end of add
     		int crfID = da.getCRFID(projID);
     		session("crfID", Integer.toString(crfID));
 
 
     		//Load the CRF into the view
-    		String crfStr = da.loadCRF(projID, -1);
+    		//String crfStr = da.loadCRF(projID, -1);
+			String crfStr = da.loadCRF(projID, lastFrameInstanceID); //modify by wyu for repeat number
 
     		String sectionListStr = gson.toJson(sectionList);
     		session("sectionList", sectionListStr);

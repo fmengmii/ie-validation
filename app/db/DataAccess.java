@@ -197,6 +197,7 @@ public class DataAccess
 
 	public Map<String, String> getDocument(String docNamespace, String docTable, long docID) throws SQLException
 	{
+		// *** modify some code by wyu for trace frameInstanceStatuc ***
 		// new code
 		clearHistory(); // clears whenever you load a new document
 		String docText = "";
@@ -204,23 +205,35 @@ public class DataAccess
 		Statement stmt = conn.createStatement();
 		Connection conn2 = DB.getConnection();
 		Statement stmt2 = conn2.createStatement();
+		Map<String, String> docMap = new HashMap<String, String>();
 
 		//get the key and text column names
-		ResultSet rs = stmt2.executeQuery("select document_key, document_text_column, document_name, document_features from " + schema + "frame_instance_document "
-			+ "where document_namespace = '" + docNamespace + "' and document_table = '" + docTable + "' and document_id = " + docID);
+		ResultSet rs = stmt2.executeQuery("select document_key, document_text_column, document_name, document_features, "
+				+ "frame_instance_id from " + schema + "frame_instance_document "
+				+ "where document_namespace = '" + docNamespace + "' and document_table = '" + docTable
+				+ "' and document_id = " + docID);
 
 		String docKey = "";
 		String docTextColumn = "";
 		String docName = "";
 		String docFeaturesStr = "";
+		int frameInstanceID = 0;
 
 		if (rs.next()) {
 			docKey = rs.getString(1);
 			docTextColumn = rs.getString(2);
 			docName = rs.getString(3);
 			docFeaturesStr = rs.getString(4);
+			frameInstanceID = rs.getInt(5);
 		}
+		long crfID = frameInstanceID;
 
+		rs = stmt2.executeQuery("select status from " + schema + "frame_instance_status " +
+				"where frame_instance_id = " + crfID );
+		if( rs.next() ) {
+			docMap.put("frameInstanceStatus", String.valueOf(rs.getInt(1)));
+		}
+		System.out.println("getDocument: frameInstanceStatus=" + docMap.get("frameInstanceStatus"));
 
 		System.out.println("select " + docTextColumn + " from " + docTable + " where " + docKey + " = " + docID);
 		rs = stmt.executeQuery("select " + docTextColumn + " from " + docTable + " where " + docKey + " = " + docID);
@@ -241,7 +254,7 @@ public class DataAccess
 		stmt2.close();
 		conn2.close();
 
-		Map<String, String> docMap = new HashMap<String, String>();
+		//Map<String, String> docMap = new HashMap<String, String>();
 		docMap.put("docName", docName);
 		docMap.put("docText", docText + "\n\n");
 		docMap.put("docFeatures", docFeaturesStr);
