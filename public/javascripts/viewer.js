@@ -2837,10 +2837,9 @@ function docValidated() {
     var docValidatedAjax = jsRoutes.controllers.Application.docValidated();
 	$.ajax({
 		type: 'GET',
-		//url: docValidatedAjax.url,
-		url: docValidatedAjax.url //remove "," by wyu
+		url: docValidatedAjax.url
 	}).done(function(data) {
-		console.log("docValidated return data:" + data);
+		//console.log("docValidated return data:" + data);
 		//make doc list font background-color from powderblue to green #228B22; or #4CAF50;
 		$('#docListBox font').css("background-color", "#32CD32");
 

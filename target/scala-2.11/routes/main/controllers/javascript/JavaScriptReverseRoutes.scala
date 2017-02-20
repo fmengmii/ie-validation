@@ -1,7 +1,7 @@
 
 // @GENERATOR:play-routes-compiler
 // @SOURCE:/home/wyu/workspace-luna/ie-validation-github/conf/routes
-// @DATE:Fri Feb 17 16:44:52 PST 2017
+// @DATE:Mon Feb 20 13:46:48 PST 2017
 
 import play.api.routing.JavaScriptReverseRoute
 import play.api.mvc.{ QueryStringBindable, PathBindable, Call, JavascriptLiteral }
@@ -149,6 +149,16 @@ package controllers.javascript {
       """
         function(elementID,htmlID) {
           return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "clear/element/" + (""" + implicitly[PathBindable[String]].javascriptUnbind + """)("elementID", encodeURIComponent(elementID)) + "/" + (""" + implicitly[PathBindable[String]].javascriptUnbind + """)("htmlID", encodeURIComponent(htmlID))})
+        }
+      """
+    )
+  
+    // @LINE:38
+    def docValidated: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.Application.docValidated",
+      """
+        function() {
+          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "validated"})
         }
       """
     )

@@ -1,18 +1,22 @@
-2017-02-17 13:52:46,054 [INFO] from play.core.server.NettyServer in pool-6-thread-1 - Listening for HTTP on /0:0:0:0:0:0:0:0:9010
-2017-02-17 14:34:32,408 [WARN] from application in ForkJoinPool-1-worker-1 - Logger configuration in conf files is deprecated and has no effect. Use a logback configuration file instead.
-2017-02-17 14:34:32,778 [WARN] from application in ForkJoinPool-1-worker-1 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 62: user is deprecated, use username instead
-2017-02-17 14:34:32,779 [WARN] from application in ForkJoinPool-1-worker-1 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 57: user is deprecated, use username instead
-2017-02-17 14:34:32,786 [INFO] from application in ForkJoinPool-1-worker-1 - Creating Pool for datasource 'doc'
-2017-02-17 14:34:33,302 [INFO] from play.api.db.DefaultDBApi in ForkJoinPool-1-worker-1 - Database [doc] connected at jdbc:mysql://10.9.94.40:3306/pcori_db
-2017-02-17 14:34:33,302 [INFO] from application in ForkJoinPool-1-worker-1 - Creating Pool for datasource 'default'
-2017-02-17 14:34:33,314 [INFO] from play.api.db.DefaultDBApi in ForkJoinPool-1-worker-1 - Database [default] connected at jdbc:mysql://localhost/validator_pcori_021117
-2017-02-17 14:34:33,687 [INFO] from play.api.Play in ForkJoinPool-1-worker-1 - Application started (Dev)
-2017-02-17 14:34:33,756 [WARN] from application in application-akka.actor.default-dispatcher-2 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 11: application.secret is deprecated, use play.crypto.secret instead
-2017-02-17 16:44:53,175 [ERROR] from application in New I/O worker #7 - 
+2017-02-20 13:47:06,350 [INFO] from play.core.server.NettyServer in pool-6-thread-1 - Listening for HTTP on /0:0:0:0:0:0:0:0:9010
+2017-02-20 13:47:15,046 [WARN] from application in ForkJoinPool-1-worker-1 - Logger configuration in conf files is deprecated and has no effect. Use a logback configuration file instead.
+2017-02-20 13:47:15,428 [WARN] from application in ForkJoinPool-1-worker-1 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 69: user is deprecated, use username instead
+2017-02-20 13:47:15,429 [WARN] from application in ForkJoinPool-1-worker-1 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 54: user is deprecated, use username instead
+2017-02-20 13:47:15,435 [INFO] from application in ForkJoinPool-1-worker-1 - Creating Pool for datasource 'doc'
+2017-02-20 13:47:15,931 [INFO] from play.api.db.DefaultDBApi in ForkJoinPool-1-worker-1 - Database [doc] connected at jdbc:mysql://10.9.94.40/pcori_db
+2017-02-20 13:47:15,932 [INFO] from application in ForkJoinPool-1-worker-1 - Creating Pool for datasource 'default'
+2017-02-20 13:47:15,939 [INFO] from play.api.db.DefaultDBApi in ForkJoinPool-1-worker-1 - Database [default] connected at jdbc:mysql://localhost/validator_pcori_021117
+2017-02-20 13:47:16,321 [INFO] from play.api.Play in ForkJoinPool-1-worker-1 - Application started (Dev)
+2017-02-20 13:47:16,445 [WARN] from application in application-akka.actor.default-dispatcher-2 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 11: application.secret is deprecated, use play.crypto.secret instead
+2017-02-20 13:47:20,633 [INFO] from application in application-akka.actor.default-dispatcher-3 - Application.loadProject: lastFrameInstanceID=828
+2017-02-20 13:47:20,633 [INFO] from application in application-akka.actor.default-dispatcher-3 - Application.loadProject: lastFrameInstanceIndex=128
+2017-02-20 13:48:48,856 [INFO] from application in application-akka.actor.default-dispatcher-16 - Application.loadProject: lastFrameInstanceID=828
+2017-02-20 13:48:48,856 [INFO] from application in application-akka.actor.default-dispatcher-16 - Application.loadProject: lastFrameInstanceIndex=128
+2017-02-20 13:50:28,278 [ERROR] from application in New I/O worker #2 - 
 
-! @734lind05 - Internal server error, for (POST) [/] ->
+! @735gh5c8o - Internal server error, for (POST) [/] ->
  
-play.sbt.PlayExceptions$CompilationException: Compilation error[invalid escape character]
+play.sbt.PlayExceptions$CompilationException: Compilation error[empty character literal]
 	at play.sbt.PlayExceptions$CompilationException$.apply(PlayExceptions.scala:27) ~[na:na]
 	at play.sbt.PlayExceptions$CompilationException$.apply(PlayExceptions.scala:27) ~[na:na]
 	at scala.Option.map(Option.scala:145) ~[scala-library-2.11.7.jar:na]
@@ -42,168 +46,96 @@ play.sbt.PlayExceptions$CompilationException: Compilation error[invalid escape c
 	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) ~[scala-library-2.11.7.jar:na]
 	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) ~[scala-library-2.11.7.jar:na]
 	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) ~[scala-library-2.11.7.jar:na]
-2017-02-17 16:45:27,082 [INFO] from application in application-akka.actor.default-dispatcher-5 - Shutting down connection pool.
-2017-02-17 16:45:27,129 [INFO] from application in application-akka.actor.default-dispatcher-5 - Shutting down connection pool.
-2017-02-17 16:45:27,158 [WARN] from application in application-akka.actor.default-dispatcher-5 - Logger configuration in conf files is deprecated and has no effect. Use a logback configuration file instead.
-2017-02-17 16:45:27,201 [WARN] from application in application-akka.actor.default-dispatcher-5 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 69: user is deprecated, use username instead
-2017-02-17 16:45:27,201 [WARN] from application in application-akka.actor.default-dispatcher-5 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 54: user is deprecated, use username instead
-2017-02-17 16:45:27,202 [INFO] from application in application-akka.actor.default-dispatcher-5 - Creating Pool for datasource 'doc'
-2017-02-17 16:45:27,210 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-5 - Database [doc] connected at jdbc:mysql://10.9.94.40/pcori_db
-2017-02-17 16:45:27,210 [INFO] from application in application-akka.actor.default-dispatcher-5 - Creating Pool for datasource 'default'
-2017-02-17 16:45:27,214 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-5 - Database [default] connected at jdbc:mysql://localhost/validator_pcori_021117
-2017-02-17 16:45:27,302 [INFO] from play.api.Play in application-akka.actor.default-dispatcher-5 - Application started (Dev)
-2017-02-17 16:45:27,314 [WARN] from application in application-akka.actor.default-dispatcher-4 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 11: application.secret is deprecated, use play.crypto.secret instead
-2017-02-17 16:48:38,064 [ERROR] from application in New I/O worker #5 - 
-
-! @734lja7ho - Internal server error, for (POST) [/] ->
- 
-play.sbt.PlayExceptions$CompilationException: Compilation error[illegal escape character]
-	at play.sbt.PlayExceptions$CompilationException$.apply(PlayExceptions.scala:27) ~[na:na]
-	at play.sbt.PlayExceptions$CompilationException$.apply(PlayExceptions.scala:27) ~[na:na]
-	at scala.Option.map(Option.scala:145) ~[scala-library-2.11.7.jar:na]
-	at play.sbt.run.PlayReload$$anonfun$taskFailureHandler$1.apply(PlayReload.scala:49) ~[na:na]
-	at play.sbt.run.PlayReload$$anonfun$taskFailureHandler$1.apply(PlayReload.scala:44) ~[na:na]
-	at scala.Option.map(Option.scala:145) ~[scala-library-2.11.7.jar:na]
-	at play.sbt.run.PlayReload$.taskFailureHandler(PlayReload.scala:44) ~[na:na]
-	at play.sbt.run.PlayReload$.compileFailure(PlayReload.scala:40) ~[na:na]
-	at play.sbt.run.PlayReload$$anonfun$compile$1.apply(PlayReload.scala:17) ~[na:na]
-	at play.sbt.run.PlayReload$$anonfun$compile$1.apply(PlayReload.scala:17) ~[na:na]
-	at scala.util.Either$LeftProjection.map(Either.scala:377) ~[scala-library-2.11.7.jar:na]
-	at play.sbt.run.PlayReload$.compile(PlayReload.scala:17) ~[na:na]
-	at play.sbt.run.PlayRun$$anonfun$playRunTask$1$$anonfun$apply$2$$anonfun$apply$3$$anonfun$2.apply(PlayRun.scala:61) ~[na:na]
-	at play.sbt.run.PlayRun$$anonfun$playRunTask$1$$anonfun$apply$2$$anonfun$apply$3$$anonfun$2.apply(PlayRun.scala:61) ~[na:na]
-	at play.runsupport.Reloader$$anonfun$reload$1.apply(Reloader.scala:323) ~[na:na]
-	at play.runsupport.Reloader$$anon$3.run(Reloader.scala:43) ~[na:na]
-	at java.security.AccessController.doPrivileged(Native Method) ~[na:1.8.0_121]
-	at play.runsupport.Reloader$.play$runsupport$Reloader$$withReloaderContextClassLoader(Reloader.scala:39) ~[na:na]
-	at play.runsupport.Reloader.reload(Reloader.scala:321) ~[na:na]
-	at play.core.server.DevServerStart$$anonfun$mainDev$1$$anon$1$$anonfun$get$1.apply(DevServerStart.scala:113) ~[play-server_2.11-2.4.8.jar:2.4.8]
-	at play.core.server.DevServerStart$$anonfun$mainDev$1$$anon$1$$anonfun$get$1.apply(DevServerStart.scala:111) ~[play-server_2.11-2.4.8.jar:2.4.8]
-	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) ~[scala-library-2.11.7.jar:na]
-	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) ~[scala-library-2.11.7.jar:na]
-	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:40) ~[akka-actor_2.11.jar:na]
-	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:397) ~[akka-actor_2.11.jar:na]
-	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) ~[scala-library-2.11.7.jar:na]
-	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) ~[scala-library-2.11.7.jar:na]
-	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) ~[scala-library-2.11.7.jar:na]
-	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) ~[scala-library-2.11.7.jar:na]
-2017-02-17 16:49:13,381 [INFO] from application in application-akka.actor.default-dispatcher-5 - Shutting down connection pool.
-2017-02-17 16:49:13,393 [INFO] from application in application-akka.actor.default-dispatcher-5 - Shutting down connection pool.
-2017-02-17 16:49:13,426 [WARN] from application in application-akka.actor.default-dispatcher-5 - Logger configuration in conf files is deprecated and has no effect. Use a logback configuration file instead.
-2017-02-17 16:49:13,485 [WARN] from application in application-akka.actor.default-dispatcher-5 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 69: user is deprecated, use username instead
-2017-02-17 16:49:13,485 [WARN] from application in application-akka.actor.default-dispatcher-5 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 54: user is deprecated, use username instead
-2017-02-17 16:49:13,486 [INFO] from application in application-akka.actor.default-dispatcher-5 - Creating Pool for datasource 'doc'
-2017-02-17 16:49:13,500 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-5 - Database [doc] connected at jdbc:mysql://10.9.94.40/pcori_db
-2017-02-17 16:49:13,500 [INFO] from application in application-akka.actor.default-dispatcher-5 - Creating Pool for datasource 'default'
-2017-02-17 16:49:13,504 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-5 - Database [default] connected at jdbc:mysql://localhost/validator_pcori_021117
-2017-02-17 16:49:13,571 [INFO] from play.api.Play in application-akka.actor.default-dispatcher-5 - Application started (Dev)
-2017-02-17 16:49:13,578 [WARN] from application in application-akka.actor.default-dispatcher-5 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 11: application.secret is deprecated, use play.crypto.secret instead
-2017-02-17 16:49:17,114 [INFO] from application in application-akka.actor.default-dispatcher-2 - Application.loadProject: lastFrameInstanceID can't be found.
-2017-02-17 16:55:09,910 [INFO] from application in application-akka.actor.default-dispatcher-3 - Shutting down connection pool.
-2017-02-17 16:55:09,918 [INFO] from application in application-akka.actor.default-dispatcher-3 - Shutting down connection pool.
-2017-02-17 16:55:09,953 [WARN] from application in application-akka.actor.default-dispatcher-3 - Logger configuration in conf files is deprecated and has no effect. Use a logback configuration file instead.
-2017-02-17 16:55:09,997 [WARN] from application in application-akka.actor.default-dispatcher-3 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 69: user is deprecated, use username instead
-2017-02-17 16:55:09,997 [WARN] from application in application-akka.actor.default-dispatcher-3 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 54: user is deprecated, use username instead
-2017-02-17 16:55:09,998 [INFO] from application in application-akka.actor.default-dispatcher-3 - Creating Pool for datasource 'doc'
-2017-02-17 16:55:10,008 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-3 - Database [doc] connected at jdbc:mysql://10.9.94.40/pcori_db
-2017-02-17 16:55:10,015 [INFO] from application in application-akka.actor.default-dispatcher-3 - Creating Pool for datasource 'default'
-2017-02-17 16:55:10,026 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-3 - Database [default] connected at jdbc:mysql://localhost/validator_pcori_021117
-2017-02-17 16:55:10,101 [INFO] from play.api.Play in application-akka.actor.default-dispatcher-3 - Application started (Dev)
-2017-02-17 16:55:10,110 [WARN] from application in application-akka.actor.default-dispatcher-3 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 11: application.secret is deprecated, use play.crypto.secret instead
-2017-02-17 16:55:13,745 [INFO] from application in application-akka.actor.default-dispatcher-8 - Application.loadProject: queryPatternString=\{"lastFrameInstanceID":(\d+),"lastFrameInstanceIndex":(\d+)\}$
-2017-02-17 16:55:13,746 [INFO] from application in application-akka.actor.default-dispatcher-8 - Application.loadProject: lastFrameInstanceID=701
-2017-02-17 16:55:13,746 [INFO] from application in application-akka.actor.default-dispatcher-8 - Application.loadProject: lastFrameInstanceIndex=1
-2017-02-17 16:56:35,949 [INFO] from application in application-akka.actor.default-dispatcher-2 - Shutting down connection pool.
-2017-02-17 16:56:35,958 [INFO] from application in application-akka.actor.default-dispatcher-2 - Shutting down connection pool.
-2017-02-17 16:56:35,983 [WARN] from application in application-akka.actor.default-dispatcher-2 - Logger configuration in conf files is deprecated and has no effect. Use a logback configuration file instead.
-2017-02-17 16:56:36,023 [WARN] from application in application-akka.actor.default-dispatcher-2 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 69: user is deprecated, use username instead
-2017-02-17 16:56:36,024 [WARN] from application in application-akka.actor.default-dispatcher-2 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 54: user is deprecated, use username instead
-2017-02-17 16:56:36,024 [INFO] from application in application-akka.actor.default-dispatcher-2 - Creating Pool for datasource 'doc'
-2017-02-17 16:56:36,036 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-2 - Database [doc] connected at jdbc:mysql://10.9.94.40/pcori_db
-2017-02-17 16:56:36,036 [INFO] from application in application-akka.actor.default-dispatcher-2 - Creating Pool for datasource 'default'
-2017-02-17 16:56:36,041 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-2 - Database [default] connected at jdbc:mysql://localhost/validator_pcori_021117
-2017-02-17 16:56:36,105 [INFO] from play.api.Play in application-akka.actor.default-dispatcher-2 - Application started (Dev)
-2017-02-17 16:56:36,112 [WARN] from application in application-akka.actor.default-dispatcher-4 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 11: application.secret is deprecated, use play.crypto.secret instead
-2017-02-17 16:56:38,882 [INFO] from application in application-akka.actor.default-dispatcher-7 - Application.loadProject: lastFrameInstanceID=701
-2017-02-17 16:56:38,882 [INFO] from application in application-akka.actor.default-dispatcher-7 - Application.loadProject: lastFrameInstanceIndex=1
-2017-02-17 17:08:48,542 [INFO] from application in application-akka.actor.default-dispatcher-6 - Shutting down connection pool.
-2017-02-17 17:08:48,545 [INFO] from application in application-akka.actor.default-dispatcher-6 - Shutting down connection pool.
-2017-02-17 17:08:48,570 [WARN] from application in application-akka.actor.default-dispatcher-6 - Logger configuration in conf files is deprecated and has no effect. Use a logback configuration file instead.
-2017-02-17 17:08:48,606 [WARN] from application in application-akka.actor.default-dispatcher-6 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 69: user is deprecated, use username instead
-2017-02-17 17:08:48,606 [WARN] from application in application-akka.actor.default-dispatcher-6 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 54: user is deprecated, use username instead
-2017-02-17 17:08:48,606 [INFO] from application in application-akka.actor.default-dispatcher-6 - Creating Pool for datasource 'doc'
-2017-02-17 17:08:48,615 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-6 - Database [doc] connected at jdbc:mysql://10.9.94.40/pcori_db
-2017-02-17 17:08:48,615 [INFO] from application in application-akka.actor.default-dispatcher-6 - Creating Pool for datasource 'default'
-2017-02-17 17:08:48,618 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-6 - Database [default] connected at jdbc:mysql://localhost/validator_pcori_021117
-2017-02-17 17:08:48,679 [INFO] from play.api.Play in application-akka.actor.default-dispatcher-6 - Application started (Dev)
-2017-02-17 17:08:48,696 [WARN] from application in application-akka.actor.default-dispatcher-3 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 11: application.secret is deprecated, use play.crypto.secret instead
-2017-02-17 17:15:23,300 [INFO] from application in application-akka.actor.default-dispatcher-4 - Shutting down connection pool.
-2017-02-17 17:15:23,302 [INFO] from application in application-akka.actor.default-dispatcher-4 - Shutting down connection pool.
-2017-02-17 17:15:23,323 [WARN] from application in application-akka.actor.default-dispatcher-4 - Logger configuration in conf files is deprecated and has no effect. Use a logback configuration file instead.
-2017-02-17 17:15:23,349 [WARN] from application in application-akka.actor.default-dispatcher-4 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 69: user is deprecated, use username instead
-2017-02-17 17:15:23,349 [WARN] from application in application-akka.actor.default-dispatcher-4 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 54: user is deprecated, use username instead
-2017-02-17 17:15:23,350 [INFO] from application in application-akka.actor.default-dispatcher-4 - Creating Pool for datasource 'doc'
-2017-02-17 17:15:23,359 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-4 - Database [doc] connected at jdbc:mysql://10.9.94.40/pcori_db
-2017-02-17 17:15:23,359 [INFO] from application in application-akka.actor.default-dispatcher-4 - Creating Pool for datasource 'default'
-2017-02-17 17:15:23,362 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-4 - Database [default] connected at jdbc:mysql://localhost/validator_pcori_021117
-2017-02-17 17:15:23,440 [INFO] from play.api.Play in application-akka.actor.default-dispatcher-4 - Application started (Dev)
-2017-02-17 17:15:23,446 [WARN] from application in application-akka.actor.default-dispatcher-3 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 11: application.secret is deprecated, use play.crypto.secret instead
-2017-02-17 17:15:27,122 [INFO] from application in application-akka.actor.default-dispatcher-4 - Application.loadProject: lastFrameInstanceID=704
-2017-02-17 17:15:27,123 [INFO] from application in application-akka.actor.default-dispatcher-4 - Application.loadProject: lastFrameInstanceIndex=4
-2017-02-17 17:17:47,468 [INFO] from application in application-akka.actor.default-dispatcher-15 - Application.loadProject: lastFrameInstanceID=701
-2017-02-17 17:17:47,468 [INFO] from application in application-akka.actor.default-dispatcher-15 - Application.loadProject: lastFrameInstanceIndex=1
-2017-02-17 17:22:50,206 [INFO] from application in application-akka.actor.default-dispatcher-20 - Application.loadProject: lastFrameInstanceID=701
-2017-02-17 17:22:50,206 [INFO] from application in application-akka.actor.default-dispatcher-20 - Application.loadProject: lastFrameInstanceIndex=1
-2017-02-17 17:28:44,739 [INFO] from application in application-akka.actor.default-dispatcher-26 - Application.loadProject: lastFrameInstanceID=701
-2017-02-17 17:28:44,739 [INFO] from application in application-akka.actor.default-dispatcher-26 - Application.loadProject: lastFrameInstanceIndex=1
-2017-02-17 17:43:25,747 [ERROR] from application in New I/O worker #3 - 
-
-! @734m0f936 - Internal server error, for (POST) [/] ->
- 
-play.sbt.PlayExceptions$CompilationException: Compilation error[cannot find symbol
-  symbol:   variable Logger
-  location: class db.DataAccess]
-	at play.sbt.PlayExceptions$CompilationException$.apply(PlayExceptions.scala:27) ~[na:na]
-	at play.sbt.PlayExceptions$CompilationException$.apply(PlayExceptions.scala:27) ~[na:na]
-	at scala.Option.map(Option.scala:145) ~[scala-library-2.11.7.jar:na]
-	at play.sbt.run.PlayReload$$anonfun$taskFailureHandler$1.apply(PlayReload.scala:49) ~[na:na]
-	at play.sbt.run.PlayReload$$anonfun$taskFailureHandler$1.apply(PlayReload.scala:44) ~[na:na]
-	at scala.Option.map(Option.scala:145) ~[scala-library-2.11.7.jar:na]
-	at play.sbt.run.PlayReload$.taskFailureHandler(PlayReload.scala:44) ~[na:na]
-	at play.sbt.run.PlayReload$.compileFailure(PlayReload.scala:40) ~[na:na]
-	at play.sbt.run.PlayReload$$anonfun$compile$1.apply(PlayReload.scala:17) ~[na:na]
-	at play.sbt.run.PlayReload$$anonfun$compile$1.apply(PlayReload.scala:17) ~[na:na]
-	at scala.util.Either$LeftProjection.map(Either.scala:377) ~[scala-library-2.11.7.jar:na]
-	at play.sbt.run.PlayReload$.compile(PlayReload.scala:17) ~[na:na]
-	at play.sbt.run.PlayRun$$anonfun$playRunTask$1$$anonfun$apply$2$$anonfun$apply$3$$anonfun$2.apply(PlayRun.scala:61) ~[na:na]
-	at play.sbt.run.PlayRun$$anonfun$playRunTask$1$$anonfun$apply$2$$anonfun$apply$3$$anonfun$2.apply(PlayRun.scala:61) ~[na:na]
-	at play.runsupport.Reloader$$anonfun$reload$1.apply(Reloader.scala:323) ~[na:na]
-	at play.runsupport.Reloader$$anon$3.run(Reloader.scala:43) ~[na:na]
-	at java.security.AccessController.doPrivileged(Native Method) ~[na:1.8.0_121]
-	at play.runsupport.Reloader$.play$runsupport$Reloader$$withReloaderContextClassLoader(Reloader.scala:39) ~[na:na]
-	at play.runsupport.Reloader.reload(Reloader.scala:321) ~[na:na]
-	at play.core.server.DevServerStart$$anonfun$mainDev$1$$anon$1$$anonfun$get$1.apply(DevServerStart.scala:113) ~[play-server_2.11-2.4.8.jar:2.4.8]
-	at play.core.server.DevServerStart$$anonfun$mainDev$1$$anon$1$$anonfun$get$1.apply(DevServerStart.scala:111) ~[play-server_2.11-2.4.8.jar:2.4.8]
-	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) ~[scala-library-2.11.7.jar:na]
-	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) ~[scala-library-2.11.7.jar:na]
-	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:40) ~[akka-actor_2.11.jar:na]
-	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:397) ~[akka-actor_2.11.jar:na]
-	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) ~[scala-library-2.11.7.jar:na]
-	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) ~[scala-library-2.11.7.jar:na]
-	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) ~[scala-library-2.11.7.jar:na]
-	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) ~[scala-library-2.11.7.jar:na]
-2017-02-17 17:44:23,687 [INFO] from application in application-akka.actor.default-dispatcher-28 - Shutting down connection pool.
-2017-02-17 17:44:23,689 [INFO] from application in application-akka.actor.default-dispatcher-28 - Shutting down connection pool.
-2017-02-17 17:44:23,705 [WARN] from application in application-akka.actor.default-dispatcher-28 - Logger configuration in conf files is deprecated and has no effect. Use a logback configuration file instead.
-2017-02-17 17:44:23,730 [WARN] from application in application-akka.actor.default-dispatcher-28 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 69: user is deprecated, use username instead
-2017-02-17 17:44:23,730 [WARN] from application in application-akka.actor.default-dispatcher-28 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 54: user is deprecated, use username instead
-2017-02-17 17:44:23,730 [INFO] from application in application-akka.actor.default-dispatcher-28 - Creating Pool for datasource 'doc'
-2017-02-17 17:44:23,738 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-28 - Database [doc] connected at jdbc:mysql://10.9.94.40/pcori_db
-2017-02-17 17:44:23,739 [INFO] from application in application-akka.actor.default-dispatcher-28 - Creating Pool for datasource 'default'
-2017-02-17 17:44:23,744 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-28 - Database [default] connected at jdbc:mysql://localhost/validator_pcori_021117
-2017-02-17 17:44:23,788 [INFO] from play.api.Play in application-akka.actor.default-dispatcher-28 - Application started (Dev)
-2017-02-17 17:44:23,794 [WARN] from application in application-akka.actor.default-dispatcher-6 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 11: application.secret is deprecated, use play.crypto.secret instead
-2017-02-17 17:44:27,053 [INFO] from application in application-akka.actor.default-dispatcher-4 - Application.loadProject: lastFrameInstanceID=701
-2017-02-17 17:44:27,053 [INFO] from application in application-akka.actor.default-dispatcher-4 - Application.loadProject: lastFrameInstanceIndex=1
-2017-02-17 17:46:39,041 [INFO] from application in pool-6-thread-1 - Shutting down connection pool.
-2017-02-17 17:46:39,044 [INFO] from application in pool-6-thread-1 - Shutting down connection pool.
+2017-02-20 13:50:43,922 [INFO] from application in application-akka.actor.default-dispatcher-6 - Shutting down connection pool.
+2017-02-20 13:50:43,971 [INFO] from application in application-akka.actor.default-dispatcher-6 - Shutting down connection pool.
+2017-02-20 13:50:44,011 [WARN] from application in application-akka.actor.default-dispatcher-6 - Logger configuration in conf files is deprecated and has no effect. Use a logback configuration file instead.
+2017-02-20 13:50:44,075 [WARN] from application in application-akka.actor.default-dispatcher-6 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 69: user is deprecated, use username instead
+2017-02-20 13:50:44,075 [WARN] from application in application-akka.actor.default-dispatcher-6 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 54: user is deprecated, use username instead
+2017-02-20 13:50:44,075 [INFO] from application in application-akka.actor.default-dispatcher-6 - Creating Pool for datasource 'doc'
+2017-02-20 13:50:44,085 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-6 - Database [doc] connected at jdbc:mysql://10.9.94.40/pcori_db
+2017-02-20 13:50:44,085 [INFO] from application in application-akka.actor.default-dispatcher-6 - Creating Pool for datasource 'default'
+2017-02-20 13:50:44,088 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-6 - Database [default] connected at jdbc:mysql://localhost/validator_pcori_021117
+2017-02-20 13:50:44,178 [INFO] from play.api.Play in application-akka.actor.default-dispatcher-6 - Application started (Dev)
+2017-02-20 13:50:44,191 [WARN] from application in application-akka.actor.default-dispatcher-5 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 11: application.secret is deprecated, use play.crypto.secret instead
+2017-02-20 13:50:46,874 [INFO] from application in application-akka.actor.default-dispatcher-6 - Application.loadProject: lastFrameInstanceID=828
+2017-02-20 13:50:46,874 [INFO] from application in application-akka.actor.default-dispatcher-6 - Application.loadProject: lastFrameInstanceIndex=128
+2017-02-20 13:52:43,944 [INFO] from application in application-akka.actor.default-dispatcher-2 - Shutting down connection pool.
+2017-02-20 13:52:43,949 [INFO] from application in application-akka.actor.default-dispatcher-2 - Shutting down connection pool.
+2017-02-20 13:52:43,978 [WARN] from application in application-akka.actor.default-dispatcher-2 - Logger configuration in conf files is deprecated and has no effect. Use a logback configuration file instead.
+2017-02-20 13:52:44,022 [WARN] from application in application-akka.actor.default-dispatcher-2 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 69: user is deprecated, use username instead
+2017-02-20 13:52:44,023 [WARN] from application in application-akka.actor.default-dispatcher-2 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 54: user is deprecated, use username instead
+2017-02-20 13:52:44,023 [INFO] from application in application-akka.actor.default-dispatcher-2 - Creating Pool for datasource 'doc'
+2017-02-20 13:52:44,041 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-2 - Database [doc] connected at jdbc:mysql://10.9.94.40/pcori_db
+2017-02-20 13:52:44,042 [INFO] from application in application-akka.actor.default-dispatcher-2 - Creating Pool for datasource 'default'
+2017-02-20 13:52:44,052 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-2 - Database [default] connected at jdbc:mysql://localhost/validator_pcori_021117
+2017-02-20 13:52:44,107 [INFO] from play.api.Play in application-akka.actor.default-dispatcher-2 - Application started (Dev)
+2017-02-20 13:52:44,122 [WARN] from application in application-akka.actor.default-dispatcher-4 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 11: application.secret is deprecated, use play.crypto.secret instead
+2017-02-20 13:52:47,349 [INFO] from application in application-akka.actor.default-dispatcher-3 - Application.loadProject: lastFrameInstanceID=828
+2017-02-20 13:52:47,349 [INFO] from application in application-akka.actor.default-dispatcher-3 - Application.loadProject: lastFrameInstanceIndex=128
+2017-02-20 13:52:52,757 [INFO] from application in application-akka.actor.default-dispatcher-3 - docValidated comming in...
+2017-02-20 13:52:52,757 [INFO] from application in application-akka.actor.default-dispatcher-3 - docValidated: docID=2687
+2017-02-20 13:52:52,797 [INFO] from application in application-akka.actor.default-dispatcher-3 - update status for frameInstanceID=828
+2017-02-20 13:52:52,829 [ERROR] from application in application-akka.actor.default-dispatcher-3 - updateValidationStatus got error: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '', 1' at line 1
+2017-02-20 13:55:06,934 [INFO] from application in application-akka.actor.default-dispatcher-9 - Shutting down connection pool.
+2017-02-20 13:55:06,936 [INFO] from application in application-akka.actor.default-dispatcher-9 - Shutting down connection pool.
+2017-02-20 13:55:06,960 [WARN] from application in application-akka.actor.default-dispatcher-9 - Logger configuration in conf files is deprecated and has no effect. Use a logback configuration file instead.
+2017-02-20 13:55:07,004 [WARN] from application in application-akka.actor.default-dispatcher-9 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 69: user is deprecated, use username instead
+2017-02-20 13:55:07,004 [WARN] from application in application-akka.actor.default-dispatcher-9 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 54: user is deprecated, use username instead
+2017-02-20 13:55:07,004 [INFO] from application in application-akka.actor.default-dispatcher-9 - Creating Pool for datasource 'doc'
+2017-02-20 13:55:07,020 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-9 - Database [doc] connected at jdbc:mysql://10.9.94.40/pcori_db
+2017-02-20 13:55:07,020 [INFO] from application in application-akka.actor.default-dispatcher-9 - Creating Pool for datasource 'default'
+2017-02-20 13:55:07,025 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-9 - Database [default] connected at jdbc:mysql://localhost/validator_pcori_021117
+2017-02-20 13:55:07,096 [INFO] from play.api.Play in application-akka.actor.default-dispatcher-9 - Application started (Dev)
+2017-02-20 13:55:07,109 [WARN] from application in application-akka.actor.default-dispatcher-6 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 11: application.secret is deprecated, use play.crypto.secret instead
+2017-02-20 13:55:09,934 [INFO] from application in application-akka.actor.default-dispatcher-5 - Application.loadProject: lastFrameInstanceID=828
+2017-02-20 13:55:09,934 [INFO] from application in application-akka.actor.default-dispatcher-5 - Application.loadProject: lastFrameInstanceIndex=128
+2017-02-20 13:55:20,692 [INFO] from application in application-akka.actor.default-dispatcher-5 - docValidated comming in...
+2017-02-20 13:55:20,692 [INFO] from application in application-akka.actor.default-dispatcher-5 - docValidated: docID=2687
+2017-02-20 13:55:20,693 [INFO] from application in application-akka.actor.default-dispatcher-5 - update status for frameInstanceID=828
+2017-02-20 13:55:20,694 [ERROR] from application in application-akka.actor.default-dispatcher-5 - updateValidationStatus got error: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+2017-02-20 13:58:37,994 [INFO] from application in application-akka.actor.default-dispatcher-7 - Shutting down connection pool.
+2017-02-20 13:58:38,010 [INFO] from application in application-akka.actor.default-dispatcher-7 - Shutting down connection pool.
+2017-02-20 13:58:38,034 [WARN] from application in application-akka.actor.default-dispatcher-7 - Logger configuration in conf files is deprecated and has no effect. Use a logback configuration file instead.
+2017-02-20 13:58:38,079 [WARN] from application in application-akka.actor.default-dispatcher-7 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 69: user is deprecated, use username instead
+2017-02-20 13:58:38,079 [WARN] from application in application-akka.actor.default-dispatcher-7 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 54: user is deprecated, use username instead
+2017-02-20 13:58:38,079 [INFO] from application in application-akka.actor.default-dispatcher-7 - Creating Pool for datasource 'doc'
+2017-02-20 13:58:38,094 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-7 - Database [doc] connected at jdbc:mysql://10.9.94.40/pcori_db
+2017-02-20 13:58:38,094 [INFO] from application in application-akka.actor.default-dispatcher-7 - Creating Pool for datasource 'default'
+2017-02-20 13:58:38,115 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-7 - Database [default] connected at jdbc:mysql://localhost/validator_pcori_021117
+2017-02-20 13:58:38,189 [INFO] from play.api.Play in application-akka.actor.default-dispatcher-7 - Application started (Dev)
+2017-02-20 13:58:38,200 [WARN] from application in application-akka.actor.default-dispatcher-4 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 11: application.secret is deprecated, use play.crypto.secret instead
+2017-02-20 13:58:40,805 [INFO] from application in application-akka.actor.default-dispatcher-3 - Application.loadProject: lastFrameInstanceID=828
+2017-02-20 13:58:40,805 [INFO] from application in application-akka.actor.default-dispatcher-3 - Application.loadProject: lastFrameInstanceIndex=128
+2017-02-20 13:58:45,817 [INFO] from application in application-akka.actor.default-dispatcher-9 - docValidated comming in...
+2017-02-20 13:58:45,818 [INFO] from application in application-akka.actor.default-dispatcher-9 - docValidated: docID=2687
+2017-02-20 13:58:45,819 [INFO] from application in application-akka.actor.default-dispatcher-9 - update status for frameInstanceID=828
+2017-02-20 13:58:45,819 [INFO] from application in application-akka.actor.default-dispatcher-9 - no doc status found.
+2017-02-20 13:58:45,819 [ERROR] from application in application-akka.actor.default-dispatcher-9 - updateValidationStatus got error: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+2017-02-20 14:02:17,890 [INFO] from application in application-akka.actor.default-dispatcher-8 - Shutting down connection pool.
+2017-02-20 14:02:17,896 [INFO] from application in application-akka.actor.default-dispatcher-8 - Shutting down connection pool.
+2017-02-20 14:02:17,915 [WARN] from application in application-akka.actor.default-dispatcher-8 - Logger configuration in conf files is deprecated and has no effect. Use a logback configuration file instead.
+2017-02-20 14:02:17,945 [WARN] from application in application-akka.actor.default-dispatcher-8 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 69: user is deprecated, use username instead
+2017-02-20 14:02:17,945 [WARN] from application in application-akka.actor.default-dispatcher-8 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 54: user is deprecated, use username instead
+2017-02-20 14:02:17,946 [INFO] from application in application-akka.actor.default-dispatcher-8 - Creating Pool for datasource 'doc'
+2017-02-20 14:02:17,953 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-8 - Database [doc] connected at jdbc:mysql://10.9.94.40/pcori_db
+2017-02-20 14:02:17,953 [INFO] from application in application-akka.actor.default-dispatcher-8 - Creating Pool for datasource 'default'
+2017-02-20 14:02:17,957 [INFO] from play.api.db.DefaultDBApi in application-akka.actor.default-dispatcher-8 - Database [default] connected at jdbc:mysql://localhost/validator_pcori_021117
+2017-02-20 14:02:18,025 [INFO] from play.api.Play in application-akka.actor.default-dispatcher-8 - Application started (Dev)
+2017-02-20 14:02:18,034 [WARN] from application in application-akka.actor.default-dispatcher-4 - application.conf @ file:/home/wyu/workspace-luna/ie-validation-github/target/scala-2.11/classes/application.conf: 11: application.secret is deprecated, use play.crypto.secret instead
+2017-02-20 14:02:21,499 [INFO] from application in application-akka.actor.default-dispatcher-6 - Application.loadProject: lastFrameInstanceID=828
+2017-02-20 14:02:21,499 [INFO] from application in application-akka.actor.default-dispatcher-6 - Application.loadProject: lastFrameInstanceIndex=128
+2017-02-20 14:02:26,380 [INFO] from application in application-akka.actor.default-dispatcher-6 - docValidated comming in...
+2017-02-20 14:02:26,380 [INFO] from application in application-akka.actor.default-dispatcher-6 - docValidated: docID=2687
+2017-02-20 14:02:26,381 [INFO] from application in application-akka.actor.default-dispatcher-6 - update status for frameInstanceID=828
+2017-02-20 14:02:26,382 [INFO] from application in application-akka.actor.default-dispatcher-6 - no doc status found.
+2017-02-20 14:02:26,425 [INFO] from application in application-akka.actor.default-dispatcher-6 - update status for document_status table for docID=2687
+2017-02-20 14:04:56,935 [INFO] from application in application-akka.actor.default-dispatcher-7 - docValidated comming in...
+2017-02-20 14:04:56,936 [INFO] from application in application-akka.actor.default-dispatcher-7 - docValidated: docID=79
+2017-02-20 14:04:56,966 [INFO] from application in application-akka.actor.default-dispatcher-7 - update status for frameInstanceID=898
+2017-02-20 14:04:56,967 [INFO] from application in application-akka.actor.default-dispatcher-7 - no doc status found.
+2017-02-20 14:04:56,991 [INFO] from application in application-akka.actor.default-dispatcher-7 - update status for document_status table for docID=79
+2017-02-20 14:06:49,120 [INFO] from application in application-akka.actor.default-dispatcher-13 - docValidated comming in...
+2017-02-20 14:06:49,121 [INFO] from application in application-akka.actor.default-dispatcher-13 - docValidated: docID=2715
+2017-02-20 14:06:49,155 [INFO] from application in application-akka.actor.default-dispatcher-13 - update status for frameInstanceID=894
+2017-02-20 14:06:49,156 [INFO] from application in application-akka.actor.default-dispatcher-13 - no doc status found.
+2017-02-20 14:06:49,180 [INFO] from application in application-akka.actor.default-dispatcher-13 - update status for document_status table for docID=2715

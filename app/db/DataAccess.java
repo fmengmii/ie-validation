@@ -1,5 +1,6 @@
 package db;
 
+import play.Logger;
 import play.db.DB;
 
 import java.sql.*;
@@ -1822,6 +1823,68 @@ public class DataAccess
 		stmt.close();
 
 		return lastIndex;
+	}
+
+	public boolean updateValidationStatus ( int docID ) {
+		try {
+			Connection conn = DB.getConnection();
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT frame_instance_id, "
+					+ "document_namespace, document_table FROM "
+					+ schema + "frame_instance_document where document_id = " + docID);
+			int frameInstanceID = 0;
+			String docNamespace = "";
+			String docTable = "";
+			if (rs.next()) {
+				frameInstanceID = rs.getInt(1);
+				docNamespace = rs.getString(2);
+				docTable = rs.getString(3);
+			}
+			if( frameInstanceID == 0 ) {
+				return false;
+			}
+
+			rs = stmt.executeQuery("SELECT status FROM " + schema + "frame_instance_status "
+				+ "WHERE frame_instance_id = " + frameInstanceID );
+			if( rs.next() ) {
+				int status = rs.getInt(1);
+				if( status != 1 ) {
+					stmt.executeUpdate( "UPDATE " + schema + "frame_instance_status SET status = 1 "
+							+ "WHERE frame_instance_id = " + frameInstanceID);
+				}
+			} else {
+				stmt.executeUpdate("INSERT INTO " + schema + "frame_instance_status " +
+						"(frame_instance_id, status) VALUES("
+						+ frameInstanceID + ", 1" ) ;
+			}
+			//Logger.info("update status for frameInstanceID=" + frameInstanceID );
+			rs = stmt.executeQuery( "SELECT status FROM " + schema + "document_status "
+				+ "WHERE document_id = " + docID + " AND document_namespace = '"
+					+ docNamespace + "' AND document_table = '"
+					+ docTable + "'");
+
+			if( rs.next() ) {
+				int status = rs.getInt(1);
+				if( status != 1 ) {
+					stmt.executeUpdate( "UPDATE " + schema + "document_status SET status = 1 "
+						+ "WHERE document_id = " + docID + " AND document_namespace = '"
+						+ docNamespace + "' AND document_table = '"
+						+ docTable + "'");
+				}
+			} else {
+				//Logger.info("no doc status found.");
+				stmt.executeUpdate( "INSERT INTO " + schema + "document_status " +
+						"(document_namespace, document_table, document_id, status) VALUES "
+						+ "('" + docNamespace + "', '" + docTable + "', " + docID + ", 1)" );
+
+			}
+			//Logger.info("update status for document_status table for docID=" + docID );
+			conn.close();
+			return true;
+		} catch ( SQLException ex ) {
+			//Logger.error("updateValidationStatus got error: " + ex.toString() );
+			return false;
+		}
 	}
 
 }

@@ -1,7 +1,7 @@
 
 // @GENERATOR:play-routes-compiler
 // @SOURCE:/home/wyu/workspace-luna/ie-validation-github/conf/routes
-// @DATE:Fri Feb 17 16:44:52 PST 2017
+// @DATE:Mon Feb 20 13:46:48 PST 2017
 
 package router
 
@@ -69,6 +69,7 @@ class Routes(
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """get/frameinstance/id/$colNames<[^/]+>/$colValues<[^/]+>""", """controllers.Application.getFrameInstanceID(colNames:String, colValues:String)"""),
     ("""POST""", this.prefix, """controllers.Application.authenticate()"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """undo""", """controllers.Application.getHistory()"""),
+    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """validated""", """controllers.Application.docValidated()"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """annotation""", """controllers.Application.annotIndex()"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """assets/$file<.+>""", """controllers.Assets.at(path:String = "/public", file:String)"""),
     Nil
@@ -520,11 +521,28 @@ class Routes(
     )
   )
 
+  // @LINE:38
+  private[this] lazy val controllers_Application_docValidated26_route = Route("GET",
+    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("validated")))
+  )
+  private[this] lazy val controllers_Application_docValidated26_invoker = createInvoker(
+    Application_1.docValidated(),
+    HandlerDef(this.getClass.getClassLoader,
+      "router",
+      "controllers.Application",
+      "docValidated",
+      Nil,
+      "GET",
+      """""",
+      this.prefix + """validated"""
+    )
+  )
+
   // @LINE:41
-  private[this] lazy val controllers_Application_annotIndex26_route = Route("GET",
+  private[this] lazy val controllers_Application_annotIndex27_route = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("annotation")))
   )
-  private[this] lazy val controllers_Application_annotIndex26_invoker = createInvoker(
+  private[this] lazy val controllers_Application_annotIndex27_invoker = createInvoker(
     Application_1.annotIndex(),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -538,10 +556,10 @@ class Routes(
   )
 
   // @LINE:45
-  private[this] lazy val controllers_Assets_at27_route = Route("GET",
+  private[this] lazy val controllers_Assets_at28_route = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("assets/"), DynamicPart("file", """.+""",false)))
   )
-  private[this] lazy val controllers_Assets_at27_invoker = createInvoker(
+  private[this] lazy val controllers_Assets_at28_invoker = createInvoker(
     Assets_0.at(fakeValue[String], fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -713,16 +731,22 @@ class Routes(
         controllers_Application_getHistory25_invoker.call(Application_1.getHistory())
       }
   
-    // @LINE:41
-    case controllers_Application_annotIndex26_route(params) =>
+    // @LINE:38
+    case controllers_Application_docValidated26_route(params) =>
       call { 
-        controllers_Application_annotIndex26_invoker.call(Application_1.annotIndex())
+        controllers_Application_docValidated26_invoker.call(Application_1.docValidated())
+      }
+  
+    // @LINE:41
+    case controllers_Application_annotIndex27_route(params) =>
+      call { 
+        controllers_Application_annotIndex27_invoker.call(Application_1.annotIndex())
       }
   
     // @LINE:45
-    case controllers_Assets_at27_route(params) =>
+    case controllers_Assets_at28_route(params) =>
       call(Param[String]("path", Right("/public")), params.fromPath[String]("file", None)) { (path, file) =>
-        controllers_Assets_at27_invoker.call(Assets_0.at(path, file))
+        controllers_Assets_at28_invoker.call(Assets_0.at(path, file))
       }
   }
 }
