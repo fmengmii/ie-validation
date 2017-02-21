@@ -102,7 +102,7 @@ public class Application extends Controller
                 //System.out.println("try block executed");
                 //return index();
                 loggedIn = true;
-
+				session("userName", un);
             } else {
 
                 //return ok(login.render(false));
@@ -876,7 +876,7 @@ public class Application extends Controller
 		sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
 		DataAccess da = new DataAccess(session("schemaName"), sectionList);
 
-		if( da.updateValidationStatus(docID)) {
+		if( da.updateValidationStatus(docID, session("userName"))) {
 			return ok("Success:This document has been validated successfully.");
 		} else {
 			return ok("Error:There is an error during updating validation status.");

@@ -2849,6 +2849,7 @@ function docValidated() {
         } else {
             var message = data.replace("Success:", "");
             successBoxShow(message);
+
         }
     }).fail(function(){
     });

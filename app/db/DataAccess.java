@@ -316,13 +316,17 @@ public class DataAccess
 
 		int lastFrameInstanceID = 0;
 		int lastFrameInstanceIndex = -1;
-		ResultSet rs = stmt.executeQuery("select frame_instance_id from " + schema + rq + "user" + rq + " where user_name = '" + username + "'"); // changed from " where project_id = " + projID);
+		ResultSet rs = stmt.executeQuery("select frame_instance_id from "
+				+ schema + rq + "user" + rq + " where user_name = '"
+				+ username + "' AND project_id = " + projID ); // modify by wyu
 		if (rs.next()) {
 			lastFrameInstanceID = rs.getInt(1);
 		}
 
-		rs = stmt.executeQuery("select a.frame_instance_id, b.name from " + schema + "project_frame_instance a, " + schema + "frame_instance b where a.frame_instance_id = b.frame_instance_id and "
-			+ "a.project_id = " + projID + " order by frame_instance_id");
+		rs = stmt.executeQuery("select a.frame_instance_id, b.name from "
+				+ schema + "project_frame_instance a, " + schema
+				+ "frame_instance b where a.frame_instance_id = b.frame_instance_id and "
+				+ "a.project_id = " + projID + " order by frame_instance_id");
 
 		int index = 1;
 		while (rs.next()) {
@@ -1825,16 +1829,20 @@ public class DataAccess
 		return lastIndex;
 	}
 
-	public boolean updateValidationStatus ( int docID ) {
+	public boolean updateValidationStatus ( int docID, String userName ) {
 		try {
 			Connection conn = DB.getConnection();
 			Statement stmt = conn.createStatement();
+
 			ResultSet rs = stmt.executeQuery("SELECT frame_instance_id, "
 					+ "document_namespace, document_table FROM "
 					+ schema + "frame_instance_document where document_id = " + docID);
 			int frameInstanceID = 0;
 			String docNamespace = "";
 			String docTable = "";
+			int projectID = 0;
+			int userID = 0;
+
 			if (rs.next()) {
 				frameInstanceID = rs.getInt(1);
 				docNamespace = rs.getString(2);
@@ -1844,38 +1852,63 @@ public class DataAccess
 				return false;
 			}
 
-			rs = stmt.executeQuery("SELECT status FROM " + schema + "frame_instance_status "
-				+ "WHERE frame_instance_id = " + frameInstanceID );
+
+			rs = stmt.executeQuery("SELECT project_id FROM " + schema
+					+ "project_frame_instance WHERE frame_instance_id = " + frameInstanceID );
+			if( rs.next() ) {
+				projectID = rs.getInt(1);
+			}
+			if( projectID == 0 ) {
+				return false;
+			}
+
+			rs = stmt.executeQuery("SELECT user_id FROM " + schema + "user "
+				+ "WHERE user_name = '" + userName + "' AND project_id = "
+				+ projectID );
+			if( rs.next() ) {
+				userID = rs.getInt(1);
+			}
+			if( userID == 0 ) {
+				return false;
+			}
+
+			rs = stmt.executeQuery("SELECT status FROM " + schema
+					+ "frame_instance_status " + "WHERE frame_instance_id = "
+					+ frameInstanceID + " AND user_id = " + userID );
 			if( rs.next() ) {
 				int status = rs.getInt(1);
 				if( status != 1 ) {
-					stmt.executeUpdate( "UPDATE " + schema + "frame_instance_status SET status = 1 "
-							+ "WHERE frame_instance_id = " + frameInstanceID);
+					stmt.executeUpdate( "UPDATE " + schema
+							+ "frame_instance_status SET status = 1 "
+							+ "WHERE frame_instance_id = " + frameInstanceID
+							+ " AND user_id = " + userID );
 				}
 			} else {
 				stmt.executeUpdate("INSERT INTO " + schema + "frame_instance_status " +
-						"(frame_instance_id, status) VALUES("
-						+ frameInstanceID + ", 1" ) ;
+						"(frame_instance_id, status, user_id) VALUES("
+						+ frameInstanceID + ", 1, " + userID + ")" ) ;
 			}
 			//Logger.info("update status for frameInstanceID=" + frameInstanceID );
 			rs = stmt.executeQuery( "SELECT status FROM " + schema + "document_status "
 				+ "WHERE document_id = " + docID + " AND document_namespace = '"
 					+ docNamespace + "' AND document_table = '"
-					+ docTable + "'");
+					+ docTable + "' AND user_id = " + userID);
 
 			if( rs.next() ) {
 				int status = rs.getInt(1);
 				if( status != 1 ) {
-					stmt.executeUpdate( "UPDATE " + schema + "document_status SET status = 1 "
-						+ "WHERE document_id = " + docID + " AND document_namespace = '"
-						+ docNamespace + "' AND document_table = '"
-						+ docTable + "'");
+					stmt.executeUpdate( "UPDATE " + schema + "document_status "
+							+ "SET status = 1 WHERE document_id = " + docID
+							+ " AND document_namespace = '" + docNamespace
+							+ "' AND document_table = '" + docTable
+							+ "' AND user_id = " + userID);
 				}
 			} else {
 				//Logger.info("no doc status found.");
-				stmt.executeUpdate( "INSERT INTO " + schema + "document_status " +
-						"(document_namespace, document_table, document_id, status) VALUES "
-						+ "('" + docNamespace + "', '" + docTable + "', " + docID + ", 1)" );
+				stmt.executeUpdate( "INSERT INTO " + schema + "document_status "
+						+ "(document_namespace, document_table, document_id, "
+						+ "status, user_id) VALUES " + "('" + docNamespace + "', '"
+						+ docTable + "', " + docID + ", 1, " + userID + ")" );
 
 			}
 			//Logger.info("update status for document_status table for docID=" + docID );

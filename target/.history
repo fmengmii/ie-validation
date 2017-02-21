@@ -84,3 +84,22 @@ exit
 clean
 compile
 run -Dhttp.port=9010
+exit
+clean
+compile
+run -Dhttp.port=9004
+exit
+clean
+compile
+run -Dhttp.port=9010
+clean
+compile
+run -Dhttp.port=9010
+clean
+exit
+clean
+compile
+run -Dhttp.port=9010
+clean
+compile
+run -Dhttp.port=9010
