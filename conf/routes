@@ -31,11 +31,10 @@ POST	/get/annotations									controllers.Application.getDocumentAnnotations()
 GET		/get/slotvalues/:annotType							controllers.Application.getSlotValues(annotType: String)
 GET		/get/framedata/:frameInstanceID						controllers.Application.getFrameData(frameInstanceID: Int)
 GET		/get/frameinstance/id/:colNames/:colValues			controllers.Application.getFrameInstanceID(colNames: String, colValues: String)
-
 #new stuff
 POST    /                                                   controllers.Application.authenticate()
 GET     /undo                                               controllers.Application.getHistory()
-
+GET     /validated                                          controllers.Application.frameInstanceValidated()
 
 # Annotation viewer
 GET /annotation												controllers.Application.annotIndex()

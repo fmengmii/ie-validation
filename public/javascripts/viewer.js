@@ -297,9 +297,35 @@ $(document).ready(function () {
 		loadProject(projName);
 	}
 
+    var notificationWidth = 720;
+    var notificationHeight = 50;
+    //var notificationX = $("#buttonDiv").position().left;
+    //var notificationY = $("#buttonDiv").position();
+    var notificationX = $("body").width() / 2 - notificationWidth / 2;
+    var notificationY = 26;
+
+    $('#successWindow').jqxWindow({
+            width: notificationWidth,
+            height: notificationHeight,
+            resizable: true,
+            position: {x:notificationX, y:notificationY},
+            //okButton: $('#doneButton'),
+            autoOpen: false
+    });
+
+    $('#errorWindow').jqxWindow({
+            width: notificationWidth,
+            height: notificationHeight,
+            resizable: true,
+            position: {x:notificationX, y:notificationY},
+            //okButton: $('#doneButton'),
+            autoOpen: false
+    });
+    $('.alert').css("height", notificationHeight);
+    $('.alert').css("width", notificationWidth);
+    $('.jqx-window-header').hide();
 
 });
-
 
 //$( window ).resize(function() {
 $(window).on('resize', function(e) {
@@ -328,8 +354,8 @@ function loadDocument(docInfoStr)
 
 function getDocument(docInfoStr, index, clear, options, callback)
 {
-  // new code
-  clearHistory();
+    // new code
+    clearHistory();
 
 	console.log("getDocument: " + docInfoStr);
 	docHistory[docInfoStr] = true;
@@ -353,7 +379,6 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		//highlightText();
 	}
 
-
 	var docInfo = JSON.parse(docInfoStr);
 
 	docNamespace = docInfo["docNamespace"];
@@ -373,9 +398,7 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		data:{docNamespace:docNamespace, docTable:docTable, docID:docID}
 	}).done(function(data) {
 		console.log(data);
-
 		var docData = JSON.parse(data);
-
 		docName = docData["docName"];
 		origText = docData["docText"];
 		console.log("text len: " + origText.length);
@@ -396,10 +419,8 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		getHighlightRanges();
 		highlightText();
 
-
 		$('#docTitleDiv').text(docName);
 		$('#docFeatures').html('');
-
 
 		//set the document features
 		var featuresHTML = "";
@@ -418,6 +439,13 @@ function getDocument(docInfoStr, index, clear, options, callback)
 
 		if (callback != null)
 			callback(options);
+
+        var frameInstanceStatus = docData["frameInstanceStatus"];
+        if( frameInstanceStatus == 1 ) {
+            //docListBox item background color from powderblue to green  #228B22; or #4CAF50;
+            $('#docListBox font').css("background-color", "#32CD32");
+        }
+		$("#validatedButtonDiv").show();
 
 	}).fail(function() {
 	});
@@ -1309,6 +1337,7 @@ function loadCRF(crfName)
 
 function loadProject(projName)
 {
+	$("#validatedButtonDiv").hide();
 	openDialogLoad();
 	var loadProjectAjax = jsRoutes.controllers.Application.loadProject(projName);
 	$.ajax({
@@ -1379,7 +1408,7 @@ function frameInstanceSelectedText(frameInstanceName)
 function loadFrameInstance(frameInstanceID, clearDoc)
 {
 	console.log(frameInstanceID);
-
+    $("#validatedButtonDiv").hide();
 	currFrameInstanceID = frameInstanceID;
 	docSelectIndex = -1;
 
@@ -2796,3 +2825,55 @@ function toggleTokenSelect()
         }
     }
 })(jQuery);
+
+function frameInstanceValidated() {
+    var frameInstanceValidatedAjax = jsRoutes.controllers.Application.frameInstanceValidated();
+	$.ajax({
+		type: 'GET',
+		url: frameInstanceValidatedAjax.url,
+	}).done(function(data) {
+		console.log("frameInstanceValidated return data:" + data);
+		//make doc list font background-color from powderblue to green #228B22; or #4CAF50;
+		$('#docListBox font').css("background-color", "#32CD32");
+
+		if( data.startsWith("Error:") ) {
+            var message = data.replace("Error:", "");
+            alertBoxShow(message);
+        } else {
+            var message = data.replace("Success:", "");
+            successBoxShow(message);
+        }
+    }).fail(function(){
+    });
+}
+
+function alertBoxShow(message) {
+    hideSuccessBox();
+    $('.jqx-window-header').hide();
+    $("#errorWindow").show();
+    $("#alert-box").show();
+}
+
+function successBoxShow(message) {
+    /*$("i").remove();
+    hideConfirmBox();
+    hideAlertBox();
+    hideFlashSuccessBox();
+    hideFlashErrorBox();*/
+    //$('.jqx-window-header').hide();
+    $("#successWindow").show();
+    $("#success-box").show();
+    $('.successBoxMessage').html(message);
+    setTimeout(hideSuccessBox, 1000);
+    //$('.lowerButton').removeClass('selected');
+}
+
+function hideSuccessBox() {
+    $("#successWindow").hide();
+    $("#success-box").hide();
+}
+
+function hideAlertBox() {
+    $("#errorWindow").hide();
+    $("#alert-box").hide();
+}

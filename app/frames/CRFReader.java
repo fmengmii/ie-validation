@@ -296,7 +296,7 @@ public class CRFReader
 	
 	private String getHTMLString(String elementType, String htmlID, List<Map<String, String>> values, int repeat, int elementRepeatNum, String repeatStr)
 	{
-		System.out.println("htmlID: " + htmlID + " repeat: " + repeat + " elementRepeatNum: " + elementRepeatNum);
+		//System.out.println("htmlID: " + htmlID + " repeat: " + repeat + " elementRepeatNum: " + elementRepeatNum);
 		String htmlStr = null;
 		if (elementType.equals("radio") || elementType.equals("checkbox")) {
 			htmlStr = "<form id='" + htmlID + "'>" + getMultiValueHTML(elementType, htmlID, values, repeatStr) + " </form>";
@@ -605,7 +605,7 @@ public class CRFReader
 			int repeat = ((Number) sectionMap.get("repeat")).intValue();
 			int repeatNum = ((Number) sectionMap.get("repeatNumber")).intValue();
 			
-			System.out.println("sectionID: " + sectionID + " sectionName: " + sectionName + " repeatNumber: " + repeatNum);
+			//System.out.println("sectionID: " + sectionID + " sectionName: " + sectionName + " repeatNumber: " + repeatNum);
 		
 			ResultSet rs = stmt.executeQuery("select a.element_id, a.display_name, a.html_id, c.element_type_name, a.repeat "
 				+ "from " + schema + "element a, " + schema + "crf_section b, " + schema + "element_type c "
@@ -636,7 +636,7 @@ public class CRFReader
 			
 			for (int i=0; i<repeatNum+1; i++) {
 				String sectionNameIndex = Character.toString(sectionIndex) + "|" + sectionName;
-				System.out.println("section name: " + sectionNameIndex);
+				//System.out.println("section name: " + sectionNameIndex);
 				
 				for (Map<String, Object> element : sectionDataList) {
 					element.put("section", "{\"sectionID\":\"" + sectionIndex + "\",\"sectionName\":\"" + sectionNameIndex + "\",\"repeat\":" + repeat + ",\"repeatIndex\":" + i + "}");
