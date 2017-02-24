@@ -34,6 +34,12 @@
     /*color: green !important;*/
 }
 
+.alert-danger{
+    background-color: #f2dede !important;
+    border-color: #ebccd1; !important;
+    color: #a94442 !important;
+}
+
 .alert-success{
     background-color: #dff0d8 !important;
     border-color: #d6e9c6 !important;
@@ -52,9 +58,10 @@
 .successBoxMessage{
     /*color: pink !important;*/
 }
+
 #success-box{
-    /*display:none;*/
-    /*margin-top:20px;
+    /*display:none;
+    margin-top:20px;
     margin-bottom:0px;*/
 }
 

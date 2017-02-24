@@ -43,8 +43,6 @@ var colNames = null;
 var colTypes = null;
 var colValues = null;
 
-
-
 //new vars
 //var username;
 //var password;
@@ -53,6 +51,7 @@ var history = new Object();
 var processID = 1;
 
 $(document).ready(function () {
+
 //$(function() {
 	//init widgets (dialog window, split pane, etc)
    $('#splitter').jqxSplitter({ width: '100%', height: '100%', panels: [{size: '40%'}, {size: '60%'}]});
@@ -66,13 +65,9 @@ $(document).ready(function () {
 
    $('#splitter2').jqxSplitter({ width: '100%', height: '100%', panels: [{size: '30%'}, {size: '70%'}]});
 
-
    //$('#crfPanel').jqxPanel({ width: '100%', height: '100%', autoUpdate: true, sizeMode: 'fixed'});
    //$('#docPanel').jqxPanel({ width: '90%', height: '90%', autoUpdate: true, sizeMode : 'fixed'});
    
-   
-
-
    $('#dialogLoadInstance').jqxWindow({
 	   width: 200,
 	       height: 100,
@@ -82,7 +77,7 @@ $(document).ready(function () {
 	       isModal: true,
 	       initContent: function() {
 	   }
-       });
+   });
 
    $('#dialogLoadInstance').jqxWindow('close');
 
@@ -307,6 +302,31 @@ $(document).ready(function () {
 		loadProject(projName);
 	}
 
+    var notificationWidth = 720;
+    var notificationHeight = 50;
+    var notificationX = $("body").width() / 2 - notificationWidth / 2;
+    var notificationY = 26;
+
+    $('#successWindow').jqxWindow({
+        width: notificationWidth,
+        height: notificationHeight,
+        resizable: true,
+        position: {x:notificationX, y:notificationY},
+        //okButton: $('#doneButton'),
+        autoOpen: false
+    });
+
+    $('#errorWindow').jqxWindow({
+        width: notificationWidth,
+        height: notificationHeight,
+        resizable: true,
+        position: {x:notificationX, y:notificationY},
+        //okButton: $('#doneButton'),
+        autoOpen: false
+    });
+    $('.alert').css("height", notificationHeight);
+    $('.alert').css("width", notificationWidth);
+    $('.jqx-window-header').hide();
 
 });
 
@@ -1346,7 +1366,13 @@ function loadProject(projName)
 		var crfData = result[2];
 		var optionsStr = "<option selected disabled value=''>Select Instance</option>";
 		for(var i = 0; i < frameArray.length; i++) {
-		    optionsStr += "<option value='" + frameArray[i]["frameInstanceID"] + "'>" + frameArray[i]["name"] + "</option>";
+		    if( frameArray[i]["validatedByUserName"] != "" ) {
+		        optionsStr += "<option value='" + frameArray[i]["frameInstanceID"]
+		            + "'>" + frameArray[i]["name"] + " Validated By "
+		            + frameArray[i]["validatedByUserName"] + "</option>";
+		    } else {
+		        optionsStr += "<option value='" + frameArray[i]["frameInstanceID"] + "'>" + frameArray[i]["name"] + "</option>";
+		    }
 		}
 
 		$("#crfSelect").find('option').remove().end().append($(optionsStr));
@@ -1354,7 +1380,6 @@ function loadProject(projName)
 		$('#crfSelect').select2();
 
 		loadCRFData(crfData);
-
 
 		if (colNames.length > 0) {
 			loadEntity(colNames, colValues);
@@ -2839,17 +2864,40 @@ function docValidated() {
 		type: 'GET',
 		url: docValidatedAjax.url
 	}).done(function(data) {
-		//console.log("docValidated return data:" + data);
-		//make doc list font background-color from powderblue to green #228B22; or #4CAF50;
 		$('#docListBox font').css("background-color", "#32CD32");
 
 		if( data.startsWith("Error:") ) {
             var message = data.replace("Error:", "");
             alertBoxShow(message);
         } else {
-            var message = data.replace("Success:", "");
+            var message = "This document has been validated successfully";
             successBoxShow(message);
 
+            var result = JSON.parse(data);
+		    frameArray = result[0];
+		    var lastFrameAccessed = result[1];
+		    var optionsStr = "<option selected disabled value=''>Select Instance</option>";
+		    for(var i = 0; i < frameArray.length; i++) {
+		        if( frameArray[i]["validatedByUserName"] != "" ) {
+		            optionsStr += "<option value='" + frameArray[i]["frameInstanceID"]
+		                + "'>" + frameArray[i]["name"] + " Validated By "
+		                + frameArray[i]["validatedByUserName"] + "</option>";
+		        } else {
+		            optionsStr += "<option class='redColor' value='" + frameArray[i]["frameInstanceID"]
+		            + "'>" + frameArray[i]["name"] + "</option>";
+		        }
+		    }
+            if (colNames.length > 0) {
+			    loadEntity(colNames, colValues);
+		    }
+		    else {
+		        $("#crfSelect").find('option').remove().end().append($(optionsStr));
+		        document.getElementById('crfSelect').selectedIndex = 0;
+		        $('#crfSelect').select2();
+		        currFrameInstanceIndex = lastFrameAccessed["lastFrameInstanceIndex"];
+			    var frameInstanceID = lastFrameAccessed["lastFrameInstanceID"];
+			    $('#crfSelect').val(frameInstanceID).trigger("change");
+            }
         }
     }).fail(function(){
     });
@@ -2860,20 +2908,15 @@ function alertBoxShow(message) {
     $('.jqx-window-header').hide();
     $("#errorWindow").show();
     $("#alert-box").show();
+    $('.alertBoxMessage').html(message);
 }
 
 function successBoxShow(message) {
-    /*$("i").remove();
-    hideConfirmBox();
     hideAlertBox();
-    hideFlashSuccessBox();
-    hideFlashErrorBox();*/
-    //$('.jqx-window-header').hide();
     $("#successWindow").show();
     $("#success-box").show();
     $('.successBoxMessage').html(message);
-    setTimeout(hideSuccessBox, 1000);
-    //$('.lowerButton').removeClass('selected');
+    setTimeout(hideSuccessBox, 1300);
 }
 
 function hideSuccessBox() {

@@ -589,7 +589,6 @@ public class Application extends Controller
     		e.printStackTrace();
     	}
 
-
     	return ok(ret);
     }
 
@@ -731,8 +730,6 @@ public class Application extends Controller
 	    		e.printStackTrace();
 	    	}
     	}
-
-
     	return ok(ret);
     }
 
@@ -865,19 +862,23 @@ public class Application extends Controller
     }
 
 	public Result docValidated() {
-		Logger.info("docValidated comming in...");
 		if( session("docID") == null ) {
 			return ok("Error:The document didn't exist.");
 		}
 		int docID = Integer.parseInt(session("docID"));
-
-		Logger.info("docValidated: docID=" + docID);
 		List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 		sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
 		DataAccess da = new DataAccess(session("schemaName"), sectionList);
 
 		if( da.updateValidationStatus(docID, session("userName"))) {
-			return ok("Success:This document has been validated successfully.");
+			int projID = Integer.parseInt(session("projID"));
+			try {
+				String frameList = da.loadProject(un, projID);
+				return ok("[" + frameList + "]");
+			}catch(Exception e) {
+    			e.printStackTrace();
+				return ok("Error:There is an error during updating validation status.");
+    		}
 		} else {
 			return ok("Error:There is an error during updating validation status.");
 		}
