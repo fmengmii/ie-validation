@@ -83,6 +83,9 @@ public class Application extends Controller
         String schema = Play.application().configuration().getString("schema") + ".";
     	session("schemaName", schema);
 
+    	String docSchema = Play.application().configuration().getString("docSchema") + ".";
+    	session("docSchemaName", docSchema);
+
         try {
 
             DynamicForm df = Form.form().bindFromRequest();
@@ -93,7 +96,7 @@ public class Application extends Controller
             gson = new Gson();
 			List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 			sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-            DataAccess da = new DataAccess(session("schemaName"), sectionList);
+            DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
 
 
             //System.out.println(un + " " + pw);
@@ -139,7 +142,7 @@ public class Application extends Controller
             gson = new Gson();
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-	    	DataAccess da = new DataAccess(session("schemaName"), sectionList);
+	    	DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
 	    	
 	    	
 	    	
@@ -221,7 +224,7 @@ public class Application extends Controller
     		gson = new Gson();
     		List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-    		DataAccess da = new DataAccess(session("schemaName"), sectionList);
+    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		crfList = da.getProjects();
     		
     		// new code
@@ -251,6 +254,9 @@ public class Application extends Controller
     	String schema = Play.application().configuration().getString("schema") + ".";
     	session("schemaName", schema);
 
+    	String docSchema = Play.application().configuration().getString("docSchema") + ".";
+    	session("docSchemaName", docSchema);
+
     	String annotThreshold = Play.application().configuration().getString("annotThreshold");
     	if (annotThreshold == null)
     		annotThreshold = "0.5";
@@ -260,7 +266,7 @@ public class Application extends Controller
     		gson = new Gson();
     		List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-    		DataAccess da = new DataAccess(session("schemaName"), sectionList);
+    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		crfList = da.getProjects();
 
     	}
@@ -299,7 +305,7 @@ public class Application extends Controller
 	    	gson = new Gson();
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-	    	DataAccess da = new DataAccess(session("schemaName"), sectionList);
+	    	DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
 	    	Map<String, String> docMap = da.getDocument(docNamespace, docTable, Long.parseLong(docID));
 
 	    	int crfID = Integer.parseInt(session("crfID"));
@@ -309,7 +315,9 @@ public class Application extends Controller
 	    	resultMap.put("docText", docMap.get("docText"));
 	    	resultMap.put("docFeatures", docMap.get("docFeatures"));
 	    	resultMap.put("annotList", annotList);
-			resultMap.put("frameInstanceStatus", docMap.get("frameInstanceStatus")); // add by wyu
+			//resultMap.put("docStatus", docMap.get("docStatus"));
+			resultMap.put("frameInstanceStatus", docMap.get("frameInstanceStatus"));
+
 	    	String sectionListStr = gson.toJson(sectionList);
     		session("sectionList", sectionListStr);
     	}
@@ -337,7 +345,7 @@ public class Application extends Controller
     		gson = new Gson();
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-	    	DataAccess da = new DataAccess(session("schemaName"), sectionList);
+	    	DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		annotList = da.getDocumentAnnotations(docNamespace, docTable, Long.parseLong(docID), annotThreshold, crfID);
     	}
     	catch(Exception e)
@@ -363,7 +371,7 @@ public class Application extends Controller
     		gson = new Gson();
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-	    	DataAccess da = new DataAccess(session("schemaName"), sectionList);
+	    	DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		ret = da.getFrameData(frameInstanceID);
     	}
     	catch(Exception e)
@@ -438,7 +446,7 @@ public class Application extends Controller
 	    		CRFReader crfProc = new CRFReader(session("schemaName"));
 	    		crfStr = crfProc.addRemoveSection(crfID, frameInstanceID, sectionName, -1, sectionList);
 
-	    		DataAccess da = new DataAccess(session("schemaName"), sectionList);
+	    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
 	    		da.clearSection(frameInstanceID, sectionName, repeatIndex);
 
 	    		String sectionListStr = gson.toJson(sectionList);
@@ -474,11 +482,10 @@ public class Application extends Controller
     		gson = new Gson();
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	//sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-    		DataAccess da = new DataAccess(session("schemaName"), sectionList);
+    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		frameList = da.loadProject(un, projID); // was changed
 
 			// **** add by wyu for repeat number ****
-			//,{"lastFrameInstanceID":" + lastFrameInstanceID + ",\"lastFrameInstanceIndex\":" + lastFrameInstanceIndex + "}
 			String queryPatternString = "\\{\"lastFrameInstanceID\":(\\d+),\"lastFrameInstanceIndex\":(\\d+)\\}$";
 			//Logger.info("Application.loadProject: queryPatternString=" + queryPatternString);
 			Pattern pattern = Pattern.compile(queryPatternString);
@@ -495,12 +502,14 @@ public class Application extends Controller
     		int crfID = da.getCRFID(projID);
     		session("crfID", Integer.toString(crfID));
 
-
     		//Load the CRF into the view
+			Logger.info("loadProject: before da.loadCRF, sectionListSize=" + sectionList.size() );
     		//String crfStr = da.loadCRF(projID, -1);
+			Logger.info("loadProject: before json, sectionListSize=" + sectionList.size() );
 			String crfStr = da.loadCRF(projID, lastFrameInstanceID); //modify by wyu for repeat number
 
     		String sectionListStr = gson.toJson(sectionList);
+			Logger.info("loadProject: sectionListStr=" + sectionListStr.substring(0, 60));
     		session("sectionList", sectionListStr);
     		session("frameInstanceID", "-1");
 
@@ -524,7 +533,7 @@ public class Application extends Controller
     		gson = new Gson();
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-    		DataAccess da = new DataAccess(session("schemaName"), sectionList);
+    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		int projID = Integer.parseInt(session("projID"));
     		frameInstanceStr = da.loadFrameInstance(un, frameInstanceID, projID); // was changed
     		long docID = da.getCurrDocID();
@@ -570,7 +579,7 @@ public class Application extends Controller
         	gson = new Gson();
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-    		DataAccess da = new DataAccess(session("schemaName"), sectionList);
+    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		//int docID = Integer.parseInt(session("docID"));
     		int crfID = Integer.parseInt(session("crfID"));
     		ret = da.addAnnotation(frameInstanceID, htmlID, value, start, end, docNamespace, docTable, docID, crfID, features, add);
@@ -589,6 +598,7 @@ public class Application extends Controller
     		e.printStackTrace();
     	}
 
+
     	return ok(ret);
     }
 
@@ -602,7 +612,7 @@ public class Application extends Controller
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
     		int frameInstanceID = Integer.parseInt(session("frameInstanceID"));
-    		DataAccess da = new DataAccess(session("schemaName"), sectionList);
+    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
 
     		int index = elementIDStr.indexOf("_");
     		System.out.println("index: " + index);
@@ -633,7 +643,7 @@ public class Application extends Controller
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
     		int frameInstanceID = Integer.parseInt(session("frameInstanceID"));
-    		DataAccess da = new DataAccess(session("schemaName"), sectionList);
+    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		da.clearAll(frameInstanceID);
 
     		String sectionListStr = gson.toJson(sectionList);
@@ -657,7 +667,7 @@ public class Application extends Controller
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
     		int frameInstanceID = Integer.parseInt(session("frameInstanceID"));
-    		DataAccess da = new DataAccess(session("schemaName"), sectionList);
+    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
 
     		ret = da.clearValue(frameInstanceID, htmlID);
 
@@ -715,7 +725,7 @@ public class Application extends Controller
 
 	    		CRFReader crfProc = new CRFReader(session("schemaName"));
 	    		String crfStr = crfProc.addRemoveElement(crfID, frameInstanceID, htmlID, -1, sectionList);
-	    		DataAccess da = new DataAccess(session("schemaName"), sectionList);
+	    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
 
 	    		int index = elementIDStr.indexOf("_");
 	    		elementIDStr = elementIDStr.substring(0, index);
@@ -730,6 +740,8 @@ public class Application extends Controller
 	    		e.printStackTrace();
 	    	}
     	}
+
+
     	return ok(ret);
     }
 
@@ -744,7 +756,7 @@ public class Application extends Controller
 
     		List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-    		DataAccess da = new DataAccess(session("schemaName"), sectionList);
+    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		da.addDocumentHistory(frameInstanceID, docNamespace, docTable, docID);
     	}
     	catch(Exception e)
@@ -763,7 +775,7 @@ public class Application extends Controller
     		int frameInstanceID = Integer.parseInt(session("frameInstanceID"));
     		List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-    		DataAccess da = new DataAccess(session("schemaName"), sectionList);
+    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		Map<String, Boolean> docMap = da.getDocumentHistory(frameInstanceID);
     		docHistStr = gson.toJson(docMap);
     	}
@@ -782,7 +794,7 @@ public class Application extends Controller
 
     		List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-    		DataAccess da = new DataAccess(session("schemaName"), sectionList);
+    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		da.clearDocumentHistory(frameInstanceID);
     	}
     	catch(Exception e)
@@ -809,7 +821,7 @@ public class Application extends Controller
 
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-	    	DataAccess da = new DataAccess(session("schemaName"), sectionList);
+	    	DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
 	    	valueStr = da.fillSlot(frameInstanceID, docNamespace, docTable, docID, slotName, start, end);
     	}
     	catch(Exception e)
@@ -827,7 +839,7 @@ public class Application extends Controller
     		int crfID = Integer.parseInt(session("crfID"));
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-	    	DataAccess da = new DataAccess(session("schemaName"), sectionList);
+	    	DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
 	    	List<Map<String, Object>> slotValues = da.getSlotValues(crfID, annotType);
 	    	slotValuesStr = gson.toJson(slotValues);
     	}
@@ -845,7 +857,7 @@ public class Application extends Controller
     	try {
     		List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-    		DataAccess da = new DataAccess(session("schemaName"), sectionList);
+    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		int projID = Integer.parseInt(session("projID"));
 
     		String[] colNames = colNamesStr.split(",");
@@ -861,16 +873,24 @@ public class Application extends Controller
     	return ok(ret);
     }
 
-	public Result docValidated() {
+	public Result frameInstanceValidated() {
+
+		/*
 		if( session("docID") == null ) {
 			return ok("Error:The document didn't exist.");
 		}
-		int docID = Integer.parseInt(session("docID"));
+		*/
+
+		//int docID = Integer.parseInt(session("docID"));
+		int frameInstanceID = Integer.parseInt(session("frameInstanceID"));
+
+		Logger.info("frameInstanceValidated: frameInstanceID=" + frameInstanceID);
 		List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 		sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-		DataAccess da = new DataAccess(session("schemaName"), sectionList);
+		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
 
-		if( da.updateValidationStatus(docID, session("userName"))) {
+
+		if( da.updateValidationStatus(frameInstanceID, un)) {
 			int projID = Integer.parseInt(session("projID"));
 			try {
 				String frameList = da.loadProject(un, projID);
@@ -879,6 +899,7 @@ public class Application extends Controller
     			e.printStackTrace();
 				return ok("Error:There is an error during updating validation status.");
     		}
+			//return ok("Success:This document has been validated successfully.");
 		} else {
 			return ok("Error:There is an error during updating validation status.");
 		}

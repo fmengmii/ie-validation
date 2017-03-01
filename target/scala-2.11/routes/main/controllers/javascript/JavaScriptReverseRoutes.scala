@@ -1,7 +1,7 @@
 
 // @GENERATOR:play-routes-compiler
-// @SOURCE:/home/wyu/workspace-luna/ie-validation-github-dev/conf/routes
-// @DATE:Fri Feb 24 11:31:46 PST 2017
+// @SOURCE:/home/wyu/workspace-luna/ie-validation-github-dev-BackUp-022417/conf/routes
+// @DATE:Tue Feb 28 10:30:01 PST 2017
 
 import play.api.routing.JavaScriptReverseRoute
 import play.api.mvc.{ QueryStringBindable, PathBindable, Call, JavascriptLiteral }
@@ -93,6 +93,16 @@ package controllers.javascript {
       """
     )
   
+    // @LINE:38
+    def frameInstanceValidated: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.Application.frameInstanceValidated",
+      """
+        function() {
+          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "validated"})
+        }
+      """
+    )
+  
     // @LINE:24
     def clearAll: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Application.clearAll",
@@ -149,16 +159,6 @@ package controllers.javascript {
       """
         function(elementID,htmlID) {
           return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "clear/element/" + (""" + implicitly[PathBindable[String]].javascriptUnbind + """)("elementID", encodeURIComponent(elementID)) + "/" + (""" + implicitly[PathBindable[String]].javascriptUnbind + """)("htmlID", encodeURIComponent(htmlID))})
-        }
-      """
-    )
-  
-    // @LINE:38
-    def docValidated: JavaScriptReverseRoute = JavaScriptReverseRoute(
-      "controllers.Application.docValidated",
-      """
-        function() {
-          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "validated"})
         }
       """
     )

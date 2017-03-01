@@ -43,6 +43,8 @@ var colNames = null;
 var colTypes = null;
 var colValues = null;
 
+
+
 //new vars
 //var username;
 //var password;
@@ -51,7 +53,6 @@ var history = new Object();
 var processID = 1;
 
 $(document).ready(function () {
-
 //$(function() {
 	//init widgets (dialog window, split pane, etc)
    $('#splitter').jqxSplitter({ width: '100%', height: '100%', panels: [{size: '40%'}, {size: '60%'}]});
@@ -65,9 +66,13 @@ $(document).ready(function () {
 
    $('#splitter2').jqxSplitter({ width: '100%', height: '100%', panels: [{size: '30%'}, {size: '70%'}]});
 
+
    //$('#crfPanel').jqxPanel({ width: '100%', height: '100%', autoUpdate: true, sizeMode: 'fixed'});
    //$('#docPanel').jqxPanel({ width: '90%', height: '90%', autoUpdate: true, sizeMode : 'fixed'});
    
+   
+
+
    $('#dialogLoadInstance').jqxWindow({
 	   width: 200,
 	       height: 100,
@@ -304,32 +309,33 @@ $(document).ready(function () {
 
     var notificationWidth = 720;
     var notificationHeight = 50;
+    //var notificationX = $("#buttonDiv").position().left;
+    //var notificationY = $("#buttonDiv").position();
     var notificationX = $("body").width() / 2 - notificationWidth / 2;
     var notificationY = 26;
 
     $('#successWindow').jqxWindow({
-        width: notificationWidth,
-        height: notificationHeight,
-        resizable: true,
-        position: {x:notificationX, y:notificationY},
-        //okButton: $('#doneButton'),
-        autoOpen: false
+            width: notificationWidth,
+            height: notificationHeight,
+            resizable: true,
+            position: {x:notificationX, y:notificationY},
+            //okButton: $('#doneButton'),
+            autoOpen: false
     });
 
     $('#errorWindow').jqxWindow({
-        width: notificationWidth,
-        height: notificationHeight,
-        resizable: true,
-        position: {x:notificationX, y:notificationY},
-        //okButton: $('#doneButton'),
-        autoOpen: false
+            width: notificationWidth,
+            height: notificationHeight,
+            resizable: true,
+            position: {x:notificationX, y:notificationY},
+            //okButton: $('#doneButton'),
+            autoOpen: false
     });
     $('.alert').css("height", notificationHeight);
     $('.alert').css("width", notificationWidth);
     $('.jqx-window-header').hide();
 
 });
-
 
 //$( window ).resize(function() {
 $(window).on('resize', function(e) {
@@ -358,8 +364,8 @@ function loadDocument(docInfoStr)
 
 function getDocument(docInfoStr, index, clear, options, callback)
 {
-  // new code
-  clearHistory();
+    // new code
+    clearHistory();
 
 	console.log("getDocument: " + docInfoStr);
 	docHistory[docInfoStr] = true;
@@ -379,11 +385,9 @@ function getDocument(docInfoStr, index, clear, options, callback)
 
 	if (clear) {
 		highlightRangeList = undefined;
-	    //highlightText();
 		//getHighlightRanges();
 		//highlightText();
 	}
-
 
 	var docInfo = JSON.parse(docInfoStr);
 
@@ -404,9 +408,7 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		data:{docNamespace:docNamespace, docTable:docTable, docID:docID}
 	}).done(function(data) {
 		console.log(data);
-
 		var docData = JSON.parse(data);
-
 		docName = docData["docName"];
 		origText = docData["docText"];
 		console.log("text len: " + origText.length);
@@ -425,12 +427,10 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		annotList = docData["annotList"];
 		console.log("annotList: " + JSON.stringify(annotList));
 		getHighlightRanges();
-		//highlightText();
-
+		highlightText();
 
 		$('#docTitleDiv').text(docName);
 		$('#docFeatures').html('');
-
 
 		//set the document features
 		var featuresHTML = "";
@@ -444,7 +444,7 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		$('#docPanel').height($('#docListBox').height() - $('#docFeatures').height());
 
 		//highlightText(rowStart, rowEnd, vScrollPos);
-        $("#validatedButtonDiv").show();
+
 		closeDialogLoad();
 
 		if (callback != null)
@@ -455,7 +455,8 @@ function getDocument(docInfoStr, index, clear, options, callback)
             //docListBox item background color from powderblue to green  #228B22; or #4CAF50;
             $('#docListBox font').css("background-color", "#32CD32");
         }
-        $("#validatedButtonDiv").show();
+		$("#validatedButtonDiv").show();
+
 	}).fail(function() {
 	});
 
@@ -648,8 +649,7 @@ function undoAction() {
   console.log(undoAjax);
   $.ajax({
     type: 'GET',
-    //url: undoAjax.url,
-    url: undoAjax.url //remove "," by wyu
+    url: undoAjax.url,
   }).done(function(data) {
 
 
@@ -672,8 +672,7 @@ function clearElementOnDoubleRightClick(elementID, elementHTMLID, elementType) {
   var clearElementAjax = jsRoutes.controllers.Application.clearElement(elementID, elementHTMLID);
   $.ajax({
     type: 'GET',
-    //url: clearElementAjax.url,
-    url: clearElementAjax.url //remove "," by wyu
+    url: clearElementAjax.url,
   }).done(function(data) {
     var dataObj = JSON.parse(data);
     frameInstanceData = dataObj[0];
@@ -1337,8 +1336,7 @@ function loadCRF(crfName)
 	var getCRFAjax = jsRoutes.controllers.Application.getCRF(crfName);
 	$.ajax({
 		type: 'GET',
-		//url: getCRFAjax.url,
-		url: getCRFAjax.url //remove "," by wyu
+		url: getCRFAjax.url,
 	}).done(function(data) {
 		//console.log(data);
 
@@ -1354,10 +1352,8 @@ function loadProject(projName)
 	var loadProjectAjax = jsRoutes.controllers.Application.loadProject(projName);
 	$.ajax({
 		type: 'GET',
-		//url: loadProjectAjax.url,
-		url: loadProjectAjax.url //remove "," by wyu
+		url: loadProjectAjax.url,
 	}).done(function(data) {
-	    console.log("loadProject return data below:");
 		console.log(data);
 
 		var result = JSON.parse(data);
@@ -1380,6 +1376,7 @@ function loadProject(projName)
 		$('#crfSelect').select2();
 
 		loadCRFData(crfData);
+
 
 		if (colNames.length > 0) {
 			loadEntity(colNames, colValues);
@@ -1435,10 +1432,8 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 	var loadFrameInstanceAjax = jsRoutes.controllers.Application.loadFrameInstance(frameInstanceID);
 	$.ajax({
 		type: 'GET',
-		//url: loadFrameInstanceAjax.url,
-		url: loadFrameInstanceAjax.url //remove "," by wyu it's a typo?
+		url: loadFrameInstanceAjax.url,
 	}).done(function(data) {
-	    console.log("loadFrameInstance return data:");
 		console.log(data);
 
 		var dataObj = JSON.parse(data);
@@ -1656,8 +1651,7 @@ function loadEntity(colNames, colValues)
 	var getFrameInstanceIDAjax = jsRoutes.controllers.Application.getFrameInstanceID(colNames, colValues);
 	$.ajax({
 		type: 'GET',
-		//url: getFrameInstanceIDAjax.url,
-		url: getFrameInstanceIDAjax.url //remove "," by wyu
+		url: getFrameInstanceIDAjax.url,
 	}).done(function(data) {
 		console.log("getframeinstanceid: " + data);
 		var map = JSON.parse(data);
@@ -1678,8 +1672,7 @@ function addSection(sectionName)
 	var addSectionAjax = jsRoutes.controllers.Application.addSection(sectionName);
 	$.ajax({
 		type: 'GET',
-		//url: addSectionAjax.url,
-		url: addSectionAjax.url  //remove "," by wyu it's a typo?
+		url: addSectionAjax.url,
 	}).done(function(data) {
 		console.log(data);
 		if (data.length > 0) {
@@ -1687,6 +1680,7 @@ function addSection(sectionName)
 			loadFrameInstance(currFrameInstanceID, false);
 			$("#validatedButtonDiv").show();
 		}
+
 		closeDialogLoad();
 	})
 }
@@ -1701,8 +1695,7 @@ function removeSection(sectionName)
 	var removeSectionAjax = jsRoutes.controllers.Application.removeSection(sectionName, repeatIndex);
 	$.ajax({
 		type: 'GET',
-		//url: removeSectionAjax.url,
-		url: removeSectionAjax.url  //remove "," by wyu
+		url: removeSectionAjax.url,
 	}).done(function(data) {
 		console.log(data);
 		if (data.length > 0) {
@@ -1748,8 +1741,7 @@ function addElement(id)
 		var addElementAjax = jsRoutes.controllers.Application.addElement(id);
 		$.ajax({
 			type: 'GET',
-			//url: addElementAjax.url,
-			url: addElementAjax.url //remove "," by wyu
+			url: addElementAjax.url,
 		}).done(function(data) {
 			console.log(data);
 			if (data.length > 0) {
@@ -1778,8 +1770,7 @@ function removeElement(id)
 			var removeElementAjax = jsRoutes.controllers.Application.removeElement(elementID, id);
 			$.ajax({
 				type: 'GET',
-				//url: removeElementAjax.url,
-				url: removeElementAjax.url //remove "," by wyu
+				url: removeElementAjax.url,
 			}).done(function(data) {
 				console.log(data);
 				if (data.length > 0) {
@@ -1837,8 +1828,6 @@ function loadCRFData(elementList)
 
 		gridData[i] = row;
 		gridData2[i] = row;
-		console.log("row for section:" + row["section"] );
-		console.log("repeatNumber=" + element["repeatNumber"]);
 		console.log(row["elementID"] + ", " + row["element"] + ", " + row["elementHTMLID"]);
 	}
 
@@ -1871,8 +1860,7 @@ function clearElement()
 		var clearElementAjax = jsRoutes.controllers.Application.clearElement(elementID, elementHTMLID);
 		$.ajax({
 			type: 'GET',
-			//url: clearElementAjax.url,
-			url: clearElementAjax.url  //remove "," by wyu
+			url: clearElementAjax.url,
 		}).done(function(data) {
 			var dataObj = JSON.parse(data);
 			frameInstanceData = dataObj[0];
@@ -1922,8 +1910,7 @@ function clearValue(valueHTMLID)
 	var clearElementAjax = jsRoutes.controllers.Application.clearValue(valueHTMLID);
 	$.ajax({
 		type: 'GET',
-		//url: clearElementAjax.url,
-		url: clearElementAjax.url  //remove "," by wyu
+		url: clearElementAjax.url,
 	}).done(function(data) {
 		var dataObj = JSON.parse(data);
 		frameInstanceData = dataObj[0];
@@ -1974,8 +1961,7 @@ function clearAll()
 	var clearAllAjax = jsRoutes.controllers.Application.clearAll();
 	$.ajax({
 		type: 'GET',
-		//url: clearAllAjax.url,
-		url: clearAllAjax.url  //remove "," by wyu
+		url: clearAllAjax.url,
 		//async: false
 	}).done(function(data) {
 		highlightRangeList = undefined;
@@ -2858,11 +2844,11 @@ function toggleTokenSelect()
     }
 })(jQuery);
 
-function docValidated() {
-    var docValidatedAjax = jsRoutes.controllers.Application.docValidated();
+function frameInstanceValidated() {
+    var frameInstanceValidatedAjax = jsRoutes.controllers.Application.frameInstanceValidated();
 	$.ajax({
 		type: 'GET',
-		url: docValidatedAjax.url
+		url: frameInstanceValidatedAjax.url
 	}).done(function(data) {
 		$('#docListBox font').css("background-color", "#32CD32");
 

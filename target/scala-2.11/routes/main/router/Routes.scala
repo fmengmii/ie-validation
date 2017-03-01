@@ -1,7 +1,7 @@
 
 // @GENERATOR:play-routes-compiler
-// @SOURCE:/home/wyu/workspace-luna/ie-validation-github-dev/conf/routes
-// @DATE:Fri Feb 24 11:31:46 PST 2017
+// @SOURCE:/home/wyu/workspace-luna/ie-validation-github-dev-BackUp-022417/conf/routes
+// @DATE:Tue Feb 28 10:30:01 PST 2017
 
 package router
 
@@ -69,7 +69,7 @@ class Routes(
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """get/frameinstance/id/$colNames<[^/]+>/$colValues<[^/]+>""", """controllers.Application.getFrameInstanceID(colNames:String, colValues:String)"""),
     ("""POST""", this.prefix, """controllers.Application.authenticate()"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """undo""", """controllers.Application.getHistory()"""),
-    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """validated""", """controllers.Application.docValidated()"""),
+    ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """validated""", """controllers.Application.frameInstanceValidated()"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """annotation""", """controllers.Application.annotIndex()"""),
     ("""GET""", this.prefix + (if(this.prefix.endsWith("/")) "" else "/") + """assets/$file<.+>""", """controllers.Assets.at(path:String = "/public", file:String)"""),
     Nil
@@ -522,15 +522,15 @@ class Routes(
   )
 
   // @LINE:38
-  private[this] lazy val controllers_Application_docValidated26_route = Route("GET",
+  private[this] lazy val controllers_Application_frameInstanceValidated26_route = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("validated")))
   )
-  private[this] lazy val controllers_Application_docValidated26_invoker = createInvoker(
-    Application_1.docValidated(),
+  private[this] lazy val controllers_Application_frameInstanceValidated26_invoker = createInvoker(
+    Application_1.frameInstanceValidated(),
     HandlerDef(this.getClass.getClassLoader,
       "router",
       "controllers.Application",
-      "docValidated",
+      "frameInstanceValidated",
       Nil,
       "GET",
       """""",
@@ -732,9 +732,9 @@ class Routes(
       }
   
     // @LINE:38
-    case controllers_Application_docValidated26_route(params) =>
+    case controllers_Application_frameInstanceValidated26_route(params) =>
       call { 
-        controllers_Application_docValidated26_invoker.call(Application_1.docValidated())
+        controllers_Application_frameInstanceValidated26_invoker.call(Application_1.frameInstanceValidated())
       }
   
     // @LINE:41

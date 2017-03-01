@@ -1,7 +1,7 @@
 
 // @GENERATOR:play-routes-compiler
-// @SOURCE:/home/wyu/workspace-luna/ie-validation-github-dev/conf/routes
-// @DATE:Fri Feb 24 11:31:46 PST 2017
+// @SOURCE:/home/wyu/workspace-luna/ie-validation-github-dev-BackUp-022417/conf/routes
+// @DATE:Tue Feb 28 10:30:01 PST 2017
 
 import play.api.mvc.{ QueryStringBindable, PathBindable, Call, JavascriptLiteral }
 import play.core.routing.{ HandlerDef, ReverseRouteContext, queryString, dynamicString }
@@ -65,6 +65,12 @@ package controllers {
       Call("GET", _prefix + { _defaultPrefix } + "get/project/" + implicitly[PathBindable[Int]].unbind("projID", projID))
     }
   
+    // @LINE:38
+    def frameInstanceValidated(): Call = {
+      import ReverseRouteContext.empty
+      Call("GET", _prefix + { _defaultPrefix } + "validated")
+    }
+  
     // @LINE:24
     def clearAll(): Call = {
       import ReverseRouteContext.empty
@@ -99,12 +105,6 @@ package controllers {
     def clearElement(elementID:String, htmlID:String): Call = {
       import ReverseRouteContext.empty
       Call("GET", _prefix + { _defaultPrefix } + "clear/element/" + implicitly[PathBindable[String]].unbind("elementID", dynamicString(elementID)) + "/" + implicitly[PathBindable[String]].unbind("htmlID", dynamicString(htmlID)))
-    }
-  
-    // @LINE:38
-    def docValidated(): Call = {
-      import ReverseRouteContext.empty
-      Call("GET", _prefix + { _defaultPrefix } + "validated")
     }
   
     // @LINE:37

@@ -14,13 +14,18 @@ delete from element_value;
 delete from frame;
 alter table frame AUTO_INCREMENT = 1;
 
+delete from frame_section;
+
 
 
 # project only
+delete from project;
+alter table project AUTO_INCREMENT = 1;
+
 delete from crf_project;
 alter table crf_project AUTO_INCREMENT = 1;
 
-delete from crf_project_frame_instance;
+delete from project_frame_instance;
 
 delete from frame_instance;
 alter table frame_instance AUTO_INCREMENT = 1;
@@ -43,6 +48,10 @@ delete from frame_instance_section_repeat;
 delete from annotation;
 alter table annotation AUTO_INCREMENT = 1;
 
+delete from frame_instance_status;
+
+delete from document_status;
+
 
 
 
@@ -55,5 +64,5 @@ alter table provenance AUTO_INCREMENT = 1;
 delete from slot;
 alter table slot AUTO_INCREMENT = 1;
 
-delete from value;
-alter table value AUTO_INCREMENT = 1;
+delete from `value`;
+alter table `value` AUTO_INCREMENT = 1;

@@ -19,6 +19,7 @@ public class DataAccess
 	private Gson gson;
 	private CRFReader crfReader;
 	private String schema;
+	private String docSchema;
 	//private String rq;
 	private List<Map<String, Object>> sectionList;
 	private int crfID;
@@ -32,9 +33,10 @@ public class DataAccess
 	*/
 
 
-	public DataAccess(String schema, List<Map<String, Object>> sectionList)
+	public DataAccess(String schema, String docSchema, List<Map<String, Object>> sectionList)
 	{
 		this.schema = schema;
+		this.docSchema = docSchema;
 		this.sectionList = sectionList;
 		gson = new Gson();
 		crfReader = new CRFReader(schema);
@@ -198,7 +200,6 @@ public class DataAccess
 
 	public Map<String, String> getDocument(String docNamespace, String docTable, long docID) throws SQLException
 	{
-		// *** modify some code by wyu for trace frameInstanceStatuc ***
 		// new code
 		clearHistory(); // clears whenever you load a new document
 		String docText = "";
@@ -234,10 +235,13 @@ public class DataAccess
 		if( rs.next() ) {
 			docMap.put("frameInstanceStatus", String.valueOf(rs.getInt(1)));
 		}
-		System.out.println("getDocument: frameInstanceStatus=" + docMap.get("frameInstanceStatus"));
+		Logger.info("getDocument: frameInstanceStatus=" + docMap.get("frameInstanceStatus"));
 
-		System.out.println("select " + docTextColumn + " from " + docTable + " where " + docKey + " = " + docID);
-		rs = stmt.executeQuery("select " + docTextColumn + " from " + docTable + " where " + docKey + " = " + docID);
+		System.out.println("select " + docTextColumn + " from " + docSchema + docTable + " where " + docKey + " = " + docID);
+
+		//rs = stmt.executeQuery("select " + docTextColumn + " from " + schema + docTable + " where " + docKey + " = " + docID);
+		rs = stmt.executeQuery("select " + docTextColumn + " from " + docSchema + docTable + " where " + docKey + " = " + docID);
+
 		if (rs.next()) {
 			docText = rs.getString(1);
 			//docText = StringEscapeUtils.escapeHtml4(docText);
@@ -255,7 +259,7 @@ public class DataAccess
 		stmt2.close();
 		conn2.close();
 
-		//Map<String, String> docMap = new HashMap<String, String>();
+
 		docMap.put("docName", docName);
 		docMap.put("docText", docText + "\n\n");
 		docMap.put("docFeatures", docFeaturesStr);
@@ -1636,11 +1640,15 @@ public class DataAccess
 
 		strBlder.insert(0, "(");
 		strBlder.append(")");
-
+		System.out.println("getDocumentAnnotation: strBlder=" + strBlder.toString());
 		//get annotations for these documents
 		List<Map<String, Object>> annotList = new ArrayList<Map<String, Object>>();
-		rs = stmt.executeQuery("select distinct start, " + rq + "end" + rq + ", annotation_type from " + schema + "annotation where document_namespace = '" + docNamespace + "' and "
-			+ "document_table = '" + docTable + "' and document_id = " + docID + " and score > " + annotThreshold + " and annotation_type in " + strBlder.toString() + " order by start");
+		//rs = stmt.executeQuery("select distinct start, " + rq + "end" + rq + ", annotation_type from " + schema + "annotation where document_namespace = '" + docNamespace + "' and "
+		rs = stmt.executeQuery("select start, " + rq + "end" + rq + ", annotation_type from "
+				+ schema + "annotation where document_namespace = '" + docNamespace + "' and "
+				+ "document_table = '" + docTable + "' and document_id = " + docID
+				+ " and score > " + annotThreshold + " and annotation_type in "
+				+ strBlder.toString() + " order by start");
 
 		while (rs.next()) {
 			long start = rs.getLong(1);
@@ -1789,9 +1797,9 @@ public class DataAccess
 			strBlder.append(colNames[i] + " = " + apos + colValues[i] + apos);
 		}
 
-		System.out.println("select " + docIDCol + " from " + docTable + " where " + strBlder.toString());
+		System.out.println("select " + docIDCol + " from " + docSchema + docTable + " where " + strBlder.toString());
 
-		rs = stmt2.executeQuery("select " + docIDCol + " from " + docTable + " where " + strBlder.toString());
+		rs = stmt2.executeQuery("select " + docIDCol + " from " + docSchema + docTable + " where " + strBlder.toString());
 		List<Long> docIDList = new ArrayList<Long>();
 		while (rs.next()) {
 			long docID = rs.getLong(1);
@@ -1838,7 +1846,105 @@ public class DataAccess
 
 		return lastIndex;
 	}
+	/*
+	public boolean updateValidationStatus(int frameInstanceID)
+	{
+		try {
+			Connection conn = DB.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement("update document_status set status = 1 where document_id = ? and status = 0");
+			PreparedStatement pstmt2 = conn.prepareStatement("update annotation set provenance = 'validation-tool' where document_id = ? and provenance = 'msa-ie'");
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery("select document_id from "
+					+ schema + "frame_instance_document where frame_instance_id = " + frameInstanceID);
 
+
+			while (rs.next()) {
+				long docID = rs.getLong(1);
+				pstmt.setLong(1, docID);
+				pstmt.execute();
+
+				pstmt2.setLong(1, docID);
+				pstmt2.execute();
+			}
+
+			pstmt.close();
+			stmt.close();
+			conn.close();
+
+			return true;
+		}
+		catch(SQLException e)
+		{
+			Logger.error("updateValidationStatus got error: " + e.toString() );
+			return false;
+		}
+	}*/
+
+	/*
+	public boolean updateValidationStatus ( int docID ) {
+		try {
+			Connection conn = DB.getConnection();
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery("select frame_instance_id from "
+					+ schema + "frame_instance_document where document_id = " + docID);
+			int frameInstanceID = 0;
+			if (rs.next()) {
+				frameInstanceID = rs.getInt(1);
+			}
+			if( frameInstanceID == 0 ) {
+				return false;
+			}
+
+			//update frame_instance_status table
+			stmt.executeUpdate("update " + schema + "frame_instance_status set status = 1 "
+					+ "where frame_instance_id = " + frameInstanceID);
+
+			ResultSet rsFrameInstanceDocument = stmt.executeQuery("select "
+					+ "document_namespace, document_table from " + schema
+					+ "frame_instance_document where document_id = " + docID
+					+ " and frame_instance_id = "  + frameInstanceID );
+
+			if( rsFrameInstanceDocument.next() ) {
+				//update document_status table
+				String docNamespace = rsFrameInstanceDocument.getString(1);
+				String docTable = rsFrameInstanceDocument.getString(2);
+				ResultSet rsDocStatus = stmt.executeQuery("select status from "
+					+ schema + "document_status where document_id = " + docID
+					+ " and document_namespace = '" + docNamespace
+						+ "' and document_table = '" + docTable + "'" );
+
+				if( rsDocStatus.next() ) {
+					int status = rsDocStatus.getInt(1);
+					//Logger.info("docStatus return = " + status );
+					if( status != 1 ) {
+						stmt.executeUpdate("update " + schema + "document_status "
+							+ "set status = 1 where document_id = " + docID
+							+ " and document_namespace = " + docNamespace
+							+ " and document_table = " + docTable );
+					}
+				} else {
+					PreparedStatement preparedStat = conn.prepareStatement(
+							"insert into " + schema + "document_status ("
+							+ "document_namespace, document_table, document_id, status ) "
+							+ "values(?, ?, ?, ?) " );
+					preparedStat.setString(1, docNamespace);
+					preparedStat.setString(2, docTable);
+					preparedStat.setInt( 3, docID);
+					preparedStat.setInt(4, 1);
+					preparedStat.execute();
+				}
+			}
+
+			conn.close();
+			return true;
+		} catch ( SQLException ex ) {
+			Logger.error("updateValidationStatus got error: " + ex.toString() );
+			return false;
+		}
+	}
+	*/
+
+    /* modify by wyu by adding user name
 	public boolean updateValidationStatus ( int docID, String userName ) {
 		Logger.info("DataAccess.updateValidationStatus coming...for docID=" + docID);
 		try {

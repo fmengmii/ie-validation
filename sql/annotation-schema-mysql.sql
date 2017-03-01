@@ -31,16 +31,16 @@ CREATE TABLE `annotation` (
   `annotation_type` varchar(500) DEFAULT NULL,
   `start` int(11) DEFAULT NULL,
   `end` int(11) DEFAULT NULL,
-    `value` text,
-    `features` text,
-    `provenance` varchar(500) DEFAULT NULL,
-    `score` double DEFAULT '1',
-    KEY `idx_annot_type` (`annotation_type`(255)),
-    KEY `idx_annot_start` (`start`),
-    KEY `idx_prov` (`provenance`(100)),
-    KEY `idx_id` (`id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  /*!40101 SET character_set_client = @saved_cs_client */;
+  `value` text,
+  `features` text,
+  `provenance` varchar(500) DEFAULT NULL,
+  `score` double DEFAULT '1',
+  KEY `idx_annot_type` (`annotation_type`(255)),
+  KEY `idx_annot_start` (`start`),
+  KEY `idx_prov` (`provenance`(100)),
+  KEY `idx_id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
   --
   -- Table structure for table `crf`
@@ -76,7 +76,6 @@ CREATE TABLE `annotation` (
   --
   -- Table structure for table `crf_project`
   --
-
 
 DROP TABLE IF EXISTS `crf_project`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -198,6 +197,7 @@ CREATE TABLE `element_value` (
   PRIMARY KEY (`element_id`,`value_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
 --
 -- Table structure for table `frame`
 --
