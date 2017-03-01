@@ -495,21 +495,16 @@ public class Application extends Controller
 			if( matcher.find() ) {
 				lastFrameInstanceID = Integer.parseInt(matcher.group(1));
 				lastFrameInstanceIndex = Integer.parseInt(matcher.group(2));
-				Logger.info("Application.loadProject: lastFrameInstanceID=" + lastFrameInstanceID);
-				Logger.info("Application.loadProject: lastFrameInstanceIndex=" + lastFrameInstanceIndex);
 			}
 			// **** end of add
     		int crfID = da.getCRFID(projID);
     		session("crfID", Integer.toString(crfID));
 
     		//Load the CRF into the view
-			Logger.info("loadProject: before da.loadCRF, sectionListSize=" + sectionList.size() );
     		//String crfStr = da.loadCRF(projID, -1);
-			Logger.info("loadProject: before json, sectionListSize=" + sectionList.size() );
 			String crfStr = da.loadCRF(projID, lastFrameInstanceID); //modify by wyu for repeat number
 
     		String sectionListStr = gson.toJson(sectionList);
-			Logger.info("loadProject: sectionListStr=" + sectionListStr.substring(0, 60));
     		session("sectionList", sectionListStr);
     		session("frameInstanceID", "-1");
 
