@@ -70,3 +70,8 @@
 .alert p{
     margin: 0 0 10px;
 }
+
+.userName {
+    float: right;
+    color: #2885D5;
+}
