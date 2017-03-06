@@ -136,3 +136,14 @@ run -Dhttp.port=9010
 clean
 compile
 run -Dhttp.port=9010
+exit
+clean
+compile
+run -Dhttp.port=9010
+clean]
+clean
+compile
+run -Dhttp.port=9010
+clean
+compile
+run -Dhttp.port=9010

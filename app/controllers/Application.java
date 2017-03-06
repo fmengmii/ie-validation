@@ -884,11 +884,15 @@ public class Application extends Controller
 		sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
 		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
 
+		if( frameInstanceID == 0 ) {
+			return ok("Error: The frameInstanceID is 0.");
+		}
 
 		if( da.updateValidationStatus(frameInstanceID, un)) {
 			int projID = Integer.parseInt(session("projID"));
 			try {
 				String frameList = da.loadProject(un, projID);
+				Logger.info("frameInstanceValidated: return ok.");
 				return ok("[" + frameList + "]");
 			}catch(Exception e) {
     			e.printStackTrace();
@@ -896,6 +900,7 @@ public class Application extends Controller
     		}
 			//return ok("Success:This document has been validated successfully.");
 		} else {
+			Logger.info("frameInstanceValidated: DataAccess return false.");
 			return ok("Error:There is an error during updating validation status.");
 		}
 
