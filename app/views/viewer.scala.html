@@ -297,7 +297,9 @@
 	        	<div id="docSplitPane" style="height:100%; width:100%; overflow:auto" >
 	        		<div id="docDiv" style="height:100%;width:100%;overflow:hidden">
 		        		<div id='docFeatures'></div>
-						<textarea id='docPanel' readonly style="height:90%;width:90%" onclick=docPanelSelect(event) onmouseup="onRightClick(event)"></textarea>
+						<!--<textarea id='docPanel' readonly style="height:90%;width:90%" onclick=docPanelSelect(event) onmouseup="onRightClick(event)"></textarea>-->
+						<textarea id='docPanel' readonly style="height:90%;width:90%" ondblclick="alert('dblOK')"
+								    onmousemove="onRightClick(event)"></textarea>
 						<!--<textarea id='docPanel' readonly style="height:90%;width:90%" onclick=docPanelSelect(event);></textarea>-->
 						<div id="validatedButtonDiv">
 							<!--<button type="button" onclick="location.href='/validated'" id="validatedButton" value="validated">Validated</button>-->

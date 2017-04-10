@@ -42,40 +42,41 @@ CREATE TABLE `annotation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
-  --
-  -- Table structure for table `crf`
-  --
 
-  DROP TABLE IF EXISTS `crf`;
-  /*!40101 SET @saved_cs_client     = @@character_set_client */;
-  /*!40101 SET character_set_client = utf8 */;
-  CREATE TABLE `crf` (
-    `crf_id` int(11) NOT NULL AUTO_INCREMENT,
-    `name` varchar(100) NOT NULL,
-    `html_id` varchar(500) NOT NULL,
-    `frame_id` int(11) DEFAULT NULL,
-    PRIMARY KEY (`crf_id`),
-    UNIQUE KEY `name_UNIQUE` (`name`)
-  ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-  /*!40101 SET character_set_client = @saved_cs_client */;
+--
+-- Table structure for table `crf`
+--
 
-  --
-  -- Table structure for table `crf_element`
-  --
+DROP TABLE IF EXISTS `crf`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `crf` (
+  `crf_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `html_id` varchar(500) NOT NULL,
+  `frame_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`crf_id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-  DROP TABLE IF EXISTS `crf_element`;
-  /*!40101 SET @saved_cs_client     = @@character_set_client */;
-  /*!40101 SET character_set_client = utf8 */;
-  CREATE TABLE `crf_element` (
-    `crf_id` int(11) NOT NULL,
-    `element_id` int(11) NOT NULL,
-    PRIMARY KEY (`crf_id`,`element_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  /*!40101 SET character_set_client = @saved_cs_client */;
+--
+-- Table structure for table `crf_element`
+--
 
-  --
-  -- Table structure for table `crf_project`
-  --
+DROP TABLE IF EXISTS `crf_element`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `crf_element` (
+  `crf_id` int(11) NOT NULL,
+  `element_id` int(11) NOT NULL,
+  PRIMARY KEY (`crf_id`,`element_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `crf_project`
+--
 
 DROP TABLE IF EXISTS `crf_project`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -101,7 +102,7 @@ CREATE TABLE `crf_section` (
   `crf_id` int(11) NOT NULL,
   `repeat` int(11) DEFAULT NULL,
   PRIMARY KEY (`section_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,7 +124,6 @@ INSERT INTO data_type (name) VALUES ('string');
 INSERT INTO data_type (name) VALUES ('date');
 INSERT INTO data_type (name) VALUES ('categorical');
 
-
 --
 -- Table structure for table `document_status`
 --
@@ -141,6 +141,23 @@ CREATE TABLE `document_status` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `documents`
+--
+
+DROP TABLE IF EXISTS `documents`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `documents` (
+  `document_id` bigint(20) NOT NULL,
+  `name` varchar(500) DEFAULT NULL,
+  `doc_text` text,
+  `date` datetime DEFAULT NULL,
+  `author` varchar(100) DEFAULT NULL,
+  `mrn` int(11) DEFAULT NULL,
+  PRIMARY KEY (`document_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `element`
@@ -160,12 +177,13 @@ CREATE TABLE `element` (
   `slot_id` int(11) DEFAULT NULL,
   `primary_key` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`element_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `element_type`
 --
+
 DROP TABLE IF EXISTS `element_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -183,7 +201,6 @@ INSERT INTO element_type (element_type_name) VALUES ('checkbox');
 INSERT INTO element_type (element_type_name) VALUES ('date');
 INSERT INTO element_type (element_type_name) VALUES ('select');
 INSERT INTO element_type (element_type_name) VALUES ('textarea');
-
 --
 -- Table structure for table `element_value`
 --
@@ -197,6 +214,8 @@ CREATE TABLE `element_value` (
   PRIMARY KEY (`element_id`,`value_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+
 
 --
 -- Table structure for table `frame`
@@ -246,174 +265,182 @@ CREATE TABLE `frame_instance_annotation` (
   `features` text,
   `provenance` varchar(500) DEFAULT NULL,
   `score` double DEFAULT '1',
-    PRIMARY KEY (`id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  /*!40101 SET character_set_client = @saved_cs_client */;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-  --
-  -- Table structure for table `frame_instance_data`
-  --
+--
+-- Table structure for table `frame_instance_data`
+--
 
-  DROP TABLE IF EXISTS `frame_instance_data`;
-  /*!40101 SET @saved_cs_client     = @@character_set_client */;
-  /*!40101 SET character_set_client = utf8 */;
-  CREATE TABLE `frame_instance_data` (
-    `frame_instance_id` int(11) NOT NULL,
-    `slot_id` int(11) NOT NULL,
-    `value` text,
-    `section_slot_number` int(11) DEFAULT '0',
-    `element_slot_number` int(11) DEFAULT '0',
-    `document_namespace` varchar(500) DEFAULT NULL,
-    `document_table` varchar(500) DEFAULT NULL,
-    `document_id` int(11) DEFAULT NULL,
-    `annotation_id` int(11) DEFAULT NULL,
-    `provenance` varchar(500) DEFAULT NULL,
-    `element_id` int(11) DEFAULT NULL,
-    `v_scroll_pos` int(11) DEFAULT NULL,
-    `scroll_height` int(11) DEFAULT NULL,
-    `scroll_width` int(11) DEFAULT NULL
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `frame_instance_data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `frame_instance_data` (
+  `frame_instance_id` int(11) NOT NULL,
+  `slot_id` int(11) NOT NULL,
+  `value` text,
+  `section_slot_number` int(11) DEFAULT '0',
+  `element_slot_number` int(11) DEFAULT '0',
+  `document_namespace` varchar(500) DEFAULT NULL,
+  `document_table` varchar(500) DEFAULT NULL,
+  `document_id` int(11) DEFAULT NULL,
+  `annotation_id` int(11) DEFAULT NULL,
+  `provenance` varchar(500) DEFAULT NULL,
+  `element_id` int(11) DEFAULT NULL,
+  `v_scroll_pos` int(11) DEFAULT NULL,
+  `scroll_height` int(11) DEFAULT NULL,
+  `scroll_width` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-  --
-  -- Table structure for table `frame_instance_document`
-  --
+--
+-- Table structure for table `frame_instance_document`
+--
 
-  DROP TABLE IF EXISTS `frame_instance_document`;
-  /*!40101 SET @saved_cs_client     = @@character_set_client */;
-  /*!40101 SET character_set_client = utf8 */;
-  CREATE TABLE `frame_instance_document` (
-    `frame_instance_id` int(11) DEFAULT NULL,
-    `document_id` int(11) DEFAULT NULL,
-    `document_table` varchar(500) DEFAULT NULL,
-    `document_namespace` varchar(500) DEFAULT NULL,
-    `document_key` varchar(500) DEFAULT NULL,
-    `document_text_column` varchar(500) DEFAULT NULL,
-    `document_name` varchar(500) DEFAULT NULL,
-    `document_order` int(11) DEFAULT NULL,
-    `document_features` varchar(500) DEFAULT NULL
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `frame_instance_document`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `frame_instance_document` (
+  `frame_instance_id` int(11) DEFAULT NULL,
+  `document_id` int(11) DEFAULT NULL,
+  `document_table` varchar(500) DEFAULT NULL,
+  `document_namespace` varchar(500) DEFAULT NULL,
+  `document_key` varchar(500) DEFAULT NULL,
+  `document_text_column` varchar(500) DEFAULT NULL,
+  `document_name` varchar(500) DEFAULT NULL,
+  `document_order` int(11) DEFAULT NULL,
+  `document_features` varchar(500) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-  --
-  -- Table structure for table `frame_instance_document_history`
-  --
+--
+-- Table structure for table `frame_instance_document_history`
+--
 
-  DROP TABLE IF EXISTS `frame_instance_document_history`;
-  /*!40101 SET @saved_cs_client     = @@character_set_client */;
-  /*!40101 SET character_set_client = utf8 */;
-  CREATE TABLE `frame_instance_document_history` (
-    `frame_instance_id` int(11) DEFAULT NULL,
-    `document_namespace` varchar(500) DEFAULT NULL,
-    `document_table` varchar(500) DEFAULT NULL,
-    `document_id` int(11) DEFAULT NULL
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `frame_instance_document_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `frame_instance_document_history` (
+  `frame_instance_id` int(11) DEFAULT NULL,
+  `document_namespace` varchar(500) DEFAULT NULL,
+  `document_table` varchar(500) DEFAULT NULL,
+  `document_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-  --
-  -- Table structure for table `frame_instance_element_repeat`
-  --
+--
+-- Table structure for table `frame_instance_element_repeat`
+--
 
-  DROP TABLE IF EXISTS `frame_instance_element_repeat`;
-  /*!40101 SET @saved_cs_client     = @@character_set_client */;
-  /*!40101 SET character_set_client = utf8 */;
-  CREATE TABLE `frame_instance_element_repeat` (
-    `frame_instance_id` int(11) NOT NULL,
-    `element_id` int(11) DEFAULT NULL,
-    `section_slot_num` int(11) DEFAULT NULL,
-    `repeat_num` int(11) DEFAULT NULL
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `frame_instance_element_repeat`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `frame_instance_element_repeat` (
+  `frame_instance_id` int(11) NOT NULL,
+  `element_id` int(11) DEFAULT NULL,
+  `section_slot_num` int(11) DEFAULT NULL,
+  `repeat_num` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-  --
-  -- Table structure for table `frame_instance_section_repeat`
-  --
-  DROP TABLE IF EXISTS `frame_instance_section_repeat`;
-  /*!40101 SET @saved_cs_client     = @@character_set_client */;
-  /*!40101 SET character_set_client = utf8 */;
-  CREATE TABLE `frame_instance_section_repeat` (
-    `frame_instance_id` int(11) NOT NULL,
-    `section_id` int(11) DEFAULT NULL,
-    `repeat_num` int(11) DEFAULT NULL
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  /*!40101 SET character_set_client = @saved_cs_client */;
+--
+-- Table structure for table `frame_instance_section_repeat`
+--
 
-  --
-  -- Table structure for table `frame_instance_status`
-  --
+DROP TABLE IF EXISTS `frame_instance_section_repeat`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `frame_instance_section_repeat` (
+  `frame_instance_id` int(11) NOT NULL,
+  `section_id` int(11) DEFAULT NULL,
+  `repeat_num` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-  DROP TABLE IF EXISTS `frame_instance_status`;
-  /*!40101 SET @saved_cs_client     = @@character_set_client */;
-  /*!40101 SET character_set_client = utf8 */;
-  CREATE TABLE `frame_instance_status` (
-    `frame_instance_id` bigint(20) NOT NULL,
-    `status` int(11) DEFAULT NULL,
-    `user_id` int(11) DEFAULT NULL,
-    PRIMARY KEY (`frame_instance_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-  /*!40101 SET character_set_client = @saved_cs_client */;
+--
+-- Table structure for table `frame_instance_status`
+--
 
-  --
-  -- Table structure for table `frame_slot`
-  --
+DROP TABLE IF EXISTS `frame_instance_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `frame_instance_status` (
+  `frame_instance_id` bigint(20) NOT NULL,
+  `status` int(11) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`frame_instance_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-  DROP TABLE IF EXISTS `frame_slot`;
-  /*!40101 SET @saved_cs_client     = @@character_set_client */;
-  /*!40101 SET character_set_client = utf8 */;
-  CREATE TABLE `frame_slot` (
-    `frame_id` int(11) NOT NULL,
-    `slot_id` int(11) NOT NULL,
-    PRIMARY KEY (`frame_id`,`slot_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  /*!40101 SET character_set_client = @saved_cs_client */;
+--
+-- Table structure for table `frame_slot`
+--
 
-  --
-  -- Table structure for table `history`
-  --
-  DROP TABLE IF EXISTS `history`;
-  /*!40101 SET @saved_cs_client     = @@character_set_client */;
-  /*!40101 SET character_set_client = utf8 */;
-  CREATE TABLE `history` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `act` varchar(255) DEFAULT NULL,
-    `html_id` varchar(255) DEFAULT NULL,
-    `extra_information` varchar(1000) DEFAULT NULL,
-    PRIMARY KEY (`id`)
-  ) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=latin1;
-  /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `frame_slot`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `frame_slot` (
+  `frame_id` int(11) NOT NULL,
+  `slot_id` int(11) NOT NULL,
+  PRIMARY KEY (`frame_id`,`slot_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-  --
-  -- Table structure for table `project`
-  --
 
-  DROP TABLE IF EXISTS `project`;
-  /*!40101 SET @saved_cs_client     = @@character_set_client */;
-  /*!40101 SET character_set_client = utf8 */;
-  CREATE TABLE `project` (
-    `project_id` int(11) NOT NULL AUTO_INCREMENT,
-    `name` varchar(500) DEFAULT NULL,
-    PRIMARY KEY (`project_id`)
-  ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
-  /*!40101 SET character_set_client = @saved_cs_client */;
-  -- comment
+--
+-- Table structure for table `history`
+--
 
-  --
-  -- Table structure for table `project_frame_instance`
-  --
+DROP TABLE IF EXISTS `history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `act` varchar(255) DEFAULT NULL,
+  `html_id` varchar(255) DEFAULT NULL,
+  `extra_information` varchar(1000) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-  DROP TABLE IF EXISTS `project_frame_instance`;
-  /*!40101 SET @saved_cs_client     = @@character_set_client */;
-  /*!40101 SET character_set_client = utf8 */;
-  CREATE TABLE `project_frame_instance` (
-    `project_id` int(11) NOT NULL,
-    `frame_instance_id` int(11) NOT NULL,
-    PRIMARY KEY (`project_id`,`frame_instance_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  /*!40101 SET character_set_client = @saved_cs_client */;
+--
+-- Table structure for table `index_lungrads`
+--
 
-  --
-  -- Table structure for table `provenance`
-  --
+
+--
+-- Table structure for table `project`
+--
+
+DROP TABLE IF EXISTS `project`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `project` (
+  `project_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`project_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `project_frame_instance`
+--
+
+DROP TABLE IF EXISTS `project_frame_instance`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `project_frame_instance` (
+  `project_id` int(11) NOT NULL,
+  `frame_instance_id` int(11) NOT NULL,
+  PRIMARY KEY (`project_id`,`frame_instance_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `provenance`
+--
+
 DROP TABLE IF EXISTS `provenance`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -439,7 +466,7 @@ CREATE TABLE `slot` (
   `slot_type` int(11) NOT NULL,
   `cond` text,
   PRIMARY KEY (`slot_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=250 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=256 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -459,6 +486,7 @@ CREATE TABLE `tablename_lookup` (
 --
 -- Table structure for table `user`
 --
+
 DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -470,19 +498,6 @@ CREATE TABLE `user` (
   `pw` text,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `validated_document`
---
-
-DROP TABLE IF EXISTS `validated_document`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `validated_document` (
-  `document_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`document_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -498,7 +513,7 @@ CREATE TABLE `value` (
   `slot_id` int(11) DEFAULT NULL,
   `html_id` varchar(500) NOT NULL,
   PRIMARY KEY (`value_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=250 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=256 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -510,6 +525,4 @@ CREATE TABLE `value` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-02-02 19:59:32
-
-
+-- Dump completed on 2017-03-10 15:35:00

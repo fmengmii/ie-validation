@@ -32,6 +32,11 @@ CREATE TABLE `final` (
   `valence` tinyint(4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `filter` (
+  `profile_id` bigint(20) NOT NULL,
+  `target_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`profile_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gen_msa_status`
