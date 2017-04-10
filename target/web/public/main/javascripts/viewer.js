@@ -515,13 +515,14 @@ function highlightByWord() {
 
 // clears whatever content the user double right-clicked on
 function onRightClick(event) {
+  console.log("onRightClick coming in...");
   // the following three lines will hide the right-click menu
   document.getElementById("docPanel").oncontextmenu = function() {
     return false;
   }
   console.log(history);
   if(event.button == 2) {
-    // console.log("right click worked");
+    //console.log("right click worked");
     // text = $("#dataElementTable").jqxDataTable('getSelection');
     // text = window.getSelection().toString();
     var text = "";
@@ -532,7 +533,6 @@ function onRightClick(event) {
     } else if (document.selection && document.selection.type != "Control") {
         text = document.selection.createRange().text;
     }
-
     // console.log(annotList);
     // var temp = document.getElementsByTagName("html");
     // console.log(temp);
