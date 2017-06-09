@@ -35,7 +35,9 @@ GET		/get/frameinstance/id/:colNames/:colValues			controllers.Application.getFra
 #new stuff
 POST    /                                                   controllers.Application.authenticate()
 GET     /undo                                               controllers.Application.getHistory()
-GET     /validated                                          controllers.Application.frameInstanceValidated()                                         controllers.Application.docValidated()
+GET     /validated                                          controllers.Application.frameInstanceValidated()
+#frame instance lock
+GET     /frameinstancelock/:frameInstanceID                 controllers.Application.frameInstanceLocked(frameInstanceID: Int)
 
 # Annotation viewer
 GET /annotation												controllers.Application.annotIndex()

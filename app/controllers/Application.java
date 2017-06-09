@@ -41,6 +41,7 @@ public class Application extends Controller
 
     private String un;
     private String pw;
+	private int crfID;
 
 
     /*public String getUsername() {
@@ -68,9 +69,20 @@ public class Application extends Controller
     }*/
 
 
-    @Security.Authenticated(Secured.class)
+    //@Security.Authenticated(Secured.class)
     public Result logout() {
-        //System.out.println("logout test");
+		try {
+			List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
+			sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
+			DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
+			String username = session("userName");
+			//Logger.info("Logout: username="+username);
+			da.removeAllFrameInstanceLockForUser(session("userName"));
+
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
         session().clear();
         // flash("success", "youve.been.logged.out");
         // noCache(response());
@@ -308,7 +320,7 @@ public class Application extends Controller
 	    	DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
 	    	Map<String, String> docMap = da.getDocument(docNamespace, docTable, Long.parseLong(docID));
 
-	    	int crfID = Integer.parseInt(session("crfID"));
+	    	int crfID =  Integer.parseInt(session("crfID"));
 	    	List<Map<String, Object>> annotList = da.getDocumentAnnotations(docNamespace, docTable, Long.parseLong(docID), annotThreshold, crfID);
 
 	    	resultMap.put("docName", docMap.get("docName"));
@@ -436,7 +448,6 @@ public class Application extends Controller
     {
     	String crfStr = "";
     	int frameInstanceID = Integer.parseInt(session("frameInstanceID"));
-
     	if (frameInstanceID > -1) {
 	    	try {
 	    		int crfID = Integer.parseInt(session("crfID"));
@@ -445,10 +456,8 @@ public class Application extends Controller
 		    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
 	    		CRFReader crfProc = new CRFReader(session("schemaName"));
 	    		crfStr = crfProc.addRemoveSection(crfID, frameInstanceID, sectionName, -1, sectionList);
-
 	    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
 	    		da.clearSection(frameInstanceID, sectionName, repeatIndex);
-
 	    		String sectionListStr = gson.toJson(sectionList);
 	    		session("sectionList", sectionListStr);
 	    	}
@@ -869,14 +878,11 @@ public class Application extends Controller
     }
 
 	public Result frameInstanceValidated() {
-
-		/*
 		if( session("docID") == null ) {
 			return ok("Error:The document didn't exist.");
 		}
-		*/
 
-		//int docID = Integer.parseInt(session("docID"));
+		long docID = Long.parseLong(session("docID"));
 		int frameInstanceID = Integer.parseInt(session("frameInstanceID"));
 
 		Logger.info("frameInstanceValidated: frameInstanceID=" + frameInstanceID);
@@ -887,8 +893,9 @@ public class Application extends Controller
 		if( frameInstanceID == 0 ) {
 			return ok("Error: The frameInstanceID is 0.");
 		}
+		//return ok("Success: The document(s) has been validated successfully.");
 
-		if( da.updateValidationStatus(frameInstanceID, un)) {
+		if( da.updateValidationStatus(docID, un)) {
 			int projID = Integer.parseInt(session("projID"));
 			try {
 				String frameList = da.loadProject(un, projID);
@@ -904,5 +911,24 @@ public class Application extends Controller
 			return ok("Error:There is an error during updating validation status.");
 		}
 
+	}
+
+	public Result frameInstanceLocked(int frameInstanceID) {
+		try {
+
+
+			List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
+			sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
+			DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
+			int timeout = Play.application().configuration().getInt("frameInstanceLockTimeout");
+			if (frameInstanceID == 0) {
+				return ok("{Error: The frameInstanceID is 0.}");
+			}
+			return ok("{\"Success\": \"" + (da.isInstanceLockedByOthers(frameInstanceID, session("userName"), timeout) ? "true" : "false")+"\"}");
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+		return ok("Error");
 	}
 }

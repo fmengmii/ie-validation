@@ -163,8 +163,9 @@
 			payload.forEach(function(element) {
 				// insert open tag
 				var open = element[0] + offset;
-				input = input.slice(0, open) + '<mark>' + input.slice(open);
-				offset += 6;
+				var openmark = '<mark>';
+				input = input.slice(0, open) + openmark + input.slice(open);
+				offset += openmark.length;
 
 				// insert close tag
 				var close = element[1] + offset;

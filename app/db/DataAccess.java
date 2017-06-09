@@ -5,6 +5,7 @@ import play.db.DB;
 
 import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -14,8 +15,7 @@ import frames.CRFReader;
 import com.google.gson.*;
 
 
-public class DataAccess
-{
+public class DataAccess {
 	private Gson gson;
 	private CRFReader crfReader;
 	private String schema;
@@ -33,8 +33,7 @@ public class DataAccess
 	*/
 
 
-	public DataAccess(String schema, String docSchema, List<Map<String, Object>> sectionList)
-	{
+	public DataAccess(String schema, String docSchema, List<Map<String, Object>> sectionList) {
 		this.schema = schema;
 		this.docSchema = docSchema;
 		this.sectionList = sectionList;
@@ -44,24 +43,24 @@ public class DataAccess
 
 	//new code
 	public boolean authenticate(String username, String password) throws SQLException {
-	    Connection conn = DB.getConnection();
+		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
-		
+
 		String rq = getReservedQuote(conn);
-		
+
 		ResultSet rs = stmt.executeQuery("select pw from " + schema + rq + "user" + rq + " where user_name = '" + username + "'");
 		// ResultSet rs = stmt.executeQuery("select pw from " + schema + "user where user_name = '" + username + "'");
 
 
-	    if(rs.next()) {
-	        if(password.equals(rs.getString(1))) {
-	            conn.close();
-	            return true;
-	        }
+		if (rs.next()) {
+			if (password.equals(rs.getString(1))) {
+				conn.close();
+				return true;
+			}
 
-	    }
-	    conn.close();
-	    return false;
+		}
+		conn.close();
+		return false;
 	}
 
 	/*public String getHistory() throws SQLException {
@@ -89,28 +88,28 @@ public class DataAccess
 		Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery("select * from " + schema + "history");
 
-		while(rs.next()) {
+		while (rs.next()) {
 			String processID = rs.getString(1);
 			String action = rs.getString(2);
 			String htmlID = rs.getString(3);
 			String extraInformation = rs.getString(4);
-		  Map<String, String> map = new HashMap<String, String>();
+			Map<String, String> map = new HashMap<String, String>();
 			map.put("processID", processID);
 			map.put("action", action);
 			map.put("htmlID", htmlID);
 			map.put("extraInfo", extraInformation);
-		  history.add(map);
+			history.add(map);
 		}
 
 		// System.out.println("DataAccess getHistory ran");
 
 		conn.close();
 
-	  return history;
+		return history;
 	}
 
 	public void actionOccurred(String action, String htmlID, String extraInfo) throws SQLException { // not sure if to use ints or longs
-	  Connection conn = DB.getConnection();
+		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 		stmt.execute("insert into " + schema + "history (act, html_id, extra_information) values ('" + action + "', '" + htmlID + "', '" + extraInfo + "')");
 		conn.close();
@@ -123,7 +122,7 @@ public class DataAccess
 		Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery("select element_id from " + schema + "element where html_id = '" + htmlID + "'");
 
-		if(rs.next()) {
+		if (rs.next()) {
 			elementID = rs.getString(1);
 		}
 
@@ -157,8 +156,7 @@ public class DataAccess
 	//end of new code
 
 
-	public int getCRFID(int projID) throws SQLException
-	{
+	public int getCRFID(int projID) throws SQLException {
 		int crfID = -1;
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
@@ -166,19 +164,17 @@ public class DataAccess
 		if (rs.next()) {
 			crfID = rs.getInt(1);
 		}
-		
+
 		conn.close();
 
 		return crfID;
 	}
 
-	public long getCurrDocID()
-	{
+	public long getCurrDocID() {
 		return currDocID;
 	}
 
-	public List<Map<String, String>> getProjects() throws SQLException
-	{
+	public List<Map<String, String>> getProjects() throws SQLException {
 		List<Map<String, String>> crfList = new ArrayList<Map<String, String>>();
 
 		Connection conn = DB.getConnection();
@@ -191,15 +187,14 @@ public class DataAccess
 			map.put("id", crfProjID);
 			map.put("name", name);
 			crfList.add(map);
- 		}
+		}
 
 		conn.close();
 
 		return crfList;
 	}
 
-	public Map<String, String> getDocument(String docNamespace, String docTable, long docID) throws SQLException
-	{
+	public Map<String, String> getDocument(String docNamespace, String docTable, long docID) throws SQLException {
 		// new code
 		clearHistory(); // clears whenever you load a new document
 		String docText = "";
@@ -231,8 +226,8 @@ public class DataAccess
 		long crfID = frameInstanceID;
 
 		rs = stmt2.executeQuery("select status from " + schema + "frame_instance_status " +
-				"where frame_instance_id = " + crfID );
-		if( rs.next() ) {
+				"where frame_instance_id = " + crfID);
+		if (rs.next()) {
 			docMap.put("frameInstanceStatus", String.valueOf(rs.getInt(1)));
 		}
 		Logger.info("getDocument: frameInstanceStatus=" + docMap.get("frameInstanceStatus"));
@@ -309,8 +304,7 @@ public class DataAccess
 	}
 	 */
 
-	public String loadProject(String username, int projID) throws SQLException
-	{
+	public String loadProject(String username, int projID) throws SQLException {
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 		Statement stmt1 = conn.createStatement();
@@ -324,7 +318,7 @@ public class DataAccess
 		int lastFrameInstanceIndex = -1;
 		ResultSet rs = stmt.executeQuery("select frame_instance_id from "
 				+ schema + rq + "user" + rq + " where user_name = '"
-				+ username + "' AND project_id = " + projID ); // modify by wyu
+				+ username + "' AND project_id = " + projID); // modify by wyu
 		if (rs.next()) {
 			lastFrameInstanceID = rs.getInt(1);
 		}
@@ -343,10 +337,10 @@ public class DataAccess
 				lastFrameInstanceIndex = index;
 
 			rs1 = stmt1.executeQuery("SELECT b.user_name FROM " + schema
-					+ "frame_instance_status a, " + schema + "user b "
+					+ "frame_instance_status a, " + schema + rq + "user" + rq + " b "
 					+ "WHERE a.frame_instance_id = " + frameInstanceID
 					+ " AND a.status = 1 AND a.user_id = b.user_id ");
-			if( rs1.next() ) {
+			if (rs1.next()) {
 				userName = rs1.getString(1);
 			}
 			Map<String, Object> frameMap = new HashMap<String, Object>();
@@ -381,8 +375,7 @@ public class DataAccess
 		return gson.toJson(frameList) + ",{\"lastFrameInstanceID\":" + lastFrameInstanceID + ",\"lastFrameInstanceIndex\":" + lastFrameInstanceIndex + "}";
 	}
 
-	public String loadCRF(int projID, int frameInstanceID) throws SQLException
-	{
+	public String loadCRF(int projID, int frameInstanceID) throws SQLException {
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 		crfID = -1;
@@ -402,8 +395,7 @@ public class DataAccess
 		return crfStr;
 	}
 
-	public String loadFrameInstance(String username, int frameInstanceID, int projID) throws SQLException
-	{
+	public String loadFrameInstance(String username, int frameInstanceID, int projID) throws SQLException {
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 		String rq = getReservedQuote(conn);
@@ -487,9 +479,6 @@ public class DataAccess
 		*/
 
 
-
-
-
 		String frameDataStr = getFrameData(frameInstanceID);
 
 
@@ -500,11 +489,11 @@ public class DataAccess
 		String docTextCol = "";
 
 		ResultSet rs = stmt.executeQuery("select document_namespace, document_table, document_key, document_text_column, document_id from "
-			+ schema + "frame_instance_document "
-			+ "where frame_instance_id = " + frameInstanceID);
+				+ schema + "frame_instance_document "
+				+ "where frame_instance_id = " + frameInstanceID);
 		System.out.println("select document_namespace, document_table, document_key, document_text_column, document_id from "
-			+ schema + "frame_instance_document "
-			+ "where frame_instance_id = " + frameInstanceID);
+				+ schema + "frame_instance_document "
+				+ "where frame_instance_id = " + frameInstanceID);
 		if (rs.next()) {
 			docNamespace = rs.getString(1);
 			docTable = rs.getString(2);
@@ -564,14 +553,13 @@ public class DataAccess
 		return frameInstanceJSON;
 	}
 
-	public String loadFrameInstanceDocuments(int frameInstanceID) throws SQLException
-	{
+	public String loadFrameInstanceDocuments(int frameInstanceID) throws SQLException {
 		List<Map<String, Object>> docList = new ArrayList<Map<String, Object>>();
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 
 		ResultSet rs = stmt.executeQuery("select document_namespace, document_table, document_id, document_key, document_text_column, document_name from " + schema + "frame_instance_document "
-			+ "where frame_instance_id = " + frameInstanceID + " order by document_order");
+				+ "where frame_instance_id = " + frameInstanceID + " order by document_order");
 
 		while (rs.next()) {
 			String docNamespace = rs.getString(1);
@@ -596,10 +584,9 @@ public class DataAccess
 		return gson.toJson(docList);
 	}
 
-    public String addAnnotation(int frameInstanceID, String htmlID, String value, int start, int end, String docNamespace, String docTable,
-        	long docID, int crfID, String features, boolean add) throws SQLException
-	{
-    	String ret = "";
+	public String addAnnotation(int frameInstanceID, String htmlID, String value, int start, int end, String docNamespace, String docTable,
+								long docID, int crfID, String features, boolean add) throws SQLException {
+		String ret = "";
 
 		System.out.println("htmlID: " + htmlID);
 
@@ -618,16 +605,14 @@ public class DataAccess
 			int index = htmlID.lastIndexOf("_");
 			if (index >= 0) {
 				int index2 = htmlID.substring(0, index).lastIndexOf("_");
-				String slotNumStr = htmlID.substring(index2+1);
+				String slotNumStr = htmlID.substring(index2 + 1);
 				int index3 = slotNumStr.indexOf("_");
 
 				try {
 					sectionSlotNum = Integer.parseInt(slotNumStr.substring(0, index3));
-					elementSlotNum = Integer.parseInt(slotNumStr.substring(index3+1));
+					elementSlotNum = Integer.parseInt(slotNumStr.substring(index3 + 1));
 					htmlID = htmlID.substring(0, index2);
-				}
-				catch(NumberFormatException e)
-				{
+				} catch (NumberFormatException e) {
 					//e.printStackTrace();
 				}
 			}
@@ -638,8 +623,8 @@ public class DataAccess
 			int elementID = -1;
 			String elementType = "";
 			ResultSet rs = stmt.executeQuery("select a.element_id, b.slot_id, d.element_type_name from " + schema + "element_value a, " + schema + "value b, "
-				+ schema + "element c, " + schema + "element_type d "
-				+ "where b.html_id = '" + htmlID + "' and b.value_id = a.value_id and a.element_id = c.element_id and c.element_type = d.element_type_id");
+					+ schema + "element c, " + schema + "element_type d "
+					+ "where b.html_id = '" + htmlID + "' and b.value_id = a.value_id and a.element_id = c.element_id and c.element_type = d.element_type_id");
 			if (rs.next()) {
 				elementID = rs.getInt(1);
 				slotID = rs.getInt(2);
@@ -666,19 +651,19 @@ public class DataAccess
 			boolean update = false;
 
 			String query = "select a.document_namespace, a.document_table, a.document_id, a.annotation_id, b.provenance "
-				+ "from " + schema + "frame_instance_data a, " + schema + "annotation b "
-				+ "where a.element_id = " + elementID + " and a.frame_instance_id = " + frameInstanceID + " and a.section_slot_number = " + sectionSlotNum + " "
-				+ "and a.element_slot_number = " + elementSlotNum + " "
-				+ "and a.document_namespace = b.document_namespace "
-				+ "and a.document_table = b.document_table and a.document_id = b.document_id and a.annotation_id = b.id";
-
-			if (elementType.equals("checkbox")) {
-				query = "select a.document_namespace, a.document_table, a.document_id, a.annotation_id, b.provenance "
 					+ "from " + schema + "frame_instance_data a, " + schema + "annotation b "
-					+ "where a.slot_id = " + slotID + " and a.frame_instance_id = " + frameInstanceID + " and a.section_slot_number = " + sectionSlotNum + " "
+					+ "where a.element_id = " + elementID + " and a.frame_instance_id = " + frameInstanceID + " and a.section_slot_number = " + sectionSlotNum + " "
 					+ "and a.element_slot_number = " + elementSlotNum + " "
 					+ "and a.document_namespace = b.document_namespace "
 					+ "and a.document_table = b.document_table and a.document_id = b.document_id and a.annotation_id = b.id";
+
+			if (elementType.equals("checkbox")) {
+				query = "select a.document_namespace, a.document_table, a.document_id, a.annotation_id, b.provenance "
+						+ "from " + schema + "frame_instance_data a, " + schema + "annotation b "
+						+ "where a.slot_id = " + slotID + " and a.frame_instance_id = " + frameInstanceID + " and a.section_slot_number = " + sectionSlotNum + " "
+						+ "and a.element_slot_number = " + elementSlotNum + " "
+						+ "and a.document_namespace = b.document_namespace "
+						+ "and a.document_table = b.document_table and a.document_id = b.document_id and a.annotation_id = b.id";
 			}
 
 
@@ -707,7 +692,7 @@ public class DataAccess
 				if (elementType.equals("checkbox")) {
 					//checkboxes must delete based on slotID
 					rs = stmt.executeQuery("select document_namespace, document_table, document_id, annotation_id from " + schema + "frame_instance_data where frame_instance_id = "
-						+ frameInstanceID + " and slot_id = " + slotID + " and section_slot_number = " + sectionSlotNum + " and element_slot_number = " + elementSlotNum);
+							+ frameInstanceID + " and slot_id = " + slotID + " and section_slot_number = " + sectionSlotNum + " and element_slot_number = " + elementSlotNum);
 					while (rs.next()) {
 						String docNamespace2 = rs.getString(1);
 						String docTable2 = rs.getString(2);
@@ -723,12 +708,11 @@ public class DataAccess
 					}
 
 					stmt.execute("delete from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and slot_id = " + slotID
-						+ " and section_slot_number = " + sectionSlotNum + " and element_slot_number = " + elementSlotNum);
-				}
-				else {
+							+ " and section_slot_number = " + sectionSlotNum + " and element_slot_number = " + elementSlotNum);
+				} else {
 					//delete based on elementID
 					rs = stmt.executeQuery("select document_namespace, document_table, document_id, annotation_id from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID
-						+ " and element_id = " + elementID + " and section_slot_number = " + sectionSlotNum + " and element_slot_number = " + elementSlotNum);
+							+ " and element_id = " + elementID + " and section_slot_number = " + sectionSlotNum + " and element_slot_number = " + elementSlotNum);
 					while (rs.next()) {
 						String docNamespace2 = rs.getString(1);
 						String docTable2 = rs.getString(2);
@@ -744,7 +728,7 @@ public class DataAccess
 					}
 
 					stmt.execute("delete from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and element_id = " + elementID
-						+ " and section_slot_number = " + sectionSlotNum + " and element_slot_number = " + elementSlotNum);
+							+ " and section_slot_number = " + sectionSlotNum + " and element_slot_number = " + elementSlotNum);
 				}
 
 				for (Map<String, String> annotMap : annotInfoList) {
@@ -785,13 +769,12 @@ public class DataAccess
 			*/
 
 
-
 			//generate a new annotation ID
 			int annotID = -1;
 			rs = stmt.executeQuery("select max(id) from " + schema + "annotation where document_namespace = '" + docNamespace + "' "
-				+ "and document_table = '" + docTable + "' and document_id = " + docID);
+					+ "and document_table = '" + docTable + "' and document_id = " + docID);
 			System.out.println("\nselect max(id) from " + schema + "annotation where document_namespace = '" + docNamespace + "' "
-				+ "and document_table = '" + docTable + "' and document_id = " + docID + "\n");
+					+ "and document_table = '" + docTable + "' and document_id = " + docID + "\n");
 			if (rs.next())
 				annotID = rs.getInt(1) + 1;
 
@@ -800,15 +783,15 @@ public class DataAccess
 			//get annotation type
 			String annotType = "";
 			rs = stmt.executeQuery("select d.annotation_type "
-				+ "from " + schema + "value a, " + schema + "crf_element b, " + schema + "element_value c, " + schema + "slot d "
-				+ "where b.crf_id = " + crfID + " and b.element_id = c.element_id and c.value_id = a.value_id and "
-				+ "a.html_id = '" + htmlID + "' "
-				+ "and a.slot_id = d.slot_id");
+					+ "from " + schema + "value a, " + schema + "crf_element b, " + schema + "element_value c, " + schema + "slot d "
+					+ "where b.crf_id = " + crfID + " and b.element_id = c.element_id and c.value_id = a.value_id and "
+					+ "a.html_id = '" + htmlID + "' "
+					+ "and a.slot_id = d.slot_id");
 			System.out.println("select d.annotation_type "
-				+ "from " + schema + "value a, " + schema + "crf_element b, " + schema + "element_value c, " + schema + "slot d "
-				+ "where b.crf_id = " + crfID + " and b.element_id = c.element_id and c.value_id = a.value_id and "
-				+ "a.html_id = '" + htmlID + "' "
-				+ "and a.slot_id = d.slot_id");
+					+ "from " + schema + "value a, " + schema + "crf_element b, " + schema + "element_value c, " + schema + "slot d "
+					+ "where b.crf_id = " + crfID + " and b.element_id = c.element_id and c.value_id = a.value_id and "
+					+ "a.html_id = '" + htmlID + "' "
+					+ "and a.slot_id = d.slot_id");
 			if (rs.next()) {
 				annotType = rs.getString(1);
 			}
@@ -891,44 +874,40 @@ public class DataAccess
 			*/
 
 
-
 			stmt.execute("insert into " + schema + "annotation (id, document_namespace, document_table, document_id, annotation_type, start, "
-				+ rq + "end" + rq + ", value, features, provenance) "
-				+ "values "
-				+ "(" + annotID + ",'" + docNamespace + "','" + docTable + "'," + docID + ",'" + annotType + "'," + start + "," + end + ",'"
-				+ value + "', '" + features + "', 'validation-tool')");
+					+ rq + "end" + rq + ", value, features, provenance) "
+					+ "values "
+					+ "(" + annotID + ",'" + docNamespace + "','" + docTable + "'," + docID + ",'" + annotType + "'," + start + "," + end + ",'"
+					+ value + "', '" + features + "', 'validation-tool')");
 
 			System.out.println("insert into " + schema + "annotation (id, document_namespace, document_table, document_id, annotation_type, start, "
 					+ rq + "end" + rq + ", value, features, provenance) "
-    				+ "values "
-    				+ "(" + annotID + ",'" + docNamespace + "','" + docTable + "'," + docID + ",'" + annotType + "'," + start + "," + end + ",'"
-    				+ value + "', '" + features + "', 'validation-tool')");
+					+ "values "
+					+ "(" + annotID + ",'" + docNamespace + "','" + docTable + "'," + docID + ",'" + annotType + "'," + start + "," + end + ",'"
+					+ value + "', '" + features + "', 'validation-tool')");
 
 			stmt.execute("insert into " + schema + "frame_instance_data (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, "
-				+ "document_table, document_id, annotation_id, provenance, element_id) "
-	    		+ "values (" + frameInstanceID + "," + slotID + ",'" + value + "'," + sectionSlotNum + "," + elementSlotNum + ",'" + docNamespace + "', '" + docTable
-	    		+ "', " + docID + "," + annotID + ",'namespace'," + elementID + ")");
+					+ "document_table, document_id, annotation_id, provenance, element_id) "
+					+ "values (" + frameInstanceID + "," + slotID + ",'" + value + "'," + sectionSlotNum + "," + elementSlotNum + ",'" + docNamespace + "', '" + docTable
+					+ "', " + docID + "," + annotID + ",'namespace'," + elementID + ")");
 
-	    	System.out.println("insert into " + schema + "frame_instance_data (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, "
-    			+ "document_table, document_id, annotation_id, provenance, element_id) "
-	    		+ "values (" + frameInstanceID + "," + slotID + ",'" + value + "'," + sectionSlotNum + "," + elementSlotNum + ",'" + docNamespace + "', '" + docTable
-	    		+ "', " + docID + "," + annotID + ",'namespace'," + elementID + ")");
+			System.out.println("insert into " + schema + "frame_instance_data (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, "
+					+ "document_table, document_id, annotation_id, provenance, element_id) "
+					+ "values (" + frameInstanceID + "," + slotID + ",'" + value + "'," + sectionSlotNum + "," + elementSlotNum + ",'" + docNamespace + "', '" + docTable
+					+ "', " + docID + "," + annotID + ",'namespace'," + elementID + ")");
 
 			ret = getFrameData(frameInstanceID);
 
 			stmt.close();
 			conn.close();
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		return "[" + ret + "]";
 	}
 
-    public String getFrameData(int frameInstanceID) throws SQLException
-    {
+	public String getFrameData(int frameInstanceID) throws SQLException {
 		List<Map<String, Object>> frameList = new ArrayList<Map<String, Object>>();
 		Map<String, List<Map<String, Object>>> highlightRangeMap = new HashMap<String, List<Map<String, Object>>>();
 
@@ -1028,7 +1007,7 @@ public class DataAccess
 		conn.close();
 
 		return ret;
-    }
+	}
 
 	/*
     public void addAnnotation(int frameInstanceID, String htmlID, String value, int start, int end, String docNamespace, String docTable,
@@ -1303,8 +1282,7 @@ public class DataAccess
 	}
 	*/
 
-	private String getReservedQuote(Connection conn) throws SQLException
-	{
+	private String getReservedQuote(Connection conn) throws SQLException {
 		String rq = "`";
 		String dbType = conn.getMetaData().getDatabaseProductName();
 		if (dbType.equals("Microsoft SQL Server")) {
@@ -1314,23 +1292,20 @@ public class DataAccess
 		return rq;
 	}
 
-	public String removeElement(int frameInstanceID, int elementID, String htmlID) throws SQLException
-	{
+	public String removeElement(int frameInstanceID, int elementID, String htmlID) throws SQLException {
 		return clearElement(frameInstanceID, elementID, htmlID, true);
 	}
 
-	public String clearElement(int frameInstanceID, int elementID, String htmlID) throws SQLException
-	{
+	public String clearElement(int frameInstanceID, int elementID, String htmlID) throws SQLException {
 		return clearElement(frameInstanceID, elementID, htmlID, false);
 	}
 
-	public String clearElement(int frameInstanceID, int elementID, String htmlID, boolean remove) throws SQLException
-	{
+	public String clearElement(int frameInstanceID, int elementID, String htmlID, boolean remove) throws SQLException {
 		int index = htmlID.lastIndexOf("_");
 		int index2 = htmlID.substring(0, index).lastIndexOf("_");
 
-		int sectionSlotNum = Integer.parseInt(htmlID.substring(index2+1, index));
-		int elementSlotNum = Integer.parseInt(htmlID.substring(index+1));
+		int sectionSlotNum = Integer.parseInt(htmlID.substring(index2 + 1, index));
+		int elementSlotNum = Integer.parseInt(htmlID.substring(index + 1));
 		htmlID = htmlID.substring(0, index2);
 
 		System.out.println("clearing: " + elementID + " htmlID: " + htmlID + " sectionSlotNum: " + sectionSlotNum + " elementSlotNum: " + elementSlotNum);
@@ -1353,11 +1328,10 @@ public class DataAccess
 		//conn.close();
 	}
 
-	public String clearElement(int frameInstanceID, int elementID, int sectionSlotNum, int elementSlotNum, boolean remove) throws SQLException
-	{
+	public String clearElement(int frameInstanceID, int elementID, int sectionSlotNum, int elementSlotNum, boolean remove) throws SQLException {
 		System.out.println(elementID);
 
-   		Connection conn = DB.getConnection();
+		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 
 		System.out.println("frameInstanceID: " + frameInstanceID + " elementID: " + elementID + " sectionSlotNum: " + sectionSlotNum + " elementSlotNum: " + elementSlotNum);
@@ -1366,9 +1340,9 @@ public class DataAccess
 		PreparedStatement pstmt2 = conn.prepareStatement("delete from " + schema + "annotation where document_namespace = ? and document_table = ? and document_id = ? and id = ?");
 
 		ResultSet rs = stmt.executeQuery("select a.document_namespace, a.document_table, a.document_id, a.annotation_id, b.provenance "
-			+ "from " + schema + "frame_instance_data a, " + schema + "annotation b "
-			+ "where a.frame_instance_id = " + frameInstanceID + " and a.element_id = " + elementID + " and a.section_slot_number = " + sectionSlotNum + " and a.element_slot_number = " + elementSlotNum
-			+ " and b.id = a.annotation_id");
+				+ "from " + schema + "frame_instance_data a, " + schema + "annotation b "
+				+ "where a.frame_instance_id = " + frameInstanceID + " and a.element_id = " + elementID + " and a.section_slot_number = " + sectionSlotNum + " and a.element_slot_number = " + elementSlotNum
+				+ " and b.id = a.annotation_id");
 
 		while (rs.next()) {
 			String docNamespace = rs.getString(1);
@@ -1383,8 +1357,7 @@ public class DataAccess
 				pstmt.setLong(3, docID);
 				pstmt.setInt(4, annotID);
 				pstmt.execute();
-			}
-			else {
+			} else {
 				pstmt2.setString(1, docNamespace);
 				pstmt2.setString(2, docTable);
 				pstmt2.setLong(3, docID);
@@ -1394,12 +1367,12 @@ public class DataAccess
 		}
 
 		stmt.execute("delete from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and section_slot_number = "
-			+ sectionSlotNum + " and element_slot_number = " + elementSlotNum + " and element_id = " + elementID);
+				+ sectionSlotNum + " and element_slot_number = " + elementSlotNum + " and element_id = " + elementID);
 
 		if (remove)
 			stmt.execute("update " + schema + "frame_instance_data set element_slot_number = element_slot_number - 1 "
-				+ "where element_slot_number > " + elementSlotNum + " and frame_instance_id = " + frameInstanceID
-				+ " and element_id = " + elementID + " and section_slot_number = " + sectionSlotNum);
+					+ "where element_slot_number > " + elementSlotNum + " and frame_instance_id = " + frameInstanceID
+					+ " and element_id = " + elementID + " and section_slot_number = " + sectionSlotNum);
 
 		String ret = getFrameData(frameInstanceID);
 
@@ -1411,11 +1384,10 @@ public class DataAccess
 		return "[" + ret + "]";
 	}
 
-	public String clearValue(int frameInstanceID, String htmlID) throws SQLException
-	{
+	public String clearValue(int frameInstanceID, String htmlID) throws SQLException {
 		System.out.println("clear value: " + htmlID);
 
-   		Connection conn = DB.getConnection();
+		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 
 		//separate slot number from html ID
@@ -1424,16 +1396,14 @@ public class DataAccess
 		int index = htmlID.lastIndexOf("_");
 		if (index >= 0) {
 			int index2 = htmlID.substring(0, index).lastIndexOf("_");
-			String slotNumStr = htmlID.substring(index2+1);
+			String slotNumStr = htmlID.substring(index2 + 1);
 			int index3 = slotNumStr.indexOf("_");
 
 			try {
 				sectionSlotNum = Integer.parseInt(slotNumStr.substring(0, index3));
-				elementSlotNum = Integer.parseInt(slotNumStr.substring(index3+1));
+				elementSlotNum = Integer.parseInt(slotNumStr.substring(index3 + 1));
 				htmlID = htmlID.substring(0, index2);
-			}
-			catch(NumberFormatException e)
-			{
+			} catch (NumberFormatException e) {
 				//e.printStackTrace();
 			}
 		}
@@ -1443,8 +1413,8 @@ public class DataAccess
 		int elementID = -1;
 		String elementType = "";
 		ResultSet rs = stmt.executeQuery("select a.element_id, b.slot_id, d.element_type_name from " + schema + "element_value a, " + schema + "value b, "
-			+ schema + "element c, " + schema + "element_type d "
-			+ "where b.html_id = '" + htmlID + "' and b.value_id = a.value_id and a.element_id = c.element_id and c.element_type = d.element_type_id");
+				+ schema + "element c, " + schema + "element_type d "
+				+ "where b.html_id = '" + htmlID + "' and b.value_id = a.value_id and a.element_id = c.element_id and c.element_type = d.element_type_id");
 		if (rs.next()) {
 			elementID = rs.getInt(1);
 			slotID = rs.getInt(2);
@@ -1457,9 +1427,9 @@ public class DataAccess
 		//PreparedStatement pstmt2 = conn.prepareStatement("delete from " + schema + "annotation where document_namespace = ? and document_table = ? and document_id = ? and id = ?");
 
 		rs = stmt.executeQuery("select document_namespace, document_table, document_id, annotation_id "
-			+ "from " + schema + "frame_instance_data "
-			+ "where frame_instance_id = " + frameInstanceID + " and element_id = " + elementID + " and element_slot_number = " + elementSlotNum
-			+ " and slot_id = " + slotID);
+				+ "from " + schema + "frame_instance_data "
+				+ "where frame_instance_id = " + frameInstanceID + " and element_id = " + elementID + " and element_slot_number = " + elementSlotNum
+				+ " and slot_id = " + slotID);
 
 		String docNamespace = "";
 		String docTable = "";
@@ -1475,11 +1445,11 @@ public class DataAccess
 			annotID = rs.getInt(4);
 
 			stmt2.execute("delete from " + schema + "annotation where document_namespace = '" + docNamespace + "' and document_table = '"
-				+ docTable + "' and document_id = " + docID + " and id = " + annotID);
+					+ docTable + "' and document_id = " + docID + " and id = " + annotID);
 		}
 
 		stmt2.execute("delete from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and section_slot_number = "
-			+ sectionSlotNum + " and element_slot_number = " + elementSlotNum + " and element_id = " + elementID + " and slot_id  = " + slotID);
+				+ sectionSlotNum + " and element_slot_number = " + elementSlotNum + " and element_id = " + elementID + " and slot_id  = " + slotID);
 
 		String ret = getFrameData(frameInstanceID);
 
@@ -1492,8 +1462,7 @@ public class DataAccess
 		return "[" + ret + "]";
 	}
 
-	public void clearSection(int frameInstanceID, String sectionName, int sectionSlotNum) throws SQLException
-	{
+	public void clearSection(int frameInstanceID, String sectionName, int sectionSlotNum) throws SQLException {
 		System.out.println("clearsection: " + frameInstanceID + ", " + sectionName + ", " + sectionSlotNum);
 
 		Connection conn = DB.getConnection();
@@ -1506,21 +1475,19 @@ public class DataAccess
 		}
 
 		rs = stmt.executeQuery("select a.element_id, a.element_slot_number from " + schema + "frame_instance_data a, " + schema + "element b "
-			+ "where b.section_id = " + sectionID + " and a.element_id = b.element_id");
+				+ "where b.section_id = " + sectionID + " and a.element_id = b.element_id");
 		while (rs.next()) {
 			int elementID = rs.getInt(1);
 			int elementSlotNum = rs.getInt(2);
-			clearElement(frameInstanceID, elementID, sectionSlotNum, elementSlotNum, true);
+			clearElement(frameInstanceID, elementID, sectionSlotNum - 1, elementSlotNum, true);
 		}
 
 		stmt.execute("update " + schema + "frame_instance_data set section_slot_number = section_slot_number - 1 "
-			+ "where frame_instance_id = " + frameInstanceID + " and section_slot_number > " + sectionSlotNum);
-
+				+ "where frame_instance_id = " + frameInstanceID + " and section_slot_number >= " + sectionSlotNum);
 		conn.close();
 	}
 
-	public void clearAll(int frameInstanceID) throws SQLException
-	{
+	public void clearAll(int frameInstanceID) throws SQLException {
 		System.out.println("clear all: " + frameInstanceID);
 
 		Connection conn = DB.getConnection();
@@ -1528,7 +1495,7 @@ public class DataAccess
 
 		List<String> docList = new ArrayList<String>();
 		ResultSet rs = stmt.executeQuery("select distinct document_namespace, document_table, document_id, annotation_id from " + schema + "frame_instance_data "
-			+ "where frame_instance_id = " + frameInstanceID);
+				+ "where frame_instance_id = " + frameInstanceID);
 		while (rs.next()) {
 			String docNamespace = rs.getString(1);
 			String docTable = rs.getString(2);
@@ -1548,7 +1515,7 @@ public class DataAccess
 			int annotID = ((Double) docMap.get("annotID")).intValue();
 
 			stmt.execute("delete from " + schema + "annotation where document_namespace = '" + docNamespace +
-				"' and document_table = '" + docTable + "' and document_id = " + docID + " and id = " + annotID);
+					"' and document_table = '" + docTable + "' and document_id = " + docID + " and id = " + annotID);
 		}
 
 		stmt.execute("delete from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID);
@@ -1563,30 +1530,28 @@ public class DataAccess
 		conn.close();
 	}
 
-	public void addDocumentHistory(int frameInstanceID, String docNamespace, String docTable, long docID) throws SQLException
-	{
+	public void addDocumentHistory(int frameInstanceID, String docNamespace, String docTable, long docID) throws SQLException {
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 
 		ResultSet rs = stmt.executeQuery("select count(*) from " + schema + "frame_instance_document_history "
-		     + "where frame_instance_id = " + frameInstanceID + " and document_namespace = '" + docNamespace + "' and document_table = '" + docTable + "' and document_id = " + docID);
+				+ "where frame_instance_id = " + frameInstanceID + " and document_namespace = '" + docNamespace + "' and document_table = '" + docTable + "' and document_id = " + docID);
 
 		int count = 0;
 
 		if (rs.next()) {
-		    count = rs.getInt(1);
+			count = rs.getInt(1);
 		}
 
 		if (count == 0)
-		    stmt.execute("insert into " + schema + "frame_instance_document_history (frame_instance_id, document_namespace, document_table, document_id) "
-		      + "values (" + frameInstanceID + ",'" + docNamespace + "','" + docTable + "'," + docID + ")");
+			stmt.execute("insert into " + schema + "frame_instance_document_history (frame_instance_id, document_namespace, document_table, document_id) "
+					+ "values (" + frameInstanceID + ",'" + docNamespace + "','" + docTable + "'," + docID + ")");
 
 		stmt.close();
 		conn.close();
 	}
 
-	public Map<String, Boolean> getDocumentHistory(int frameInstanceID) throws SQLException
-	{
+	public Map<String, Boolean> getDocumentHistory(int frameInstanceID) throws SQLException {
 		Map<String, Boolean> docMap = new HashMap<String, Boolean>();
 
 		Connection conn = DB.getConnection();
@@ -1595,7 +1560,7 @@ public class DataAccess
 		ResultSet rs = stmt.executeQuery("select document_namespace, document_table, document_id from " + schema + "frame_instance_document_history "
 				+ "where frame_instance_id = " + frameInstanceID);
 
-		while(rs.next()) {
+		while (rs.next()) {
 			docMap.put("{\"docNamespace\":\"" + rs.getString(1) + "\",\"docTable\":\"" + rs.getString(2) + "\",\"docID\":" + rs.getLong(3) + "}", true);
 		}
 
@@ -1605,8 +1570,7 @@ public class DataAccess
 		return docMap;
 	}
 
-	public void clearDocumentHistory(int frameInstanceID) throws SQLException
-	{
+	public void clearDocumentHistory(int frameInstanceID) throws SQLException {
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 
@@ -1616,8 +1580,7 @@ public class DataAccess
 		conn.close();
 	}
 
-	public List<Map<String, Object>> getDocumentAnnotations(String docNamespace, String docTable, long docID, double annotThreshold, int crfID) throws SQLException
-	{
+	public List<Map<String, Object>> getDocumentAnnotations(String docNamespace, String docTable, long docID, double annotThreshold, int crfID) throws SQLException {
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 
@@ -1626,7 +1589,7 @@ public class DataAccess
 		//get list of crf annotations
 		List<String> crfAnnotList = new ArrayList<String>();
 		ResultSet rs = stmt.executeQuery("select distinct a.annotation_type from " + schema + "slot a, " + schema + "frame_slot b, " + schema + "crf c "
-			+ "where c.crf_id = " + crfID + " and c.frame_id = b.frame_id and b.slot_id = a.slot_id");
+				+ "where c.crf_id = " + crfID + " and c.frame_id = b.frame_id and b.slot_id = a.slot_id");
 		while (rs.next()) {
 			crfAnnotList.add(rs.getString(1));
 		}
@@ -1668,8 +1631,7 @@ public class DataAccess
 		return annotList;
 	}
 
-	public String fillSlot(int frameInstanceID, String docNamespace, String docTable, long docID, String slotName, int start, int end) throws SQLException
-	{
+	public String fillSlot(int frameInstanceID, String docNamespace, String docTable, long docID, String slotName, int start, int end) throws SQLException {
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 
@@ -1679,7 +1641,7 @@ public class DataAccess
 		String htmlID = "";
 		String annotType = "";
 		ResultSet rs = stmt.executeQuery("select a.slot_id, b.element_id, c.html_id, a.annotation_type from " + schema + "slot a, " + schema + "element_value b, " + schema + "value c "
-			+ "where a.name = '" + slotName + "' and a.slot_id = c.slot_id and b.value_id = c.value_id");
+				+ "where a.name = '" + slotName + "' and a.slot_id = c.slot_id and b.value_id = c.value_id");
 		if (rs.next()) {
 			slotID = rs.getInt(1);
 			elementID = rs.getInt(2);
@@ -1691,14 +1653,14 @@ public class DataAccess
 		int annotID = -1;
 		String value = "";
 		rs = stmt.executeQuery("select id, value from " + schema + "annotation where document_namespace = '" + docNamespace + "' and document_table = '" + docTable + "' "
-			+ "and document_id = " + docID + " and annotation_type = '" + annotType + "' and start = " + start + " and end = " + end);
+				+ "and document_id = " + docID + " and annotation_type = '" + annotType + "' and start = " + start + " and end = " + end);
 		if (rs.next()) {
 			annotID = rs.getInt(1);
 			value = rs.getString(2);
 		}
 
 		stmt.execute("insert into " + schema + "frame_instance_data (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id) "
-			+ "values (" + frameInstanceID + "," + slotID + ",'" + value + "',0,0,'" + docNamespace + "','" + docTable + "'," + docID + "," + annotID + ",'validation-tool'," + elementID + ")");
+				+ "values (" + frameInstanceID + "," + slotID + ",'" + value + "',0,0,'" + docNamespace + "','" + docTable + "'," + docID + "," + annotID + ",'validation-tool'," + elementID + ")");
 		System.out.println("insert into " + schema + "frame_instance_data (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id) "
 				+ "values (" + frameInstanceID + "," + slotID + ",'" + value + "',0,0,'" + docNamespace + "','" + docTable + "'," + docID + "," + annotID + ",'namespace'," + elementID + ")");
 
@@ -1708,17 +1670,16 @@ public class DataAccess
 		return "{\"htmlID\":\"" + htmlID + "\",\"value\":\"" + value + "\"" + ",\"elementID\":" + elementID + ",\"sectionSlot\":0,\"elementSlot\":0}";
 	}
 
-	public List<Map<String, Object>> getSlotValues(int crfID, String annotType) throws SQLException
-	{
+	public List<Map<String, Object>> getSlotValues(int crfID, String annotType) throws SQLException {
 		List<Map<String, Object>> slotValueList = new ArrayList<Map<String, Object>>();
 
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 
 		ResultSet rs = stmt.executeQuery("select a.slot_id, d.display_name, e.element_id, a.name from " + schema + "slot a, " + schema + "crf b, " + schema + "frame_slot c, " + schema
-			+ "value d, " + schema + "element_value e "
-			+ "where b.crf_id = " + crfID + " and a.annotation_type = '" + annotType + "' and a.slot_id = c.slot_id and c.frame_id = b.frame_id and "
-			+ "a.slot_id = d.slot_id and e.value_id = d.value_id");
+				+ "value d, " + schema + "element_value e "
+				+ "where b.crf_id = " + crfID + " and a.annotation_type = '" + annotType + "' and a.slot_id = c.slot_id and c.frame_id = b.frame_id and "
+				+ "a.slot_id = d.slot_id and e.value_id = d.value_id");
 		while (rs.next()) {
 			Map<String, Object> slotMap = new HashMap<String, Object>();
 			slotMap.put("slotID", rs.getInt(1));
@@ -1729,14 +1690,13 @@ public class DataAccess
 			slotMap.put("elementSlot", 0);
 			slotValueList.add(slotMap);
 		}
-		
+
 		conn.close();
 
 		return slotValueList;
 	}
 
-	public String getFrameInstanceID(String entityIDStr, int projID) throws SQLException
-	{
+	public String getFrameInstanceID(String entityIDStr, int projID) throws SQLException {
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 
@@ -1762,8 +1722,7 @@ public class DataAccess
 		return getFrameInstanceID(colNamesList.toArray(colNames), colValues, projID);
 	}
 
-	public String getFrameInstanceID(String[] colNames, String[] colValues, int projID) throws SQLException
-	{
+	public String getFrameInstanceID(String[] colNames, String[] colValues, int projID) throws SQLException {
 		Connection conn = DB.getConnection();
 		Connection docConn = DB.getConnection("doc");
 		gson = new Gson();
@@ -1786,7 +1745,7 @@ public class DataAccess
 
 		Statement stmt2 = docConn.createStatement();
 		StringBuilder strBlder = new StringBuilder();
-		for (int i=0; i<colNames.length; i++) {
+		for (int i = 0; i < colNames.length; i++) {
 			if (strBlder.length() > 0)
 				strBlder.append(" and ");
 
@@ -1829,8 +1788,69 @@ public class DataAccess
 		return "{\"frameInstanceID\":\"" + frameInstanceID + "\",\"frameInstanceName\":\"" + frameInstanceName + "\"}";
 	}
 
-	private int getLastID(Connection conn) throws SQLException
-	{
+	private void createFrameInstanceLock(int frameInstanceID, String username) throws SQLException {
+		Connection conn = DB.getConnection();
+		Statement stmt = conn.createStatement();
+		stmt.executeUpdate("insert into " + schema + "frame_instance_lock values("+frameInstanceID+",\'"+username+"\',CURRENT_TIMESTAMP) ");
+		stmt.close();
+		conn.close();
+	}
+
+	private void removeFrameInstanceLock(int frameInstanceID) throws SQLException {
+		Connection conn = DB.getConnection();
+		Statement stmt = conn.createStatement();
+		stmt.executeUpdate("delete from " + schema + "frame_instance_lock where frame_instance_id="+frameInstanceID);
+		stmt.close();
+		conn.close();
+	}
+
+	public void removeAllFrameInstanceLockForUser(String username) throws SQLException {
+		Connection conn = DB.getConnection();
+		Statement stmt = conn.createStatement();
+		stmt.executeUpdate("delete from " + schema + "frame_instance_lock where username='"+username+"'");
+		stmt.close();
+		conn.close();
+	}
+
+	private void refreshFrameInstanceLock(int frameInstanceID) throws SQLException {
+		Connection conn = DB.getConnection();
+		Statement stmt = conn.createStatement();
+		stmt.executeUpdate("update " + schema + "frame_instance_lock set created_at = CURRENT_TIMESTAMP where frame_instance_id="+frameInstanceID);
+		stmt.close();
+		conn.close();
+	}
+
+	private Map<String, Object> getFrameInstanceLock(int frameInstanceID) throws SQLException {
+		Connection conn = DB.getConnection();
+		Statement stmt = conn.createStatement();
+		Map<String, Object> result = null;
+		ResultSet rs = stmt.executeQuery("select * from " + schema + "frame_instance_lock where frame_instance_id="+frameInstanceID);
+		if (rs.next()) {
+			result = new HashMap<String, Object>();
+			result.put("frame_instance_id", frameInstanceID);
+			result.put("username", rs.getString("username"));
+			result.put("created_at", rs.getTimestamp("created_at"));
+		}
+		stmt.close();
+		conn.close();
+		return result;
+	}
+
+	public boolean isInstanceLockedByOthers(int frameInstanceID, String username, int timeout) throws SQLException {
+		Map<String, Object> lock = getFrameInstanceLock(frameInstanceID);
+		boolean locked = false;
+		if (lock != null && !username.equals((String) lock.get("username")) && (new Date().getTime() - ((Timestamp) lock.get("created_at")).getTime())/1000/60 < timeout){
+			return true;
+		}
+		else{
+			removeAllFrameInstanceLockForUser(username);
+			removeFrameInstanceLock(frameInstanceID);
+			createFrameInstanceLock(frameInstanceID, username);
+			return false;
+		}
+	}
+
+	private int getLastID(Connection conn) throws SQLException {
 		int lastIndex = -1;
 		String dbType = conn.getMetaData().getDatabaseProductName();
 		String queryStr = "select last_insert_id()";
@@ -1846,7 +1866,7 @@ public class DataAccess
 
 		return lastIndex;
 	}
-	/*
+
 	public boolean updateValidationStatus(int frameInstanceID)
 	{
 		try {
@@ -1878,7 +1898,7 @@ public class DataAccess
 			Logger.error("updateValidationStatus got error: " + e.toString() );
 			return false;
 		}
-	}*/
+	}
 
 	/*
 	public boolean updateValidationStatus ( int docID ) {
@@ -1944,13 +1964,13 @@ public class DataAccess
 	}
 	*/
 
-    /* modify by wyu by adding user name
-	public boolean updateValidationStatus ( int docID, String userName ) {
+    //modify by wyu by adding user name
+	public boolean updateValidationStatus ( long docID, String userName ) {
 		Logger.info("DataAccess.updateValidationStatus coming...for docID=" + docID);
 		try {
 			Connection conn = DB.getConnection();
 			Statement stmt = conn.createStatement();
-
+			String rq = getReservedQuote(conn);
 			ResultSet rs = stmt.executeQuery("SELECT frame_instance_id, "
 					+ "document_namespace, document_table FROM "
 					+ schema + "frame_instance_document WHERE document_id = " + docID);
@@ -1977,7 +1997,7 @@ public class DataAccess
 			if( projectID == 0 ) {
 				return false;
 			}
-			rs = stmt.executeQuery("SELECT user_id FROM " + schema + "user "
+			rs = stmt.executeQuery("SELECT user_id FROM " + schema + rq + "user" + rq
 				+ "WHERE user_name = '" + userName + "' AND project_id = "
 				+ projectID );
 			if( rs.next() ) {
@@ -2041,7 +2061,7 @@ public class DataAccess
 			conn.close();
 			return true;
 		} catch ( SQLException ex ) {
-			//Logger.error("updateValidationStatus got error: " + ex.toString() );
+			Logger.error("updateValidationStatus got error: " + ex.toString() );
 			return false;
 		}
 	}
