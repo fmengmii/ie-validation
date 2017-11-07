@@ -321,7 +321,8 @@ public class Application extends Controller
 	    	Map<String, String> docMap = da.getDocument(docNamespace, docTable, Long.parseLong(docID));
 
 	    	int crfID =  Integer.parseInt(session("crfID"));
-	    	List<Map<String, Object>> annotList = da.getDocumentAnnotations(docNamespace, docTable, Long.parseLong(docID), annotThreshold, crfID);
+	    	int projID = Integer.parseInt(session("projID"));
+	    	List<Map<String, Object>> annotList = da.getDocumentAnnotations(docNamespace, docTable, Long.parseLong(docID), annotThreshold, crfID, projID);
 
 	    	resultMap.put("docName", docMap.get("docName"));
 	    	resultMap.put("docText", docMap.get("docText"));
@@ -353,12 +354,13 @@ public class Application extends Controller
         	String docID = form.get("docID");
         	double annotThreshold = Double.parseDouble(session("annotThreshold"));
         	int crfID = Integer.parseInt(session("crfID"));
+        	int projID = Integer.parseInt(session("projID"));
 
     		gson = new Gson();
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
 	    	DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
-    		annotList = da.getDocumentAnnotations(docNamespace, docTable, Long.parseLong(docID), annotThreshold, crfID);
+    		annotList = da.getDocumentAnnotations(docNamespace, docTable, Long.parseLong(docID), annotThreshold, crfID, projID);
     	}
     	catch(Exception e)
     	{

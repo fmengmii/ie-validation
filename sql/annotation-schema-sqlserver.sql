@@ -394,3 +394,7 @@ CREATE TABLE SCHEMA."gen_filter_status" (
 )
 
 
+CREATE TABLE SCHEMA."frame_instance_lock" (
+	
+)
+

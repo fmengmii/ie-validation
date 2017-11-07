@@ -16,6 +16,17 @@ alter table frame AUTO_INCREMENT = 1;
 
 delete from frame_section;
 
+delete from frame_slot;
+
+delete from provenance;
+alter table provenance AUTO_INCREMENT = 1;
+
+delete from slot;
+alter table slot AUTO_INCREMENT = 1;
+
+delete from `value`;
+alter table `value` AUTO_INCREMENT = 1;
+
 
 
 # project only
@@ -52,17 +63,3 @@ delete from frame_instance_status;
 
 delete from document_status;
 
-
-
-
-
-delete from frame_slot;
-
-delete from provenance;
-alter table provenance AUTO_INCREMENT = 1;
-
-delete from slot;
-alter table slot AUTO_INCREMENT = 1;
-
-delete from `value`;
-alter table `value` AUTO_INCREMENT = 1;

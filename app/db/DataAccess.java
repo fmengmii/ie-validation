@@ -1000,6 +1000,7 @@ public class DataAccess {
 			if (!inserted)
 				rangeList.add(rangeMap);
 		}
+		
 
 		String ret = gson.toJson(frameList) + "," + gson.toJson(highlightRangeMap);
 
@@ -1580,7 +1581,7 @@ public class DataAccess {
 		conn.close();
 	}
 
-	public List<Map<String, Object>> getDocumentAnnotations(String docNamespace, String docTable, long docID, double annotThreshold, int crfID) throws SQLException {
+	public List<Map<String, Object>> getDocumentAnnotations(String docNamespace, String docTable, long docID, double annotThreshold, int crfID, int projID) throws SQLException {
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 
@@ -1590,6 +1591,12 @@ public class DataAccess {
 		List<String> crfAnnotList = new ArrayList<String>();
 		ResultSet rs = stmt.executeQuery("select distinct a.annotation_type from " + schema + "slot a, " + schema + "frame_slot b, " + schema + "crf c "
 				+ "where c.crf_id = " + crfID + " and c.frame_id = b.frame_id and b.slot_id = a.slot_id");
+		while (rs.next()) {
+			crfAnnotList.add(rs.getString(1));
+		}
+		
+		//preload
+		rs = stmt.executeQuery("select distinct annotation_type from project_preload where project_id = " + projID);
 		while (rs.next()) {
 			crfAnnotList.add(rs.getString(1));
 		}

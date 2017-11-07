@@ -112,9 +112,14 @@ $(document).ready(function () {
 	   docSelectIndex = item.index;
 
 	   console.log("selected doc: " + item.index);
-	   getDocument(item.value, item.index, true, null, null);
+	   getDocument(item.value, item.index, true, null, function () {
+		   console.log("HERERERE!");
+	 	   getHighlightRanges();
+		   highlightText();
+	   });
 	   //addDocumentHistory(event.args.item.value);
 	   //$('#docListBox').val(event.args.item.value);
+
    });
 
 
@@ -427,8 +432,8 @@ function getDocument(docInfoStr, index, clear, options, callback)
 
 		annotList = docData["annotList"];
 		console.log("annotList: " + JSON.stringify(annotList));
-		getHighlightRanges();
-		highlightText();
+		//getHighlightRanges();
+		//highlightText();
 
 		$('#docTitleDiv').text(docName);
 		$('#docFeatures').html('');
@@ -1188,7 +1193,12 @@ function highlightText()
 	if (highlightRangeList == undefined) {
 		//$('#docPanel').data('hwt').destroy();
 		$('#docPanel').highlightWithinTextarea(onInput);
-		$('.hwt-content mark').css("background-color","lightgray");
+		
+		$('.hwt-content mark').each(function (index) {
+			console.log("setting " + index + " to lightgray");
+			$(this).css("background-color","lightgray");
+		});
+		//$('.hwt-content mark').css("background-color","lightgray");
 	}
 
 	else {
@@ -1274,7 +1284,8 @@ function highlightText()
 		//$('#docPanel').resize();
 		$('#docPanel').width($('#docDiv').width() * .9);
 		$('#docPanel').width($('#docDiv').width() * .95);
-		scrollTextareaToPosition($('#docPanel'), lastEnd+10);
+		scrollTextareaToPosition($('#docPanel'), lastEnd+1000);
+		//scrollTextareaToPosition($('#docPanel'), lastEnd + $('#docPanel').height() / 2);
 		
 
 	}
@@ -1616,6 +1627,8 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 
                 $("#docListBox").jqxListBox({source: docListBoxSource});
                 $('#docListBox').jqxListBox('refresh');
+                
+                //highlightText();
 
                 console.log("end of load frame docNamespace: " + docNamespace + ", docTable: " + docTable + ", docID: " + docID);
 
@@ -1770,7 +1783,7 @@ function addElement(id)
 				//loadCRFData(JSON.parse(data));
 				loadFrameInstance(currFrameInstanceID, false);
 			}
-
+			
 			closeDialogLoad();
 		})
 	}
@@ -2510,7 +2523,11 @@ function getHighlightRangesNoOverlap()
 		if (!inserted)
 			highlightRanges.push(range);
 			*/
+		
 	}
+
+	console.log("highlightranges: " + JSON.stringify(highlightRanges));
+
 }
 
 function getHighlightRanges()
@@ -2521,12 +2538,15 @@ function getHighlightRanges()
 	highlightRanges = [];
 	highlightIndexes = [];
 
-	if (highlightRangeList == undefined)
-		return getHighlightRangesNoOverlap();
+	//if (highlightRangeList == undefined)
+	//	return getHighlightRangesNoOverlap();
 
 
 	var highlightIndex = 0;
-	var highlightMap = highlightRangeList[0];
+	var highlightMap = undefined;
+	if (highlightRangeList != undefined)		
+		highlightMap = highlightRangeList[0];
+	
 	var lastIndex = -1;
 	var lastEnd = -1;
 	var annotList2 = [];
