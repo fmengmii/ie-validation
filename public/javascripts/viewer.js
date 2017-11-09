@@ -227,7 +227,6 @@ $(document).ready(function () {
 
    $('#dataElementTable').on('rowClick', function (event) {
 	   console.log("rowClick: " + event.args.index + " meta: " + event.args.originalEvent.metaKey + " ctrl: " + event.ctrlKey);
-     // console.log(event.args);
 	   rowSelect(event.args);
    });
 
@@ -785,6 +784,10 @@ function rowSelect(row)
 	var rowValue = rowData["elementValue"];
 	var elementType = rowData['elementType'];
 	var elementHTMLID = rowData["elementHTMLID"];
+	var dataField = row.dataField;
+	
+	if (dataField == 'value')
+		return;
 
 	var add = row.originalEvent.metaKey;
 	if (!add)
@@ -856,6 +859,8 @@ function rowSelect(row)
 
 		if (highlightRangeList != undefined) {
 		    console.log("rowselect: " + docNamespace + "," + docTable + "," + docID);
+		    console.log("elementhtmlid: " + elementHTMLID + " highlightrangemap: " + JSON.stringify(highlightRangeMap));
+		    console.log("highlightmap: " + JSON.stringify(highlightMap));
 		    var docIndex = docIndexMap["{\"docNamespace\":\"" + highlightMap["docNamespace"] + "\",\"docTable\":\"" + highlightMap["docTable"] + "\",\"docID\":" + highlightMap["docID"] + "}"];
 		    if (highlightMap["docNamespace"] != docNamespace || highlightMap["docTable"] != docTable || highlightMap["docID"] != docID) {
 			    getDocument("{\"docNamespace\":\"" + highlightMap["docNamespace"] + "\",\"docTable\":\"" + highlightMap["docTable"] + "\",\"docID\":" + highlightMap["docID"] + "}",
@@ -886,12 +891,18 @@ function rowSelect(row)
 				    	highlightRangeList = undefined;
 
 			    	highlightText();
+				    $('#docPanel').scrollTop(0);
+				    var lastEnd = highlightRangeList[0]["end"];
+					scrollTextareaToPosition($('#docPanel'), lastEnd);
+					//var scrollTop = $('#docPanel').scrollTop();
+					//$('#docPanel').scrollTop(scrollTop + ($('#docPanel').innerHeight() / 2));
+			    	
 			    });
 		    }
 		    else {
-				$('#docListBox').jqxListBox('refresh');
-				$('#docListBox').jqxListBox('ensureVisible', docIndex);
-				$('#docListBox').jqxListBox('selectedIndex', docIndex);
+				//$('#docListBox').jqxListBox('refresh');
+				//$('#docListBox').jqxListBox('ensureVisible', docIndex);
+				//$('#docListBox').jqxListBox('selectedIndex', docIndex);
 
 
 			    if (rowStart >= 0) {
@@ -918,11 +929,20 @@ function rowSelect(row)
 			    else
 			    	highlightRangeList = undefined;
 
-		    	highlightText();
+			    highlightText();
+			    var height = $('#docPanel').innerHeight();
+			    $('#docPanel').scrollTop(0);
+			    var lastEnd = highlightRangeList[0]["end"];
+				scrollTextareaToPosition($('#docPanel'), lastEnd);
+				
+				//var scrollTop = $('#docPanel').scrollTop();
+				//console.log("scrolltop: " + scrollTop + ", height: " + height);
+				//if (scrollTop > (height/2))
+				//	$('#docPanel').scrollTop(scrollTop + (height / 2));
+		    	
 		    }
-
-
-
+		    
+		    
 
 		    console.log("index: " + docIndex);
 		}
@@ -935,6 +955,7 @@ function rowSelect(row)
 		}
 
 	}
+
 
 	if (elementType != 'text' || elementType != 'textarea') {
 
@@ -1116,6 +1137,8 @@ function highlightText()
 {
 	if (origText == null || origText.length == 0)
 		return;
+	
+	var scrollTop = $('#docPanel').scrollTop();
 
 	/*
 	highlightStart = start;
@@ -1284,11 +1307,13 @@ function highlightText()
 		//$('#docPanel').resize();
 		$('#docPanel').width($('#docDiv').width() * .9);
 		$('#docPanel').width($('#docDiv').width() * .95);
-		scrollTextareaToPosition($('#docPanel'), lastEnd+1000);
+		//scrollTextareaToPosition($('#docPanel'), lastEnd+1000);
 		//scrollTextareaToPosition($('#docPanel'), lastEnd + $('#docPanel').height() / 2);
 		
 
 	}
+	
+	$('#docPanel').scrollTop(scrollTop);
 
 }
 
@@ -1592,41 +1617,42 @@ function loadFrameInstance(frameInstanceID, clearDoc)
                     docNamespace = "";
                     docTable = "";
                     docID = -1;
-                }
 
-                //load document list
-
-                var docList = dataObj[2];
-
-                /*
-                 optionsStr = "<option selected disabled value=''>Select Report</option>";
-                 for (var i = 0; i < docList.length; i++) {
-                 optionsStr += "<option value='{\"docNamespace\":\"" + docList[i]["docNamespace"] + "\",\"docTable\":\"" + docList[i]["docTable"]
-                 + "\",\"docID\":" + docList[i]["docID"] + "}'>" + docList[i]["docName"] + "</option>";
-                 }
-
-                 $("#docSelect").find('option').remove().end().append($(optionsStr));
-                 document.getElementById('docSelect').selectedIndex = 0;
-                 */
-
-
-                //load document list into listbox
-                var docListBoxSource = [];
-                for (var i = 0; i < docList.length; i++) {
-                    var oneDoc = {};
-                    oneDoc["label"] = docList[i]["docName"];
-                    oneDoc["value"] = "{\"docNamespace\":\"" + docList[i]["docNamespace"] + "\",\"docTable\":\"" + docList[i]["docTable"]
-                        + "\",\"docID\":" + docList[i]["docID"] + "}";
-                    docIndexMap["{\"docNamespace\":\"" + docList[i]["docNamespace"] + "\",\"docTable\":\"" + docList[i]["docTable"]
-                    + "\",\"docID\":" + docList[i]["docID"] + "}"] = i;
-
-                    docListBoxSource.push(oneDoc);
+	                //load document list
+	
+	                var docList = dataObj[2];
+	
+	                /*
+	                 optionsStr = "<option selected disabled value=''>Select Report</option>";
+	                 for (var i = 0; i < docList.length; i++) {
+	                 optionsStr += "<option value='{\"docNamespace\":\"" + docList[i]["docNamespace"] + "\",\"docTable\":\"" + docList[i]["docTable"]
+	                 + "\",\"docID\":" + docList[i]["docID"] + "}'>" + docList[i]["docName"] + "</option>";
+	                 }
+	
+	                 $("#docSelect").find('option').remove().end().append($(optionsStr));
+	                 document.getElementById('docSelect').selectedIndex = 0;
+	                 */
+	
+	
+	                //load document list into listbox
+	                var docListBoxSource = [];
+	                for (var i = 0; i < docList.length; i++) {
+	                    var oneDoc = {};
+	                    oneDoc["label"] = docList[i]["docName"];
+	                    oneDoc["value"] = "{\"docNamespace\":\"" + docList[i]["docNamespace"] + "\",\"docTable\":\"" + docList[i]["docTable"]
+	                        + "\",\"docID\":" + docList[i]["docID"] + "}";
+	                    docIndexMap["{\"docNamespace\":\"" + docList[i]["docNamespace"] + "\",\"docTable\":\"" + docList[i]["docTable"]
+	                    + "\",\"docID\":" + docList[i]["docID"] + "}"] = i;
+	
+	                    docListBoxSource.push(oneDoc);        
+	                }
+	                
+	                $("#docListBox").jqxListBox({source: docListBoxSource});
+	                $('#docListBox').jqxListBox('refresh');
                 }
 
                 getDocumentHistory();
 
-                $("#docListBox").jqxListBox({source: docListBoxSource});
-                $('#docListBox').jqxListBox('refresh');
                 
                 //highlightText();
 
@@ -1765,7 +1791,7 @@ function removeSection(sectionName)
 
 function addElement(id)
 {
-	console.log("docFeatureValue:" + docFeatureValue + " select flag: " + selectFlag);
+	console.log("add Element: docFeatureValue:" + docFeatureValue + " select flag: " + selectFlag);
 
 	if (!selectFlag && docFeatureValue == null) {
 		index = id.lastIndexOf("_");
@@ -1793,6 +1819,7 @@ function addElement(id)
 
 function removeElement(id)
 {
+	console.log("remove element");
 	if (!selectFlag && docFeatureValue == null) {
 		var selection = $("#dataElementTable").jqxDataTable('getSelection');
 		if (selection != undefined) {
@@ -1809,6 +1836,10 @@ function removeElement(id)
 			}).done(function(data) {
 				console.log(data);
 				if (data.length > 0) {
+					var dataObj = JSON.parse(data);
+					highlightRangeMap = dataObj[1][1];
+					console.log("highlightrangemap: " + JSON.stringify(highlightRangeMap));
+					
 					//loadCRFData(JSON.parse(data));
 					loadFrameInstance(currFrameInstanceID, false);
 				}
@@ -1897,6 +1928,7 @@ function clearElement()
 			type: 'GET',
 			url: clearElementAjax.url,
 		}).done(function(data) {
+			console.log(data);
 			var dataObj = JSON.parse(data);
 			frameInstanceData = dataObj[0];
 			highlightRangeMap = dataObj[1];
@@ -2291,6 +2323,7 @@ function valueMouseover(valueElement)
 
 		getHighlightRanges();
     	highlightText();
+    	scrollTextareaToPosition($('#docPanel'), lastEnd+1000);
     }
 
     console.log("index: " + docIndex);
@@ -2400,12 +2433,24 @@ function docFeatureClicked(value, id)
 }
 
 function scrollTextareaToPosition($textarea, position) {
+	console.log("scrolltextarea: " + position);
 	var text = origText;
 	var textBeforePosition = text.substr(0, position);
 	var textAfterPosition = text.substr(position);
 	$textarea.val(textBeforePosition);
-    $textarea.scrollTop($textarea.prop("scrollHeight"));
+	var scrollHeight = $textarea.prop("scrollHeight");
+    //$textarea.scrollTop(scrollHeight);
 	$textarea.val(text);
+	
+	var innerHeight = $textarea.innerHeight();
+	
+	console.log("scrollheight: " + scrollHeight + ", innerHeight: " + innerHeight);
+	if (scrollHeight > innerHeight)
+		$textarea.scrollTop(scrollHeight - (innerHeight / 2));
+	else {
+		$textarea.scrollTop(0);
+	}
+	
 
     /*
 	var text = $textarea.val();
