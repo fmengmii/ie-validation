@@ -644,8 +644,18 @@ public class Application extends Controller
 
     public Result clearAll()
     {
+    	List<Map<String, Object>> annotList = new ArrayList<Map<String, Object>>();
+    	
     	try {
     		gson = new Gson();
+    		DynamicForm form = Form.form().bindFromRequest();
+        	String docNamespace = form.get("docNamespace");
+        	String docTable = form.get("docTable");
+        	String docID = form.get("docID");
+        	
+        	double annotThreshold = Double.parseDouble(session("annotThreshold"));
+        	int projID = Integer.parseInt(session("projID"));
+        	
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
     		int frameInstanceID = Integer.parseInt(session("frameInstanceID"));
@@ -654,6 +664,8 @@ public class Application extends Controller
 
     		String sectionListStr = gson.toJson(sectionList);
     		session("sectionList", sectionListStr);
+    		
+    		annotList = da.getDocumentAnnotations(docNamespace, docTable, Long.parseLong(docID), annotThreshold, crfID, projID);
     	}
     	catch(Exception e)
     	{
@@ -661,7 +673,7 @@ public class Application extends Controller
     	}
 
 
-    	return ok();
+    	return ok(gson.toJson(annotList));
     }
 
     public Result clearValue(String htmlID)

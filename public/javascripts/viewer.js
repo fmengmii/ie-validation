@@ -2027,10 +2027,13 @@ function clearAll()
 	openDialogLoad();
 	var clearAllAjax = jsRoutes.controllers.Application.clearAll();
 	$.ajax({
-		type: 'GET',
+		type: 'POST',
 		url: clearAllAjax.url,
+		data: {docNamespace:docNamespace,docTable:docTable,docID:docID}
 		//async: false
 	}).done(function(data) {
+		annotList = JSON.parse(data);
+		
 		highlightRangeList = undefined;
 		highlightRanges = undefined;
 		highlightRangeMap = {};
@@ -2038,6 +2041,10 @@ function clearAll()
 	    frameInstanceData = [];
 	    setHTMLElements();
 	    //loadFrameInstanceNoRT();
+	    
+	    getHighlightRanges();
+	    highlightText();
+	    
 		closeDialogLoad();
 	})
 

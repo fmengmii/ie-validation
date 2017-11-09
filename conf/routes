@@ -21,7 +21,7 @@ GET		/get/project/:projID								controllers.Application.loadProject(projID: Int
 GET		/get/frameinstance/:frameInstanceID					controllers.Application.loadFrameInstance(frameInstanceID: Int)
 POST	/add/annotation										controllers.Application.addAnnotation()
 GET		/clear/element/:elementID/:htmlID					controllers.Application.clearElement(elementID: String, htmlID: String)
-GET		/clear												controllers.Application.clearAll()
+POST	/clear												controllers.Application.clearAll()
 GET		/clear/value/:htmlID								controllers.Application.clearValue(htmlID: String)
 POST	/add/history										controllers.Application.addDocumentHistory()
 GET		/get/history										controllers.Application.getDocumentHistory()
