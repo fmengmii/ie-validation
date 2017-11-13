@@ -593,6 +593,14 @@ public class DataAccess {
 		String docName = docNamespace + "-" + docTable + "-" + docID;
 
 		value = value.replaceAll("'", "''");
+		StringBuilder strBlder = new StringBuilder();
+		for (int i=0; i<value.length(); i++) {
+			char ch = value.charAt(i);
+			if (Character.isWhitespace(ch))
+				strBlder.append(" ");
+			else
+				strBlder.append(ch);
+		}
 
 		try {
 			Connection conn = DB.getConnection();
@@ -1596,21 +1604,37 @@ public class DataAccess {
 		}
 		
 		//preload
+		List<String> preloadAnnotList = new ArrayList<String>();
 		rs = stmt.executeQuery("select distinct annotation_type from project_preload where project_id = " + projID);
 		while (rs.next()) {
-			crfAnnotList.add(rs.getString(1));
+			preloadAnnotList.add(rs.getString(1));
 		}
 
+		
 		StringBuilder strBlder = new StringBuilder();
 		for (String crfAnnot : crfAnnotList) {
 			if (strBlder.length() > 0)
 				strBlder.append(",");
 			strBlder.append("'" + crfAnnot + "'");
 		}
-
+		
 		strBlder.insert(0, "(");
 		strBlder.append(")");
 		System.out.println("getDocumentAnnotation: strBlder=" + strBlder.toString());
+		
+		StringBuilder strBlder2 = new StringBuilder();
+		for (String crfAnnot : preloadAnnotList) {
+			if (strBlder2.length() > 0)
+				strBlder2.append(",");
+			strBlder2.append("'" + crfAnnot + "'");
+		}
+
+		strBlder2.insert(0, "(");
+		strBlder2.append(")");
+		System.out.println("getDocumentAnnotation: strBlder2=" + strBlder2.toString());
+		
+		
+		
 		//get annotations for these documents
 		List<Map<String, Object>> annotList = new ArrayList<Map<String, Object>>();
 		//rs = stmt.executeQuery("select distinct start, " + rq + "end" + rq + ", annotation_type from " + schema + "annotation where document_namespace = '" + docNamespace + "' and "
@@ -1628,8 +1652,41 @@ public class DataAccess {
 			annot.put("start", start);
 			annot.put("end", end);
 			annot.put("annotType", annotType);
+			annot.put("color", "lightskyblue");
 
 			annotList.add(annot);
+		}
+		
+		
+		//preload
+		rs = stmt.executeQuery("select start, " + rq + "end" + rq + ", annotation_type from "
+				+ schema + "annotation where document_namespace = '" + docNamespace + "' and "
+				+ "document_table = '" + docTable + "' and document_id = " + docID
+				+ " and score > " + annotThreshold + " and annotation_type in "
+				+ strBlder2.toString() + " order by start");
+
+		while (rs.next()) {
+			long start = rs.getLong(1);
+			long end = rs.getLong(2);
+			String annotType = rs.getString(3);
+			Map<String, Object> annot = new HashMap<String, Object>();
+			annot.put("start", start);
+			annot.put("end", end);
+			annot.put("annotType", annotType);
+			annot.put("color", "lightgray");
+
+			boolean inserted = false;
+			for (int i=0; i<annotList.size(); i++) {
+				Map<String, Object> annot2 = annotList.get(i);
+				if (start < ((Long) annot2.get("start"))) {
+					annotList.add(i, annot);
+					inserted = true;
+					break;
+				}
+			}
+			
+			if (!inserted)
+				annotList.add(annot);
 		}
 
 		stmt.close();

@@ -254,6 +254,22 @@ $(document).ready(function () {
    
    
    $('#docPanel').highlightWithinTextarea(onInput);
+   $('#docPanel').click(function(event) {
+	   var cursorPosition = $('#docPanel').prop("selectionStart");
+	   console.log("click: " + cursorPosition);
+	   
+	   docPanelClick(cursorPosition);
+	   
+	   $("#docFeatures input:radio").attr("checked", false);
+		$('[name=docfeature]').each(function() {
+			var keyValue = JSON.parse($(this).val());
+			$(this).next().html(keyValue["key"] + ": " + keyValue["value"]);
+		});
+		
+		docFeatureValue = null;
+
+   });
+   
 
    //$('#tokenSelectButton').button();
 
@@ -460,7 +476,7 @@ function getDocument(docInfoStr, index, clear, options, callback)
             //docListBox item background color from powderblue to green  #228B22; or #4CAF50;
             $('#docListBox font').css("background-color", "#32CD32");
         }
-		$("#validatedButtonDiv").show();
+		//$("#validatedButtonDiv").show();
 
 	}).fail(function() {
 	});
@@ -786,8 +802,17 @@ function rowSelect(row)
 	var elementHTMLID = rowData["elementHTMLID"];
 	var dataField = row.dataField;
 	
-	if (dataField == 'value')
+	if (dataField == 'value') {
+		selectFlag = false;
+		
+		$("#docFeatures input:radio").attr("checked", false);
+		$('[name=docfeature]').each(function() {
+			var keyValue = JSON.parse($(this).val());
+			$(this).next().html(keyValue["key"] + ": " + keyValue["value"]);
+		});
+
 		return;
+	}
 
 	var add = row.originalEvent.metaKey;
 	if (!add)
@@ -932,8 +957,11 @@ function rowSelect(row)
 			    highlightText();
 			    var height = $('#docPanel').innerHeight();
 			    $('#docPanel').scrollTop(0);
-			    var lastEnd = highlightRangeList[0]["end"];
-				scrollTextareaToPosition($('#docPanel'), lastEnd);
+			    
+			    if (highlightRangeList != undefined) {
+				    var lastEnd = highlightRangeList[0]["end"];
+					scrollTextareaToPosition($('#docPanel'), lastEnd);
+			    }
 				
 				//var scrollTop = $('#docPanel').scrollTop();
 				//console.log("scrolltop: " + scrollTop + ", height: " + height);
@@ -973,6 +1001,9 @@ function rowSelect(row)
 	}
 
 	var annotFeatures = null;
+	
+	
+	
 	//something was highlighted
 	if (start != end || docFeatureValue != null) {
 
@@ -1218,8 +1249,9 @@ function highlightText()
 		$('#docPanel').highlightWithinTextarea(onInput);
 		
 		$('.hwt-content mark').each(function (index) {
-			console.log("setting " + index + " to lightgray");
-			$(this).css("background-color","lightgray");
+			console.log("setting " + index + " to " + highlightRanges[index][2]);
+			//$(this).css("background-color","lightgray");
+			$(this).css("background-color", highlightRanges[index][2]);
 		});
 		//$('.hwt-content mark').css("background-color","lightgray");
 	}
@@ -1246,8 +1278,9 @@ function highlightText()
 		
 		$('.hwt-content mark').each(function (index) {
 			if (index != highlightIndexes[highlightIndex]) {
-				console.log("setting " + index + " to lightgray");
-				$(this).css("background-color","lightgray");
+				console.log("setting " + index + " to " + highlightRanges[index][2]);
+				//$(this).css("background-color","lightgray");
+				$(this).css("background-color", highlightRanges[index][2]);
 			}
 		});
 		
@@ -1649,6 +1682,10 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 	                
 	                $("#docListBox").jqxListBox({source: docListBoxSource});
 	                $('#docListBox').jqxListBox('refresh');
+	                
+	                if (docList.length == 1) {
+	                	$('#docListBox').jqxListBox('selectIndex', 0);
+	                }
                 }
 
                 getDocumentHistory();
@@ -1862,6 +1899,12 @@ function removeElement(id)
 					highlightRangeList = undefined;
 					highlightText();
 					selectFlag = false;
+					
+					$("#docFeatures input:radio").attr("checked", false);
+					$('[name=docfeature]').each(function() {
+						var keyValue = JSON.parse($(this).val());
+						$(this).next().html(keyValue["key"] + ": " + keyValue["value"]);
+					});
 
 					closeDialogLoad();
 				})
@@ -2558,6 +2601,7 @@ function getHighlightRangesNoOverlap()
 		var range = [];
 		range.push(annot["start"]);
 		range.push(annot["end"]);
+		range.push(annot["color"]);
 
 		highlightRanges.push(range);
 
@@ -2602,6 +2646,7 @@ function getHighlightRanges()
 	var lastIndex = -1;
 	var lastEnd = -1;
 	var annotList2 = [];
+	var lastColor = '';
 
 	for (var i=0; i<annotList.length; i++) {
 		if (annotList[i]["start"] < 0)
@@ -2643,6 +2688,7 @@ function getHighlightRanges()
 				range.push(annot["start"]);
 
 			range.push(annot["end"]);
+			range.push(annot["color"]);
 			highlightIndexes.push(highlightRanges.length);
 			lastHighlight = true;
 
@@ -2657,6 +2703,7 @@ function getHighlightRanges()
 				var annot2 = {};
 				annot2["start"] = annot["end"];
 				annot2["end"] = lastEnd;
+				annot2["color"] = lastColor;
 
 				var inserted = false;
 				for (var j=0; j<annotList2.length; j++) {
@@ -2697,6 +2744,7 @@ function getHighlightRanges()
 
 			//range.push(annot["start"]);
 			range.push(annot["end"]);
+			range.push(annot["color"]);
 
 			lastHighlight = false;
 		}
@@ -2704,6 +2752,7 @@ function getHighlightRanges()
 		highlightRanges.push(range);
 
 		lastEnd = annot["end"];
+		lastColor = annot["color"];
 	}
 
 	console.log("annot list: " + JSON.stringify(annotList));
@@ -2993,6 +3042,37 @@ function frameInstanceValidated() {
     }).fail(function(){
     });
 }
+
+
+
+function docPanelClick(cursorPosition)
+{
+	var highlightElementID;
+
+	for (var elementID in highlightRangeMap) {
+		console.log("elementID: " + elementID);
+		var annotList = highlightRangeMap[elementID];
+		console.log(JSON.stringify(annotList));
+
+		annotList.forEach(function (annot) {
+			console.log("start: " + annot['start'] + " end: " + annot['end']);
+			if (annot['start'] <= cursorPosition && annot['end'] >= cursorPosition) {
+				highlightElementID = elementID;
+			}
+		});
+	}
+	
+	for (index=0; index<gridData2.length; index++) {
+		var rowData = gridData2[index];
+		if (rowData['elementHTMLID'] == highlightElementID) {
+			$('#dataElementTable').jqxDataTable('selectRow', index);
+			break;
+		}
+	}
+	
+	loadFrameInstanceNoRT();
+}
+
 
 function alertBoxShow(message) {
     hideSuccessBox();
