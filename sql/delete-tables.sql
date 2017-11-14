@@ -1,67 +1,67 @@
-delete from crf;
-alter table crf AUTO_INCREMENT = 1;
+delete from SCHEMA.crf;
+alter table SCHEMA.crf AUTO_INCREMENT = 1;
 
-delete from crf_element;
+delete from SCHEMA.crf_element;
 
-delete from crf_section;
-alter table crf_section AUTO_INCREMENT = 1;
+delete from SCHEMA.crf_section;
+alter table SCHEMA.crf_section AUTO_INCREMENT = 1;
 
-delete from element;
-alter table element AUTO_INCREMENT = 1;
+delete from SCHEMA.element;
+alter table SCHEMA.element AUTO_INCREMENT = 1;
 
-delete from element_value;
+delete from SCHEMA.element_value;
 
-delete from frame;
-alter table frame AUTO_INCREMENT = 1;
+delete from SCHEMA.frame;
+alter table SCHEMA.frame AUTO_INCREMENT = 1;
 
-delete from frame_section;
+delete from SCHEMA.frame_section;
 
-delete from frame_slot;
+delete from SCHEMA.frame_slot;
 
-delete from provenance;
-alter table provenance AUTO_INCREMENT = 1;
+delete from SCHEMA.provenance;
+alter table SCHEMA.provenance AUTO_INCREMENT = 1;
 
-delete from slot;
-alter table slot AUTO_INCREMENT = 1;
+delete from SCHEMA.slot;
+alter table SCHEMA.slot AUTO_INCREMENT = 1;
 
-delete from `value`;
-alter table `value` AUTO_INCREMENT = 1;
+delete from SCHEMA.`value`;
+alter table SCHEMA.`value` AUTO_INCREMENT = 1;
 
 
 
 # project only
-delete from project;
-alter table project AUTO_INCREMENT = 1;
+delete from SCHEMA.project;
+alter table SCHEMA.project AUTO_INCREMENT = 1;
 
-delete from project_preload;
+delete from SCHEMA.project_preload;
 
-delete from crf_project;
-alter table crf_project AUTO_INCREMENT = 1;
+delete from SCHEMA.crf_project;
+alter table SCHEMA.crf_project AUTO_INCREMENT = 1;
 
-delete from project_frame_instance;
+delete from SCHEMA.project_frame_instance;
 
-delete from frame_instance;
-alter table frame_instance AUTO_INCREMENT = 1;
+delete from SCHEMA.frame_instance;
+alter table SCHEMA.frame_instance AUTO_INCREMENT = 1;
 
-delete from frame_instance_annotation;
+delete from SCHEMA.frame_instance_annotation;
 
-delete from frame_instance_document;
+delete from SCHEMA.frame_instance_document;
 
 
 
 # data only
-delete from frame_instance_data;
+delete from SCHEMA.frame_instance_data;
 
-delete from frame_instance_document_history;
+delete from SCHEMA.frame_instance_document_history;
 
-delete from frame_instance_element_repeat;
+delete from SCHEMA.frame_instance_element_repeat;
 
-delete from frame_instance_section_repeat;
+delete from SCHEMA.frame_instance_section_repeat;
 
-delete from annotation;
-alter table annotation AUTO_INCREMENT = 1;
+delete from SCHEMA.annotation;
+alter table SCHEMA.annotation AUTO_INCREMENT = 1;
 
-delete from frame_instance_status;
+delete from SCHEMA.frame_instance_status;
 
-delete from document_status;
+delete from SCHEMA.document_status;
 
