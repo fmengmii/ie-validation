@@ -14,8 +14,6 @@ delete from SCHEMA.element_value;
 delete from SCHEMA.frame;
 DBCC CHECKIDENT ("SCHEMA.frame", RESEED, 0)
 
-delete from SCHEMA.frame_section;
-
 delete from SCHEMA.frame_slot;
 
 delete from SCHEMA.provenance;
@@ -29,7 +27,7 @@ DBCC CHECKIDENT ("SCHEMA.value", RESEED, 0)
 
 
 
-# project only
+-- project only
 delete from SCHEMA.project;
 DBCC CHECKIDENT ("SCHEMA.project", RESEED, 0)
 
@@ -40,6 +38,7 @@ DBCC CHECKIDENT ("SCHEMA.crf_project", RESEED, 0)
 
 delete from SCHEMA.project_frame_instance;
 
+
 delete from SCHEMA.frame_instance;
 DBCC CHECKIDENT ("SCHEMA.frame_instance", RESEED, 0)
 
@@ -47,9 +46,12 @@ delete from SCHEMA.frame_instance_annotation;
 
 delete from SCHEMA.frame_instance_document;
 
+delete from SCHEMA.frame_instance_lock;
 
 
-# data only
+
+
+-- data only
 delete from SCHEMA.frame_instance_data;
 
 delete from SCHEMA.frame_instance_document_history;
@@ -59,7 +61,6 @@ delete from SCHEMA.frame_instance_element_repeat;
 delete from SCHEMA.frame_instance_section_repeat;
 
 delete from SCHEMA.annotation;
-DBCC CHECKIDENT ("SCHEMA.annotation", RESEED, 0)
 
 delete from SCHEMA.frame_instance_status;
 

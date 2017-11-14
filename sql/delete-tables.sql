@@ -14,8 +14,6 @@ delete from SCHEMA.element_value;
 delete from SCHEMA.frame;
 alter table SCHEMA.frame AUTO_INCREMENT = 1;
 
-delete from SCHEMA.frame_section;
-
 delete from SCHEMA.frame_slot;
 
 delete from SCHEMA.provenance;
@@ -47,6 +45,8 @@ delete from SCHEMA.frame_instance_annotation;
 
 delete from SCHEMA.frame_instance_document;
 
+delete from SCHEMA.frame_instance_lock;
+
 
 
 # data only
@@ -59,7 +59,6 @@ delete from SCHEMA.frame_instance_element_repeat;
 delete from SCHEMA.frame_instance_section_repeat;
 
 delete from SCHEMA.annotation;
-alter table SCHEMA.annotation AUTO_INCREMENT = 1;
 
 delete from SCHEMA.frame_instance_status;
 

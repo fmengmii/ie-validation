@@ -379,13 +379,13 @@ CREATE TABLE SCHEMA."value" (
 )
 
 
-CREATE TABLE "project_preload" (
+CREATE TABLE SCHEMA."project_preload" (
   "project_id" int DEFAULT NULL,
   "annotation_type" varchar(500) DEFAULT NULL
 )
 
 
-CREATE TABLE "frame_instance_lock" (
+CREATE TABLE SCHEMA."frame_instance_lock" (
   "frame_instance_id" int NOT NULL,
   "username" varchar(50) NOT NULL,
   "created_at" timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
