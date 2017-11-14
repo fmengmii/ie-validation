@@ -24,7 +24,7 @@ DBCC CHECKIDENT ("SCHEMA.provenance", RESEED, 0)
 delete from SCHEMA.slot;
 DBCC CHECKIDENT ("SCHEMA.slot", RESEED, 0)
 
-delete from SCHEMA.`value`;
+delete from SCHEMA.value;
 DBCC CHECKIDENT ("SCHEMA.value", RESEED, 0)
 
 
