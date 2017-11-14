@@ -652,6 +652,7 @@ public class Application extends Controller
         	String docNamespace = form.get("docNamespace");
         	String docTable = form.get("docTable");
         	String docID = form.get("docID");
+        	int crfID = Integer.parseInt(session("crfID"));
         	
         	double annotThreshold = Double.parseDouble(session("annotThreshold"));
         	int projID = Integer.parseInt(session("projID"));
