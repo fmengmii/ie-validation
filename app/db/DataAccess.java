@@ -247,6 +247,20 @@ public class DataAccess {
 		//docText = docText.replaceAll("\\n", "\\\\n");
 		//docText = docText.replaceAll("\r\n", "\n");
 		docText = docText.replaceAll("\r", "");
+		
+		//put in line breaks if there are none
+		int count = 1000;
+		StringBuilder strBlder = new StringBuilder(docText);
+		for (int i=0; i<strBlder.length(); i++) {
+			char ch = strBlder.charAt(i);
+			if (i > count && ch == ' ') {
+				strBlder.setCharAt(i, '\n');
+				count += 1000;
+			}
+		}
+		
+		docText = strBlder.toString();
+		
 
 		rs.close();
 		stmt.close();
