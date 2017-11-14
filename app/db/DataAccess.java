@@ -1659,34 +1659,36 @@ public class DataAccess {
 		
 		
 		//preload
-		rs = stmt.executeQuery("select start, " + rq + "end" + rq + ", annotation_type from "
-				+ schema + "annotation where document_namespace = '" + docNamespace + "' and "
-				+ "document_table = '" + docTable + "' and document_id = " + docID
-				+ " and score > " + annotThreshold + " and annotation_type in "
-				+ strBlder2.toString() + " order by start");
-
-		while (rs.next()) {
-			long start = rs.getLong(1);
-			long end = rs.getLong(2);
-			String annotType = rs.getString(3);
-			Map<String, Object> annot = new HashMap<String, Object>();
-			annot.put("start", start);
-			annot.put("end", end);
-			annot.put("annotType", annotType);
-			annot.put("color", "lightgray");
-
-			boolean inserted = false;
-			for (int i=0; i<annotList.size(); i++) {
-				Map<String, Object> annot2 = annotList.get(i);
-				if (start < ((Long) annot2.get("start"))) {
-					annotList.add(i, annot);
-					inserted = true;
-					break;
+		if (strBlder2.length() > 2) {
+			rs = stmt.executeQuery("select start, " + rq + "end" + rq + ", annotation_type from "
+					+ schema + "annotation where document_namespace = '" + docNamespace + "' and "
+					+ "document_table = '" + docTable + "' and document_id = " + docID
+					+ " and score > " + annotThreshold + " and annotation_type in "
+					+ strBlder2.toString() + " order by start");
+	
+			while (rs.next()) {
+				long start = rs.getLong(1);
+				long end = rs.getLong(2);
+				String annotType = rs.getString(3);
+				Map<String, Object> annot = new HashMap<String, Object>();
+				annot.put("start", start);
+				annot.put("end", end);
+				annot.put("annotType", annotType);
+				annot.put("color", "lightgray");
+	
+				boolean inserted = false;
+				for (int i=0; i<annotList.size(); i++) {
+					Map<String, Object> annot2 = annotList.get(i);
+					if (start < ((Long) annot2.get("start"))) {
+						annotList.add(i, annot);
+						inserted = true;
+						break;
+					}
 				}
+				
+				if (!inserted)
+					annotList.add(annot);
 			}
-			
-			if (!inserted)
-				annotList.add(annot);
 		}
 
 		stmt.close();

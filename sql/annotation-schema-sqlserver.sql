@@ -388,7 +388,7 @@ CREATE TABLE SCHEMA."project_preload" (
 CREATE TABLE SCHEMA."frame_instance_lock" (
   "frame_instance_id" int NOT NULL,
   "username" varchar(50) NOT NULL,
-  "created_at" timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  "created_at" datetime DEFAULT getdate(),
   PRIMARY KEY ("frame_instance_id")
 )
 
