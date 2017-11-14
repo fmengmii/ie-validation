@@ -33,6 +33,8 @@ alter table `value` AUTO_INCREMENT = 1;
 delete from project;
 alter table project AUTO_INCREMENT = 1;
 
+delete from project_preload;
+
 delete from crf_project;
 alter table crf_project AUTO_INCREMENT = 1;
 

@@ -379,22 +379,16 @@ CREATE TABLE SCHEMA."value" (
 )
 
 
-
-CREATE TABLE SCHEMA."gen_msa_status" (
-  "annotation_type" varchar(500) NOT NULL,
-  "profile_count" int(11) DEFAULT NULL,
-  PRIMARY KEY ("annotation_type")
-) 
-
-
-
-CREATE TABLE SCHEMA."gen_filter_status" (
-  "document_id" bigint(20) NOT NULL,
-  PRIMARY KEY (`document_id`)
+CREATE TABLE `project_preload` (
+  `project_id` int(11) DEFAULT NULL,
+  `annotation_type` varchar(500) DEFAULT NULL
 )
 
 
-CREATE TABLE SCHEMA."frame_instance_lock" (
-	
+CREATE TABLE `frame_instance_lock` (
+  `frame_instance_id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`frame_instance_id`)
 )
 

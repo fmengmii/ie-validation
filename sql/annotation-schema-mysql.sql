@@ -501,15 +501,18 @@ CREATE TABLE `value` (
 ) ENGINE=InnoDB AUTO_INCREMENT=250 DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `gen_msa_status` (
-  `annotation_type` varchar(500) NOT NULL,
-  `profile_count` int(11) DEFAULT NULL,
-  PRIMARY KEY (`annotation_type`)
+
+CREATE TABLE `project_preload` (
+  `project_id` int(11) DEFAULT NULL,
+  `annotation_type` varchar(500) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+CREATE TABLE `frame_instance_lock` (
+  `frame_instance_id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`frame_instance_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-CREATE TABLE `gen_filter_status` (
-  `document_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`document_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
