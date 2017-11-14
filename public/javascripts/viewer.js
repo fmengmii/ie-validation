@@ -802,6 +802,7 @@ function rowSelect(row)
 	var elementHTMLID = rowData["elementHTMLID"];
 	var dataField = row.dataField;
 	
+	/*
 	if (dataField == 'value') {
 		selectFlag = false;
 		
@@ -813,6 +814,7 @@ function rowSelect(row)
 
 		return;
 	}
+	*/
 
 	var add = row.originalEvent.metaKey;
 	if (!add)
@@ -2373,7 +2375,12 @@ function valueMouseover(valueElement)
 
 		getHighlightRanges();
     	highlightText();
-    	scrollTextareaToPosition($('#docPanel'), lastEnd+1000);
+    	//scrollTextareaToPosition($('#docPanel'), lastEnd+1000);
+    	
+    	if (highlightRangeList != undefined) {
+		    var lastEnd = highlightRangeList[0]["end"];
+			scrollTextareaToPosition($('#docPanel'), lastEnd);
+	    }
     }
 
     console.log("index: " + docIndex);
