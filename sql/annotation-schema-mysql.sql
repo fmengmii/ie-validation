@@ -516,3 +516,10 @@ CREATE TABLE `frame_instance_lock` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
+
+CREATE TABLE `user_project` (
+  `user_id` int(11) DEFAULT NULL,
+  `project_id` int(11) DEFAULT NULL,
+  `frame_instance_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+

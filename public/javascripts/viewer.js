@@ -912,6 +912,7 @@ function rowSelect(row)
 						//highlightRange.end = -1;
 						//highlightRanges = [];
 				    	highlightRangeList = undefined;
+				    	getHighlightRanges();
 				    	//highlightText();
 				    }
 				    else
@@ -919,10 +920,15 @@ function rowSelect(row)
 
 			    	highlightText();
 				    $('#docPanel').scrollTop(0);
-				    var lastEnd = highlightRangeList[0]["end"];
-					scrollTextareaToPosition($('#docPanel'), lastEnd);
+				    //var lastEnd = highlightRangeList[0]["end"];
+					//scrollTextareaToPosition($('#docPanel'), lastEnd);
 					//var scrollTop = $('#docPanel').scrollTop();
 					//$('#docPanel').scrollTop(scrollTop + ($('#docPanel').innerHeight() / 2));
+					
+					if (highlightRangeList != undefined) {
+					    var lastEnd = highlightRangeList[0]["end"];
+						scrollTextareaToPosition($('#docPanel'), lastEnd);
+				    }
 			    	
 			    });
 		    }
@@ -2275,7 +2281,7 @@ function valueClickCallback(add)
 
 function valueMouseover(valueElement)
 {
-	console.log("mouse over! " + valueElement.id);
+	console.log("mouse over! " + valueElement.id + ", " + valueElement.name);
 
 	highlightRangeList = highlightRangeMap[valueElement.id];
 	var highlightMap;
@@ -3055,6 +3061,7 @@ function frameInstanceValidated() {
 function docPanelClick(cursorPosition)
 {
 	var highlightElementID;
+	var valueHTMLID;
 
 	for (var elementID in highlightRangeMap) {
 		console.log("elementID: " + elementID);
@@ -3069,15 +3076,35 @@ function docPanelClick(cursorPosition)
 		});
 	}
 	
-	for (index=0; index<gridData2.length; index++) {
-		var rowData = gridData2[index];
-		if (rowData['elementHTMLID'] == highlightElementID) {
-			$('#dataElementTable').jqxDataTable('selectRow', index);
-			break;
-		}
+	/*
+	for (var i=0; i<frameInstanceData.length; i++) {
+		var element = frameInstanceData[i];
+		//console.log("frameInstanceData: " + JSON.stringify(element) + ", " + element["elementHTMLID"] + ", " + element["valueHTMLID"]);
+		if (element["elementHTMLID"] == highlightElementID)
+			valueHTMLID = element["valueHTMLID"];
 	}
+	*/
 	
-	loadFrameInstanceNoRT();
+	//var name = $("#" + highlightElementID).attr('id');
+	if (highlightElementID != null) {
+		var el = document.getElementById(highlightElementID);
+		
+		var name = el.name;
+		
+		console.log('highlightelementid: ' + highlightElementID + " name: " + name + " valuehtmlid: " + valueHTMLID);
+		
+		
+		for (index=0; index<gridData2.length; index++) {
+			var rowData = gridData2[index];
+			//console.log(rowData['elementHTMLID']);
+			if (rowData['elementHTMLID'] == name || rowData['elementHTMLID'] == highlightElementID) {
+				$('#dataElementTable').jqxDataTable('selectRow', index);
+				break;
+			}
+		}
+		
+		loadFrameInstanceNoRT();
+	}
 }
 
 

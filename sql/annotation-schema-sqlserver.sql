@@ -392,3 +392,10 @@ CREATE TABLE SCHEMA."frame_instance_lock" (
   PRIMARY KEY ("frame_instance_id")
 )
 
+
+CREATE TABLE "user_project" (
+  "user_id" int DEFAULT NULL,
+  "project_id" int DEFAULT NULL,
+  "frame_instance_id" int DEFAULT NULL
+)
+

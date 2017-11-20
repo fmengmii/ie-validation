@@ -330,9 +330,9 @@ public class DataAccess {
 
 		int lastFrameInstanceID = 0;
 		int lastFrameInstanceIndex = -1;
-		ResultSet rs = stmt.executeQuery("select frame_instance_id from "
-				+ schema + rq + "user" + rq + " where user_name = '"
-				+ username + "' AND project_id = " + projID); // modify by wyu
+		ResultSet rs = stmt.executeQuery("select a.frame_instance_id from "
+				+ schema + rq + "user_project" + rq + "a, " + schema + rq + "user" + rq + " b where b.user_name = '"
+				+ username + "' AND a.project_id = " + projID + " and a.user_id = b.user_id"); // modify by wyu
 		if (rs.next()) {
 			lastFrameInstanceID = rs.getInt(1);
 		}
@@ -373,6 +373,7 @@ public class DataAccess {
 
 
 		//update user projectID
+		/*
 		int userCount = 0;
 		rs = stmt.executeQuery("select count(*) from " + schema + rq + "user" + rq + " where user_name = '" + username + "'"); // this was updated from rs = stmt.executeQuery("select count(*) from " + schema + rq + "user" + rq + " where user_name = 'test'")
 		if (rs.next()) {
@@ -383,6 +384,8 @@ public class DataAccess {
 			stmt.execute("insert into " + schema + rq + "user" + rq + " (user_name, project_id, frame_instance_id) values ('test', " + projID + ", 1)");
 		else
 			stmt.execute("update " + schema + rq + "user" + rq + " set project_id = " + projID + " where user_name = '" + username + "'"); // this was updated from stmt.execute("update " + schema + rq + "user" + rq + " set project_id = " + projID + " where user_name = 'test'")
+
+		 */
 
 		conn.close();
 
@@ -558,8 +561,26 @@ public class DataAccess {
 		String docListJSON = loadFrameInstanceDocuments(frameInstanceID);
 
 		//update user
-		stmt.execute("update " + schema + rq + "user" + rq + " set frame_instance_id = " + frameInstanceID + " where user_name = '" + username + "'");
-
+		int userID = -1;		
+		rs = stmt.executeQuery("select user_id from " + schema + rq + "user" + rq +" where user_name = '" + username + "'");
+		if (rs.next()) {
+			userID = rs.getInt(1);
+		}
+		
+		int count = 0;		
+		rs = stmt.executeQuery("select count(*) from " + schema + rq + "user_project" + rq +" where user_id = " + userID + " and project_id = " + projID);
+		if (rs.next()) {
+			count = rs.getInt(1);
+		}
+		
+		
+		//insert into user_project
+		if (count == 0) {
+			stmt.execute("insert into " + schema + "user_project (user_id, project_id, frame_instance_id) values (" + userID + "," + projID + "," + frameInstanceID + ")");
+		}
+		else {
+			stmt.execute("update " + schema + rq + "user_project" + rq + " set frame_instance_id = " + frameInstanceID + " where user_id = " + userID + " and project_id = " + projID);
+		}
 		conn.close();
 
 		String frameInstanceJSON = "[" + docJSON + "," + crfJSON + "," + docListJSON + "," + frameDataStr + "]";
