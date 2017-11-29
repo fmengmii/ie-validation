@@ -3020,7 +3020,7 @@ function frameInstanceValidated() {
 	}).done(function(data) {
 		//$('#docListBox font').css("background-color", "#32CD32");
 
-		if( data.startsWith("Error:") ) {
+		if( data.lastIndexOf("Error:") == 0) {
             var message = data.replace("Error:", "");
             alertBoxShow(message);
         } else {
