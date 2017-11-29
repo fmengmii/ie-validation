@@ -113,7 +113,7 @@ $(document).ready(function () {
 
 	   console.log("selected doc: " + item.index);
 	   getDocument(item.value, item.index, true, null, function () {
-		   console.log("HERERERE!");
+		   //console.log("HERERERE!");
 	 	   getHighlightRanges();
 		   highlightText();
 	   });
@@ -474,7 +474,7 @@ function getDocument(docInfoStr, index, clear, options, callback)
         var frameInstanceStatus = docData["frameInstanceStatus"];
         if( frameInstanceStatus == 1 ) {
             //docListBox item background color from powderblue to green  #228B22; or #4CAF50;
-            $('#docListBox font').css("background-color", "#32CD32");
+            //$('#docListBox font').css("background-color", "#32CD32");
         }
 		//$("#validatedButtonDiv").show();
 
@@ -1694,6 +1694,8 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 	                if (docList.length == 1) {
 	                	$('#docListBox').jqxListBox('selectIndex', 0);
 	                }
+	                
+	                frameInstanceValidated();
                 }
 
                 getDocumentHistory();
@@ -3016,14 +3018,14 @@ function frameInstanceValidated() {
 		type: 'GET',
 		url: frameInstanceValidatedAjax.url
 	}).done(function(data) {
-		$('#docListBox font').css("background-color", "#32CD32");
+		//$('#docListBox font').css("background-color", "#32CD32");
 
 		if( data.startsWith("Error:") ) {
             var message = data.replace("Error:", "");
             alertBoxShow(message);
         } else {
             var message = "The document(s) was validated successfully";
-            successBoxShow(message);
+            //successBoxShow(message);
 
             var result = JSON.parse(data);
 		    frameArray = result[0];
@@ -3032,10 +3034,9 @@ function frameInstanceValidated() {
 		    for(var i = 0; i < frameArray.length; i++) {
 		        if( frameArray[i]["validatedByUserName"] != "" ) {
 		            optionsStr += "<option value='" + frameArray[i]["frameInstanceID"]
-		                + "'>" + frameArray[i]["name"] + " Validated By "
-		                + frameArray[i]["validatedByUserName"] + "</option>";
+		                + "'>" + frameArray[i]["name"] + " : " + frameArray[i]["validatedByUserName"] + "</option>";
 		        } else {
-		            optionsStr += "<option class='redColor' value='" + frameArray[i]["frameInstanceID"]
+		            optionsStr += "<option value='" + frameArray[i]["frameInstanceID"]
 		            + "'>" + frameArray[i]["name"] + "</option>";
 		        }
 		    }
