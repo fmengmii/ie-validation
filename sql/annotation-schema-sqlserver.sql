@@ -393,7 +393,7 @@ CREATE TABLE SCHEMA."frame_instance_lock" (
 )
 
 
-CREATE TABLE "user_project" (
+CREATE TABLE SCHEMA."user_project" (
   "user_id" int DEFAULT NULL,
   "project_id" int DEFAULT NULL,
   "frame_instance_id" int DEFAULT NULL
