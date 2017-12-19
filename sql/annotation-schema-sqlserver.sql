@@ -220,7 +220,7 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
     "document_text_column" varchar(500) DEFAULT NULL,
     "document_name" varchar(500) DEFAULT NULL,
     "document_order" int DEFAULT NULL,
-    "document_features" varchar(500) DEFAULT NULL
+    "document_features" varchar(max) DEFAULT NULL
   )
 
   --

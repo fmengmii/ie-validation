@@ -291,7 +291,7 @@ CREATE TABLE `frame_instance_annotation` (
     `document_text_column` varchar(500) DEFAULT NULL,
     `document_name` varchar(500) DEFAULT NULL,
     `document_order` int(11) DEFAULT NULL,
-    `document_features` varchar(500) DEFAULT NULL
+    `document_features` varchar(max) DEFAULT NULL
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
   /*!40101 SET character_set_client = @saved_cs_client */;
 
