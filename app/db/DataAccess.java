@@ -1640,7 +1640,7 @@ public class DataAccess {
 		
 		//preload
 		List<String> preloadAnnotList = new ArrayList<String>();
-		rs = stmt.executeQuery("select distinct annotation_type from project_preload where project_id = " + projID);
+		rs = stmt.executeQuery("select distinct annotation_type from " + schema + "project_preload where project_id = " + projID);
 		while (rs.next()) {
 			preloadAnnotList.add(rs.getString(1));
 		}
