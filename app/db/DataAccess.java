@@ -223,6 +223,8 @@ public class DataAccess {
 			docFeaturesStr = rs.getString(4);
 			frameInstanceID = rs.getInt(5);
 		}
+
+		/*
 		long crfID = frameInstanceID;
 
 		rs = stmt2.executeQuery("select status from " + schema + "frame_instance_status " +
@@ -231,6 +233,7 @@ public class DataAccess {
 			docMap.put("frameInstanceStatus", String.valueOf(rs.getInt(1)));
 		}
 		Logger.info("getDocument: frameInstanceStatus=" + docMap.get("frameInstanceStatus"));
+		*/
 
 		System.out.println("select " + docTextColumn + " from " + docSchema + docTable + " where " + docKey + " = " + docID);
 
@@ -353,7 +356,7 @@ public class DataAccess {
 			rs1 = stmt1.executeQuery("SELECT b.user_name FROM " + schema
 					+ "frame_instance_status a, " + schema + rq + "user" + rq + " b "
 					+ "WHERE a.frame_instance_id = " + frameInstanceID
-					+ " AND a.status = 1 AND a.user_id = b.user_id ");
+					+ " AND (a.status = 1 or a.status = -2) AND a.user_id = b.user_id ");
 			if (rs1.next()) {
 				userName = rs1.getString(1);
 			}
@@ -2087,6 +2090,9 @@ public class DataAccess {
 				docTable = rs.getString(3);
 			}
 			if( frameInstanceID == 0 ) {
+				System.out.println("SELECT frame_instance_id, "
+						+ "document_namespace, document_table FROM "
+						+ schema + "frame_instance_document WHERE document_id = " + docID);
 				return false;
 			}
 
@@ -2096,15 +2102,19 @@ public class DataAccess {
 				projectID = rs.getInt(1);
 			}
 			if( projectID == 0 ) {
+				System.out.println("SELECT project_id FROM " + schema
+						+ "project_frame_instance WHERE frame_instance_id = " + frameInstanceID);
 				return false;
 			}
-			rs = stmt.executeQuery("SELECT user_id FROM " + schema + rq + "user" + rq
-				+ "WHERE user_name = '" + userName + "' AND project_id = "
-				+ projectID );
+			rs = stmt.executeQuery("SELECT a.user_id FROM " + schema + rq + "user" + rq + " a, " + schema + "user_project b "
+				+ "WHERE a.user_name = '" + userName + "' AND b.project_id = " + projectID + " and a.user_id = b.user_id");
 			if( rs.next() ) {
 				userID = rs.getInt(1);
 			}
 			if( userID == 0 ) {
+				System.out.println("SELECT user_id FROM " + schema + rq + "user" + rq
+						+ "WHERE user_name = '" + userName + "' AND project_id = "
+						+ projectID );
 				return false;
 			}
 			rs = stmt.executeQuery("SELECT status, user_id FROM " + schema
@@ -2116,7 +2126,7 @@ public class DataAccess {
 
 				if( status != 1 ) {
 					stmt.executeUpdate( "UPDATE " + schema
-							+ "frame_instance_status SET status = 1, user_id = " + userID
+							+ "frame_instance_status SET status = " + status + ", user_id = " + userID
 							+ " WHERE frame_instance_id = " + frameInstanceID );
 				} else {
 					if( preUserID != userID ) {
@@ -2128,7 +2138,7 @@ public class DataAccess {
 			} else {
 				stmt.executeUpdate("INSERT INTO " + schema + "frame_instance_status " +
 						"(frame_instance_id, status, user_id) VALUES("
-						+ frameInstanceID + ", 1, " + userID + ")" ) ;
+						+ frameInstanceID + ", -2, " + userID + ")" ) ;
 			}
 			rs = stmt.executeQuery( "SELECT status, user_id FROM " + schema + "document_status "
 				+ "WHERE document_id = " + docID + " AND document_namespace = '"
@@ -2139,7 +2149,7 @@ public class DataAccess {
 				int preUserID = rs.getInt(2);
 				if( status != 1 ) {
 					stmt.executeUpdate( "UPDATE " + schema + "document_status "
-							+ "SET status = 1, user_id = " + userID
+							+ "SET status = " + status + ", user_id = " + userID
 							+ " WHERE document_id = " + docID
 							+ " AND document_namespace = '" + docNamespace
 							+ "' AND document_table = '" + docTable + "'");
@@ -2156,13 +2166,13 @@ public class DataAccess {
 				stmt.executeUpdate( "INSERT INTO " + schema + "document_status "
 						+ "(document_namespace, document_table, document_id, "
 						+ "status, user_id) VALUES " + "('" + docNamespace + "', '"
-						+ docTable + "', " + docID + ", 1, " + userID + ")" );
+						+ docTable + "', " + docID + ", -2, " + userID + ")" );
 
 			}
 			conn.close();
 			return true;
 		} catch ( SQLException ex ) {
-			Logger.error("updateValidationStatus got error: " + ex.toString() );
+			Logger.info("updateValidationStatus got error: " + ex.toString() );
 			return false;
 		}
 	}

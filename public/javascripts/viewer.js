@@ -471,11 +471,11 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		if (callback != null)
 			callback(options);
 
-        var frameInstanceStatus = docData["frameInstanceStatus"];
-        if( frameInstanceStatus == 1 ) {
+        //var frameInstanceStatus = docData["frameInstanceStatus"];
+        //if( frameInstanceStatus == 1 ) {
             //docListBox item background color from powderblue to green  #228B22; or #4CAF50;
             //$('#docListBox font').css("background-color", "#32CD32");
-        }
+        //}
 		//$("#validatedButtonDiv").show();
 
 	}).fail(function() {
@@ -1445,7 +1445,7 @@ function loadProject(projName)
 		for(var i = 0; i < frameArray.length; i++) {
 		    if( frameArray[i]["validatedByUserName"] != "" ) {
 		        optionsStr += "<option value='" + frameArray[i]["frameInstanceID"]
-		            + "'>" + frameArray[i]["name"] + " Validated By "
+		            + "'>" + frameArray[i]["name"] + " : "
 		            + frameArray[i]["validatedByUserName"] + "</option>";
 		    } else {
 		        optionsStr += "<option value='" + frameArray[i]["frameInstanceID"] + "'>" + frameArray[i]["name"] + "</option>";
