@@ -250,7 +250,8 @@ $(document).ready(function () {
    document.getElementById('projSelect').selectedIndex = 0;
 
    //jquery-fieldselection
-   $('textarea').keyup(update).mousedown(update).mousemove(update).mouseup(update);
+   //$('textarea').keyup(update).mousedown(update).mousemove(update).mouseup(update);
+   $('textarea').keyup(update).mousedown(update).mouseup(update);
    
    
    $('#docPanel').highlightWithinTextarea(onInput);
@@ -1013,7 +1014,7 @@ function rowSelect(row)
 	
 	
 	//something was highlighted
-	if (start != end || docFeatureValue != null) {
+	if (selectFlag && (start != end || docFeatureValue != null)) {
 
 		if (docFeatureValue != null) {
 			start = -1;
@@ -1150,6 +1151,8 @@ function rowSelect(row)
 
 								docFeatureValue = null;
 							}
+							
+							selectFlag = false;
 						});
 
 						closeDialogLoad();
@@ -2549,6 +2552,7 @@ function update(e) {
 		});
 
 		docFeatureValue = null;
+		console.log("!!!! select flag true");
 		selectFlag = true;
 
 		//docFeatureRange.start = selectRange.start;
