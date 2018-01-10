@@ -2622,7 +2622,8 @@ function getHighlightRangesNoOverlap()
 		range.push(annot["end"]);
 		range.push(annot["color"]);
 
-		highlightRanges.push(range);
+		if (range[0] < range[1])
+			highlightRanges.push(range);
 
 		/*
 		var inserted = false;
@@ -2676,6 +2677,7 @@ function getHighlightRanges()
 
 	var lastHighlight = false;
 	for (i=0; i<annotList2.length; i++) {
+		
 
 		var annot = annotList2[i];
 
@@ -2697,8 +2699,16 @@ function getHighlightRanges()
 			if (annot["start"] < lastEnd) {
 				if (lastIndex < i-1) {
 					range.push(annot["start"]);
-					if (highlightRanges.length > 0)
-						highlightRanges[highlightRanges.length-1][1] = annot["start"];
+					if (highlightRanges.length > 0) {
+						
+						var range2 = highlightRanges[highlightRanges.length-1];
+						range2[1] = annot["start"];
+						
+						if (range2[0] == range2[1])
+							highlightRanges.splice(highlightRanges.length-1, 1);
+						
+						//highlightRanges[highlightRanges.length-1][1] = annot["start"];
+					}
 				}
 				else
 					range.push(lastEnd);
@@ -2751,7 +2761,13 @@ function getHighlightRanges()
 				//if (lastIndex < i-1) {
 				if (!lastHighlight) {
 					//set previous range's end to current start
-					highlightRanges[highlightRanges.length-1][1] = annot["start"];
+					var range2 = highlightRanges[highlightRanges.length-1];
+					range2[1] = annot["start"];
+					
+					if (range2[0] == range2[1])
+						highlightRanges.splice(highlightRanges.length-1, 1);
+					
+					
 					range.push(annot["start"]);
 				}
 				else
@@ -2768,10 +2784,12 @@ function getHighlightRanges()
 			lastHighlight = false;
 		}
 
-		highlightRanges.push(range);
+		if (range[0] < range[1]) {
+			highlightRanges.push(range);
 
-		lastEnd = annot["end"];
-		lastColor = annot["color"];
+			lastEnd = annot["end"];
+			lastColor = annot["color"];
+		}
 	}
 
 	console.log("annot list: " + JSON.stringify(annotList));
