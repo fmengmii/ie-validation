@@ -245,8 +245,10 @@ public class DataAccess {
 			//docText = StringEscapeUtils.escapeHtml4(docText);
 			docText = docText.replaceAll("<<", "[[");
 			docText = docText.replaceAll(">>", "]]");
-			docText = docText.replace("<", "[");
-			docText = docText.replace(">", "]");
+			String smallLess = new String(Character.toChars(65124));
+			String smallGreater = new String(Character.toChars(65125));
+			docText = docText.replace(">", smallGreater);
+			docText = docText.replace("<", smallLess);
 					
 			//docText = docText.substring(0, 5000);
 			//docText = "The patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\n";
