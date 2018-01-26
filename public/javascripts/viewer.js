@@ -1515,6 +1515,8 @@ function loadFrameInstance(frameInstanceID, clearDoc)
     $("#validatedButtonDiv").hide();
 	currFrameInstanceID = frameInstanceID;
 	docSelectIndex = -1;
+	
+	openDialogLoad();
     closeFrameInstanceLock();
     $.ajax({
         type: "GET",
@@ -1527,7 +1529,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
             return true;
         }
         else {
-            openDialogLoad();
+            //openDialogLoad();
             var loadFrameInstanceAjax = jsRoutes.controllers.Application.loadFrameInstance(frameInstanceID);
             $.ajax({
                 type: 'GET',
@@ -3035,6 +3037,7 @@ function toggleTokenSelect()
 })(jQuery);
 
 function frameInstanceValidated() {
+	openDialogLoad();
     var frameInstanceValidatedAjax = jsRoutes.controllers.Application.frameInstanceValidated();
 	$.ajax({
 		type: 'GET',
@@ -3075,6 +3078,9 @@ function frameInstanceValidated() {
 			    $('#crfSelect').val(frameInstanceID).trigger("change");
             }
         }
+		
+		closeDialogLoad();
+		
     }).fail(function(){
     });
 }
