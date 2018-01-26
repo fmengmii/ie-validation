@@ -111,9 +111,9 @@ $(document).ready(function () {
 
 	   docSelectIndex = item.index;
 
-	   console.log("selected doc: " + item.index);
+	   clog("selected doc: " + item.index);
 	   getDocument(item.value, item.index, true, null, function () {
-		   //console.log("HERERERE!");
+		   //clog("HERERERE!");
 	 	   getHighlightRanges();
 		   highlightText();
 	   });
@@ -182,12 +182,12 @@ $(document).ready(function () {
        groups: ['section'],
        groupsRenderer: function(value, rowData, level)
        {
-    	   //console.log(value);
+    	   //clog(value);
     	   var sectionData = JSON.parse(value);
     	   //var sectionData = JSON.parse("{\"sectionID\":1}");
-    	   //console.log(sectionData);
+    	   //clog(sectionData);
     	   var sectionName = sectionData["sectionName"];
-    	   //console.log(sectionName);
+    	   //clog(sectionName);
 
     	   var index = sectionName.indexOf("|");
     	   var sectionNameShort = sectionName.substring(index+1);
@@ -219,14 +219,14 @@ $(document).ready(function () {
    });
 
    $('#dataElementTable').on('rowSelect', function (event) {
-	   console.log("rowselect event: " + docNamespace + "," + docTable + "," + docID);
-	   //console.log(event.args.index + " meta: " + event.args.originalEvent + " ctrl: " + event.args.ctrlKey);
+	   clog("rowselect event: " + docNamespace + "," + docTable + "," + docID);
+	   //clog(event.args.index + " meta: " + event.args.originalEvent + " ctrl: " + event.args.ctrlKey);
 	   //rowSelect(event.args.row);
 	   //rowSelect(event.args);
    });
 
    $('#dataElementTable').on('rowClick', function (event) {
-	   console.log("rowClick: " + event.args.index + " meta: " + event.args.originalEvent.metaKey + " ctrl: " + event.ctrlKey);
+	   clog("rowClick: " + event.args.index + " meta: " + event.args.originalEvent.metaKey + " ctrl: " + event.ctrlKey);
 	   rowSelect(event.args);
    });
 
@@ -239,7 +239,7 @@ $(document).ready(function () {
    $('#highlightMenu').on('itemclick', function (event) {
 	   // get the clicked LI element.
 	   var element = event.args;
-	   console.log("clicked: " + element.id);
+	   clog("clicked: " + element.id);
 	   if (element.id == 'clear')
 		   clearFromMenu();
 	   else
@@ -257,7 +257,7 @@ $(document).ready(function () {
    $('#docPanel').highlightWithinTextarea(onInput);
    $('#docPanel').click(function(event) {
 	   var cursorPosition = $('#docPanel').prop("selectionStart");
-	   console.log("click: " + cursorPosition);
+	   clog("click: " + cursorPosition);
 	   
 	   docPanelClick(cursorPosition);
 	   
@@ -271,50 +271,6 @@ $(document).ready(function () {
 
    });
    
-
-   //$('#tokenSelectButton').button();
-
-   /*
-   $('#docPanel').on("mouseup", function(e) {
-		   var pos = $('#docPanel').getCursorPosition();
-		   console.log("cursor: " + pos);
-		   var scrollTop = $(window).scrollTop();
-           var scrollLeft = $(window).scrollLeft();
-           if (inHighlight(pos)) {
-
-        	   var annotType = "";
-        	   for (var i=0; i<annotList.length; i++) {
-        			if (annotList[i]["start"] == highlightMenuStart) {
-        				annotType = annotList[i]["annotType"];
-        				break;
-        			}
-        	   }
-
-        	   openDialogLoad();
-        	   var getSlotValuesAjax = jsRoutes.controllers.Application.getSlotValues(annotType);
-        		$.ajax({
-        			type: "GET",
-        			url: getSlotValuesAjax.url
-        		}).done(function(data) {
-        			console.log("slot values: " + data);
-        			var slotValues = JSON.parse(data);
-        			var source = [];
-        			for (var i=0; i<slotValues.length; i++) {
-        				source.push({id:slotValues[i]["htmlID"],label:slotValues[i]["name"]});
-        			}
-
-        			//$('#highlightMenu').jqxMenu('destroy');
-        			$('#highlightMenu').jqxMenu({source:source});
-             	   	$('#highlightMenu').jqxMenu('open', parseInt(e.clientX) + 5 + scrollLeft, parseInt(e.clientY) + 5 + scrollTop);
-
-             	   	closeDialogLoad();
-        		});
-           }
-           else
-        	   $('#highlightMenu').jqxMenu('close');
-   });
-   */
-
 
    	//load the entity if there's an entity ID
 
@@ -368,7 +324,7 @@ $(window).on('resize', function(e) {
 		  window.resizeEvt = setTimeout(function() {
 			  if (loadDialogCount == 0) {
 				  //code to do after window is resized when the dialog window is not open (the app is not refreshing itself)
-				  console.log("window resized!");
+				  clog("window resized!");
 				  //loadFrameInstance(currFrameInstanceID, false);
 				  loadFrameInstanceNoRT();
 				  $('#docPanel').width($('#docDiv').width() * .95);
@@ -389,7 +345,7 @@ function getDocument(docInfoStr, index, clear, options, callback)
     // new code
     clearHistory();
 
-	console.log("getDocument: " + docInfoStr);
+	clog("getDocument: " + docInfoStr);
 	docHistory[docInfoStr] = true;
 	//var docInfo = JSON.parse(docInfoStr);
 	addDocumentHistory(docInfoStr);
@@ -419,7 +375,7 @@ function getDocument(docInfoStr, index, clear, options, callback)
 	//docTextColumn = docInfo["docTextColumn"];
 	docID = docInfo["docID"];
 
-	console.log("get doc: " + docNamespace + ", " + docTable + ", " + docID);
+	clog("get doc: " + docNamespace + ", " + docTable + ", " + docID);
 
 	//text = "";
 	openDialogLoad();
@@ -429,14 +385,14 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		url: getDocumentAjax.url,
 		data:{docNamespace:docNamespace, docTable:docTable, docID:docID}
 	}).done(function(data) {
-		console.log(data);
+		clog(data);
 		var docData = JSON.parse(data);
 		docName = docData["docName"];
 		origText = docData["docText"];
-		console.log("text len: " + origText.length);
+		clog("text len: " + origText.length);
 
 		origText = origText.replace(/[\r]/g, '');
-		console.log("text len: " + origText.length);
+		clog("text len: " + origText.length);
 
 		//var text = origText.split("\n").join("&nbsp;<br />");
 		var text = origText;
@@ -447,7 +403,7 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		$('#docPanel').val(text);
 
 		annotList = docData["annotList"];
-		console.log("annotList: " + JSON.stringify(annotList));
+		clog("annotList: " + JSON.stringify(annotList));
 		//getHighlightRanges();
 		//highlightText();
 
@@ -482,42 +438,6 @@ function getDocument(docInfoStr, index, clear, options, callback)
 	}).fail(function() {
 	});
 
-	/*
-	var getAnnotationsAjax = jsRoutes.controllers.Application.getAnnotations(docID);
-	$.ajax({
-			type: 'POST',
-			url: getAnnotationsAjax.url,
-			data:{docID: docID, annotTypeList: "['nodule-size','nodule-location']"}
-		}).done(function(data) {
-			console.log(data);
-
-			annotList = JSON.parse(data);
-			var i;
-			var gridData = new Array();
-			for (i=0; i<annotList.length; i++) {
-				row = {};
-				row["element"] = annotList[i]["annotationTypes"][0];
-				start = annotList[i]["start"];
-				end = annotList[i]["end"];
-				features = JSON.parse(annotList[i]["features"]);
-				row["value"] = features["Text"];
-				row["start"] = start;
-				row["end"] = end;
-				gridData[i] = row;
-			}
-
-			console.log(JSON.stringify(gridData));
-
-			gridSource.localData = gridData;
-			dataAdapter = new $.jqx.dataAdapter(gridSource, {
-			       loadComplete: function (data) { },
-			       loadError: function (xhr, status, error) { }
-			   });
-            $("#dataElementTable").jqxDataTable({ source: dataAdapter });
-
-		}).fail(function() {
-	});
-	*/
 }
 
 
@@ -540,43 +460,43 @@ function onRightClick(event) {
   document.getElementById("docPanel").oncontextmenu = function() {
     return false;
   }
-  console.log(history);
+  clog(history);
   if(event.button == 2) {
-    // console.log("right click worked");
+    // clog("right click worked");
     // text = $("#dataElementTable").jqxDataTable('getSelection');
     // text = window.getSelection().toString();
     var text = "";
 
-    // console.log("selectRange: " + JSON.stringify(selectRange));
+    // clog("selectRange: " + JSON.stringify(selectRange));
     if (window.getSelection) {
         text = window.getSelection().toString();
     } else if (document.selection && document.selection.type != "Control") {
         text = document.selection.createRange().text;
     }
 
-    // console.log(annotList);
+    // clog(annotList);
     // var temp = document.getElementsByTagName("html");
-    // console.log(temp);
+    // clog(temp);
 
-    // console.log(elementIDMap);
-    // console.log(elementHTMLIDMap);
-    // console.log(gridData);
-    // console.log(gridData2);
-    // console.log(frameInstanceData);
+    // clog(elementIDMap);
+    // clog(elementHTMLIDMap);
+    // clog(gridData);
+    // clog(gridData2);
+    // clog(frameInstanceData);
 
-    // console.log(highlightRangeMap);
+    // clog(highlightRangeMap);
 
     if(text) {
-      // console.log(highlightRanges);
+      // clog(highlightRanges);
       if(highlightedPartIsAnnot(selectRange.start, selectRange.end)) {
         var htmlID = getAnnotFromHighlight(selectRange.start, selectRange.end);
-        // console.log("htmlID: " + htmlID);
+        // clog("htmlID: " + htmlID);
         htmlID = findAnnotID(htmlID);
         var elementID = findElementID(htmlID);
         var elementType = findElementType(htmlID);
-        console.log("htmlID: " + htmlID);
-        console.log("elementID: " + elementID);
-        console.log("elementType: " + elementType);
+        clog("htmlID: " + htmlID);
+        clog("elementID: " + elementID);
+        clog("elementType: " + elementType);
 
         var elementIndex = elementIDMap[elementID];
         gridData2[elementIndex]["start"] = 0;
@@ -584,7 +504,7 @@ function onRightClick(event) {
     		gridData2[elementIndex]["elementValue"] = "";
 
         clearElementOnDoubleRightClick(elementID, htmlID, elementType);
-        // console.log(gridData2);
+        // clog(gridData2);
 
 
       }
@@ -595,20 +515,9 @@ function onRightClick(event) {
 function findAnnotID(str) {
   // the following commented code will not work
   // it turns out that you can't return something from a jquery thingy
-  /*
-  $.each(highlightRangeMap, function(key, value){
-    console.log("key: " + key);
-    var temp = highlightRangeMap[key][0]["annotID"];
-    console.log("annotID: " + temp);
-    console.log(str.localeCompare(temp));
-    console.log(str.localeCompare(temp) == 0);
-    if(str.localeCompare(temp) == 0) {
-      return key;
-    }
-  });*/
 
   for(var key in highlightRangeMap) {
-    console.log(key);
+    clog(key);
     var temp = highlightRangeMap[key][0]["annotID"];
     if(str.localeCompare(temp) == 0) {
       return key;
@@ -643,32 +552,32 @@ function undoAction() {
   if(mostRecentAction == null || mostRecentAction == undefined) {
     return;
   }
-  console.log(mostRecentAction);
+  clog(mostRecentAction);
   var tempPID = mostRecentAction["id"];
   var tempAction = mostRecentAction["act"];
   var tempHTMLID = mostRecentAction["htmlID"];
   var tempExtraInfo = mostRecentAction["extraInfo"];
 
-  console.log(tempHTMLID);
+  clog(tempHTMLID);
   var annotID = findAnnotID(tempHTMLID);
   var elementHTMLID = findElementID(annotID);
   var elementType = findElementType(annotID);
 
-  console.log(annotID);
-  console.log(elementType);
-  console.log(elementHTMLID);
+  clog(annotID);
+  clog(elementType);
+  clog(elementHTMLID);
 
 
-  console.log('button works');
+  clog('button works');
 
-  console.log(frameInstanceData);
-  console.log(annotList);
-  console.log(highlightRangeMap);
+  clog(frameInstanceData);
+  clog(annotList);
+  clog(highlightRangeMap);
 
   // openDialogLoad();
 
   var undoAjax = jsRoutes.controllers.Application.getHistory();
-  console.log(undoAjax);
+  clog(undoAjax);
   $.ajax({
     type: 'GET',
     url: undoAjax.url,
@@ -707,7 +616,7 @@ function clearElementOnDoubleRightClick(elementID, elementHTMLID, elementType) {
       url: getDocumentAnnotationsAjax.url,
       data: {docNamespace:docNamespace,docTable:docTable,docID:docID}
     }).done(function(data) {
-      console.log("clear element ranges: " + data);
+      clog("clear element ranges: " + data);
       annotList = JSON.parse(data);
       getHighlightRanges();
 
@@ -758,7 +667,7 @@ function getAnnotFromHighlight(start, end) {
 
 
 function logout() {
-  //console.log("logout");
+  //clog("logout");
   var log = jsRoutes.controllers.Application.logout();
 	$.ajax({
 			type: 'GET',
@@ -775,7 +684,7 @@ function logout() {
 function toLogIn() {
 
     // openDialogLoad();
-    console.log("Hello");
+    clog("Hello");
     var auth = jsRoutes.controllers.Application.authenticate();
     $.ajax({
 
@@ -838,17 +747,17 @@ function rowSelect(row)
 
 			start = start2+1;
 			end = end2;
-			console.log("token-based: " + start + ", " + end);
+			clog("token-based: " + start + ", " + end);
 		}
         while (origText.charAt(start) == ' ')
             start++;
         while (origText.charAt(end-1) == ' ')
             end--;
 		value = origText.substring(start, end);
-        console.log("row select highlighted: " + start + "," + end + ", value: " + value);
+        clog("row select highlighted: " + start + "," + end + ", value: " + value);
 	}
 	else if (selectFlag == undefined || !selectFlag) {
-		console.log("selectFlag: " + selectFlag);
+		clog("selectFlag: " + selectFlag);
 		start = 0;
 		end = 0;
 	}
@@ -873,9 +782,9 @@ function rowSelect(row)
 		}
 
 
-		console.log("rowStart: " + rowStart);
-		console.log("rowEnd: " + rowEnd);
-		console.log("element: " + rowData['element']);
+		clog("rowStart: " + rowStart);
+		clog("rowEnd: " + rowEnd);
+		clog("element: " + rowData['element']);
 		
 
 		//clear any existing selections highlights for doc metadata
@@ -886,14 +795,14 @@ function rowSelect(row)
 		});
 
 		if (highlightRangeList != undefined) {
-		    console.log("rowselect: " + docNamespace + "," + docTable + "," + docID);
-		    console.log("elementhtmlid: " + elementHTMLID + " highlightrangemap: " + JSON.stringify(highlightRangeMap));
-		    console.log("highlightmap: " + JSON.stringify(highlightMap));
+		    clog("rowselect: " + docNamespace + "," + docTable + "," + docID);
+		    clog("elementhtmlid: " + elementHTMLID + " highlightrangemap: " + JSON.stringify(highlightRangeMap));
+		    clog("highlightmap: " + JSON.stringify(highlightMap));
 		    var docIndex = docIndexMap["{\"docNamespace\":\"" + highlightMap["docNamespace"] + "\",\"docTable\":\"" + highlightMap["docTable"] + "\",\"docID\":" + highlightMap["docID"] + "}"];
 		    if (highlightMap["docNamespace"] != docNamespace || highlightMap["docTable"] != docTable || highlightMap["docID"] != docID) {
 			    getDocument("{\"docNamespace\":\"" + highlightMap["docNamespace"] + "\",\"docTable\":\"" + highlightMap["docTable"] + "\",\"docID\":" + highlightMap["docID"] + "}",
 			    	docIndex, false, [rowStart], function (options) {
-			    	console.log("highlightRangeList: " + JSON.stringify(highlightRangeList));
+			    	clog("highlightRangeList: " + JSON.stringify(highlightRangeList));
 			    	var rowStart = options[0];
 			    	if (rowStart >= 0) {
 				    	//highlightRange.start = rowStart;
@@ -905,7 +814,7 @@ function rowSelect(row)
 				    else if (rowData["annotFeatures"] != undefined && rowData["annotFeatures"].length > 0) {
 				    	//this is document metadata
 				    	var annotFeatures = JSON.parse(rowData["annotFeatures"]);
-				    	console.log(annotFeatures);
+				    	clog(annotFeatures);
 				    	var id = annotFeatures["key"] + "_docfeature";
 				    	$('#' + id).prop('checked', true);
 				    	$('#' + id).next().html("<span class='highlight' style='background-color:yellow'>" + annotFeatures["key"] + ": " + annotFeatures["value"] + "</span>");
@@ -947,10 +856,10 @@ function rowSelect(row)
 			    	//highlightText();
 			    }
 			    else if (rowData["annotFeatures"] != undefined && rowData["annotFeatures"].length > 0) {
-			    	console.log("annotFeatures: " + rowData["annotFeatures"]);
+			    	clog("annotFeatures: " + rowData["annotFeatures"]);
 			    	//this is document metadata
 			    	var annotFeatures = JSON.parse(rowData["annotFeatures"]);
-			    	console.log(annotFeatures);
+			    	clog(annotFeatures);
 			    	var id = annotFeatures["key"] + "_docfeature";
 			    	$('#' + id).prop('checked', true);
 			    	$('#' + id).next().html("<span class='highlight' style='background-color:yellow'>" + annotFeatures["key"] + ": " + annotFeatures["value"] + "</span>");
@@ -973,7 +882,7 @@ function rowSelect(row)
 			    }
 				
 				//var scrollTop = $('#docPanel').scrollTop();
-				//console.log("scrolltop: " + scrollTop + ", height: " + height);
+				//clog("scrolltop: " + scrollTop + ", height: " + height);
 				//if (scrollTop > (height/2))
 				//	$('#docPanel').scrollTop(scrollTop + (height / 2));
 		    	
@@ -981,7 +890,7 @@ function rowSelect(row)
 		    
 		    
 
-		    console.log("index: " + docIndex);
+		    clog("index: " + docIndex);
 		}
 
 		else {
@@ -1081,16 +990,16 @@ function rowSelect(row)
 
 		if (value != rowData['elementValue']) {
 			//var elementType = rowData['elementType'];
-			console.log("elementType: " + elementType);
+			clog("elementType: " + elementType);
 
 			var htmlID = rowData['elementHTMLID'];
 			var element = $(jq(htmlID))
-			console.log(element.prop('id'));
+			clog(element.prop('id'));
 
 			if (elementType != undefined && (elementType == 'text') || elementType == 'textarea') {
 				element.val(value);
 
-				console.log("Add: " + docNamespace + "," + docTable + "," + docID);
+				clog("Add: " + docNamespace + "," + docTable + "," + docID);
 
 				/*
 				var newRow = {};
@@ -1110,8 +1019,8 @@ function rowSelect(row)
 						url: addAnnotationAjax.url,
 					    data:{htmlID:htmlID, value:value,start:start,end:end,docNamespace:docNamespace,docTable:docTable,docID:docID,features:annotFeatures,add:add}
 					}).done(function(data) {
-						console.log("highlight: start=" + start + " end=" + end + " docFeatureValue=" + docFeatureValue);
-						console.log("add annot data: " + data);
+						clog("highlight: start=" + start + " end=" + end + " docFeatureValue=" + docFeatureValue);
+						clog("add annot data: " + data);
 
 						var dataObj = JSON.parse(data);
 						frameInstanceData = dataObj[0];
@@ -1125,7 +1034,7 @@ function rowSelect(row)
 							url: getDocumentAnnotationsAjax.url,
 							data: {docNamespace:docNamespace,docTable:docTable,docID:docID}
 						}).done(function(data) {
-							console.log("clear element ranges: " + data);
+							clog("clear element ranges: " + data);
 							annotList = JSON.parse(data);
 
 							//annotList.push({start:start,end:end,annotType:""});
@@ -1182,85 +1091,13 @@ function highlightText()
 	
 	var scrollTop = $('#docPanel').scrollTop();
 
-	/*
-	highlightStart = start;
-	highlightEnd = end;
-	var text = origText;
-	var origVPos = $("#docPanel").jqxPanel('getVScrollPosition');
-	var flag = false;
-	if (start < end) {
-		text = origText.substring(0, start) + "<span class='highlight' style='background-color:lightgray'>" + origText.substring(start, end) + "</span>" + origText.substring(end);
-		flag = true;
-	}
-	text = text.split("\n").join("&nbsp;<br/>");
-	//console.log(text);
-	$("#docPanel").jqxPanel('clearcontent');
-	$("#docPanel").jqxPanel('append', '<div style="margin: 50px">' + text + '</div>');
-	//$("#docPanel").jqxPanel('append', text);
-	//$("#docPanel").jqxPanel('append', "</div>");
-
-	var caretPos = origVPos;
-	if (flag) {
-	    console.log("vscrollpos = " + vScrollPos + " scrollHeight = " + scrollHeight);
-	    //caretPos = vScrollPos;
-	    var currScrollWidth = Math.round($("#docPanel").jqxPanel('getScrollWidth'));
-	    var currScrollHeight = Math.round($("#docPanel").jqxPanel('getScrollHeight'));
-		var factor = vScrollPos / scrollHeight;
-		console.log("currScrollHeight = " + currScrollHeight + " factor = " + factor);
-
-		caretPos = Math.round(currScrollHeight * factor);
-	}
-	*/
-
-
-	//$('#docPanel').jqxPanel('scrollTo', 0, caretPos);
-
-
-	//activeHighlightRanges = [];
-	//activeHighlightRanges.push([highlightRange.start, highlightRange.end]);
-
-
-
-
-
-	/*
-	if (highlightRange.end < highlightRange.start) {
-		$('#docPanel').highlightWithinTextarea(onInput);
-		$('.hwt-content mark').css("background-color","lightgray");
-	}
-
-	else {
-		var highlightIndex = -1;
-		for (var i=0; i<highlightRanges.length; i++) {
-			if (highlightRanges[i][0] == highlightRange.start && highlightRanges[i][1] == highlightRange.end)
-				highlightIndex = i+1
-		}
-
-		console.log("highlightRanges: " + JSON.stringify(highlightRanges));
-
-		//$('.hwt-content mark:nth-of-type(' + highlightIndex + ')').css("background-color","red");
-		//$('.hwt-content mark').css("background-color","red");
-		//$('.hwt-content mark:nth-of-type(' + highlightIndex + ')').html('test');
-		$('#docPanel').highlightWithinTextarea(onInput);
-
-		$('.hwt-content mark:nth-of-type(' + highlightIndex + ')').css("background-color","yellow");
-		if (highlightIndex > 1)
-			$('.hwt-content mark:nth-of-type(-n+' + (highlightIndex-1) + ')').css("background-color","lightgray");
-		$('.hwt-content mark:nth-of-type(n+' + (highlightIndex+1) + ')').css("background-color","lightgray");
-
-		$('#docPanel').width($('#docDiv').width() * .95);
-		scrollTextareaToPosition($('#docPanel'), highlightRange.end+10);
-	}
-	*/
-
-
 
 	if (highlightRangeList == undefined) {
 		//$('#docPanel').data('hwt').destroy();
 		$('#docPanel').highlightWithinTextarea(onInput);
 		
 		$('.hwt-content mark').each(function (index) {
-			console.log("setting " + index + " to " + highlightRanges[index][2]);
+			clog("setting " + index + " to " + highlightRanges[index][2]);
 			//$(this).css("background-color","lightgray");
 			$(this).css("background-color", highlightRanges[index][2]);
 		});
@@ -1273,10 +1110,10 @@ function highlightText()
 		var i=0;
 		var lastEnd = highlightRangeList[0]["end"];
 
-		console.log("highlightrangelist: " + JSON.stringify(highlightRangeList));
-		console.log("highlightRanges: " + JSON.stringify(highlightRanges));
-		console.log("highlightIndexes: " + JSON.stringify(highlightIndexes));
-		console.log("hwt contents: " + $('#docPanel .hwt-content').length);
+		clog("highlightrangelist: " + JSON.stringify(highlightRangeList));
+		clog("highlightRanges: " + JSON.stringify(highlightRanges));
+		clog("highlightIndexes: " + JSON.stringify(highlightIndexes));
+		clog("hwt contents: " + $('#docPanel .hwt-content').length);
 		
 
 		//$('#docPanel').data('hwt').destroy();
@@ -1289,62 +1126,14 @@ function highlightText()
 		
 		$('.hwt-content mark').each(function (index) {
 			if (index != highlightIndexes[highlightIndex]) {
-				console.log("setting " + index + " to " + highlightRanges[index][2]);
+				clog("setting " + index + " to " + highlightRanges[index][2]);
 				//$(this).css("background-color","lightgray");
 				$(this).css("background-color", highlightRanges[index][2]);
 			}
 		});
 		
-		/*
-		for (i=0; i<highlightRanges.length; i++) {
-			var end = highlightRangeList[highlightIndex]["end"];
-			
-			if (i != highlightIndexes[highlightIndex]) {
-				console.log('.hwt-content mark:nth-of-type(' + (i+1) + ') lightgray');
-				$('.hwt-content mark:nth-of-type(' + (i+1) + ')').css("background-color","lightgray");
-			}
 
-	
-			
-			if (i == highlightIndexes[highlightIndex]) {
-
-				//$('#docPanel').highlightWithinTextarea(onInput);
-				//$('.hwt-content mark:nth-of-type(' + (i+1) + ')').css("background-color","yellow");
-				//$('.hwt-content mark').css("background-color","yellow");
-				//console.log('.hwt-content mark:nth-of-type(' + (i+1) + ') yellow');
-				
-				if (i > 0) {
-					if (i-lastIndex == 2) {
-						console.log('== 2: .hwt-content mark:nth-of-type(' + i + ') lightgray');
-						$('#docPanel .hwt-content mark:nth-of-type(' + i + ')').css("background-color","lightgray");
-					}
-					else if (i-lastIndex > 2) {
-						console.log('>2: .hwt-content mark:nth-of-type(n+' + (lastIndex+2) + '):nth-of-type(-n+' + i + ') lightgray');
-						$('#docPanel .hwt-content mark:nth-of-type(n+' + (lastIndex+2) + '):nth-of-type(-n+' + i + ')').css("background-color","lightgray");
-					}
-				}
-				
-
-				lastIndex = i;
-				highlightIndex++;
-
-				if (end > lastEnd)
-					lastEnd = end;
-
-				if (highlightIndex == highlightRangeList.length)
-					break;
-			}
-			
-		}
-		*/
 		
-		
-		/*
-		if (i < highlightRanges.length-1) {
-			$('.hwt-content mark:nth-of-type(n+' + (i+2) + ')').css("background-color","lightgray");
-			console.log('end: .hwt-content mark:nth-of-type(n+' + (i+2) + ') lightgray');
-		}
-		*/
 
 
 		//$(window).resize();
@@ -1422,7 +1211,7 @@ function loadCRF(crfName)
 		type: 'GET',
 		url: getCRFAjax.url,
 	}).done(function(data) {
-		//console.log(data);
+		//clog(data);
 
 		loadCRFData(data);
 		closeDialogLoad();
@@ -1438,7 +1227,7 @@ function loadProject(projName)
 		type: 'GET',
 		url: loadProjectAjax.url,
 	}).done(function(data) {
-		console.log(data);
+		clog(data);
 
 		var result = JSON.parse(data);
 		frameArray = result[0];
@@ -1469,7 +1258,7 @@ function loadProject(projName)
 			currFrameInstanceIndex = lastFrameAccessed["lastFrameInstanceIndex"];
 			var frameInstanceID = lastFrameAccessed["lastFrameInstanceID"];
 
-			console.log("frameInstanceID: " + frameInstanceID);
+			clog("frameInstanceID: " + frameInstanceID);
 
 			//loadFrameInstance(frameInstanceID, true);
 			//$('#crfSelect').prop('selectedIndex', currFrameInstanceIndex);
@@ -1497,10 +1286,10 @@ function frameInstanceSelected(frameInstanceID, clearDoc, frameInstanceIndex)
 
 function frameInstanceSelectedText(frameInstanceName)
 {
-	console.log("frameInstanceSelected: " + frameInstanceName);
+	clog("frameInstanceSelected: " + frameInstanceName);
 
 	for (var i=0; i<frameArray.length; i++) {
-		//console.log(frameArray[i]["name"]);
+		//clog(frameArray[i]["name"]);
 		if (frameArray[i]["name"] == frameInstanceName) {
 			$('#crfSelect option').eq(i+1).prop('selected', true);
 			loadFrameInstance(frameArray[i]["frameInstanceID"], true);
@@ -1511,7 +1300,7 @@ function frameInstanceSelectedText(frameInstanceName)
 
 function loadFrameInstance(frameInstanceID, clearDoc)
 {
-	console.log(frameInstanceID);
+	clog(frameInstanceID);
     $("#validatedButtonDiv").hide();
 	currFrameInstanceID = frameInstanceID;
 	docSelectIndex = -1;
@@ -1535,7 +1324,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
                 type: 'GET',
                 url: loadFrameInstanceAjax.url,
             }).done(function(data) {
-                console.log(data);
+                clog(data);
 
                 var dataObj = JSON.parse(data);
 
@@ -1563,7 +1352,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
                     var annotFeatures = frameInstanceData[i]["features"];
 
                     var elementIndex = elementIDMap[elementID];
-                    console.log("elementID: " + elementID);
+                    clog("elementID: " + elementID);
                     //gridData[elementIndex]["start"] = start;
                     //gridData[elementIndex]["end"] = end;
                     //gridData[elementIndex]["elementValue"] = value;
@@ -1578,7 +1367,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 
                     /*
                      var element = $("#" + htmlID);
-                     console.log(element.prop('tagName') + "," + element.attr('type'));
+                     clog(element.prop('tagName') + "," + element.attr('type'));
                      if (element.prop('tagName').toLowerCase() == "input") {
                      var elType = element.attr('type').toLowerCase();
                      if (elType == "text") {
@@ -1600,49 +1389,9 @@ function loadFrameInstance(frameInstanceID, clearDoc)
                 });
                 $("#dataElementTable").jqxDataTable({ source: dataAdapter });
 
-                /*
-                 //set HTML elements
-                 for (var i=0; i<frameInstanceData.length; i++) {
-                 var elementHTMLID = frameInstanceData[i]["elementHTMLID"];
-                 var valueHTMLID = frameInstanceData[i]["valueHTMLID"];
-                 var value = frameInstanceData[i]["value"];
-                 var elementType = frameInstanceData[i]["elementType"];
-
-                 var htmlID = elementHTMLID;
-                 if (elementType != 'text')
-                 htmlID = valueHTMLID;
-
-                 console.log("htmlID: " + jq(htmlID));
-                 var element = $(jq(htmlID));
-
-                 console.log(element.prop('tagName') + "," + element.attr('type'));
-                 if (element.prop('tagName').toLowerCase() == "input") {
-                 var elType = element.attr('type').toLowerCase();
-                 if (elType == "text") {
-                 element.val(value);
-                 }
-
-                 else if (elType == "checkbox" || elType == "radio") {
-                 element.prop('checked', true);
-                 }
-
-                 }
-                 }
-                 */
 
                 setHTMLElements();
 
-
-                //load doc text
-                /*
-                 origText = dataObj[1];
-                 var text = origText.split("\n").join("&nbsp;<br />");
-                 //var text = origText;
-                 //quill.setText(text);
-
-                 $('#docPanel').jqxPanel('clearcontent');
-                 $('#docPanel').jqxPanel('append', text);
-                 */
 
 
                 if (clearDoc) {
@@ -1668,17 +1417,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 	
 	                var docList = dataObj[2];
 	
-	                /*
-	                 optionsStr = "<option selected disabled value=''>Select Report</option>";
-	                 for (var i = 0; i < docList.length; i++) {
-	                 optionsStr += "<option value='{\"docNamespace\":\"" + docList[i]["docNamespace"] + "\",\"docTable\":\"" + docList[i]["docTable"]
-	                 + "\",\"docID\":" + docList[i]["docID"] + "}'>" + docList[i]["docName"] + "</option>";
-	                 }
-	
-	                 $("#docSelect").find('option').remove().end().append($(optionsStr));
-	                 document.getElementById('docSelect').selectedIndex = 0;
-	                 */
-	
+
 	
 	                //load document list into listbox
 	                var docListBoxSource = [];
@@ -1708,7 +1447,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
                 
                 //highlightText();
 
-                console.log("end of load frame docNamespace: " + docNamespace + ", docTable: " + docTable + ", docID: " + docID);
+                clog("end of load frame docNamespace: " + docNamespace + ", docTable: " + docTable + ", docID: " + docID);
 
                 closeDialogLoad();
             })
@@ -1735,10 +1474,10 @@ function loadFrameInstanceNoRT()
     	if (elementType != 'text')
     		htmlID = valueHTMLID;
 
-    	console.log("htmlID: " + jq(htmlID));
+    	clog("htmlID: " + jq(htmlID));
     	var element = $(jq(htmlID));
 
-		console.log(element.prop('tagName') + "," + element.attr('type'));
+		clog(element.prop('tagName') + "," + element.attr('type'));
 		if (element.prop('tagName').toLowerCase() == "input") {
 			var elType = element.attr('type').toLowerCase();
 			if (elType == "text") {
@@ -1758,7 +1497,7 @@ function loadFrameInstanceNoRT()
 
 function loadEntity(colNames, colValues)
 {
-	console.log("colNames: " + colNames + ", colValues: " + colValues);
+	clog("colNames: " + colNames + ", colValues: " + colValues);
 
 	openDialogLoad();
 	var getFrameInstanceIDAjax = jsRoutes.controllers.Application.getFrameInstanceID(colNames, colValues);
@@ -1766,7 +1505,7 @@ function loadEntity(colNames, colValues)
 		type: 'GET',
 		url: getFrameInstanceIDAjax.url,
 	}).done(function(data) {
-		console.log("getframeinstanceid: " + data);
+		clog("getframeinstanceid: " + data);
 		var map = JSON.parse(data);
 
 		loadFrameInstance(map["frameInstanceID"], true);
@@ -1787,7 +1526,7 @@ function addSection(sectionName)
 		type: 'GET',
 		url: addSectionAjax.url,
 	}).done(function(data) {
-		console.log(data);
+		clog(data);
 		if (data.length > 0) {
 			loadCRFData(JSON.parse(data));
 			loadFrameInstance(currFrameInstanceID, false);
@@ -1810,7 +1549,7 @@ function removeSection(sectionName)
 		type: 'GET',
 		url: removeSectionAjax.url,
 	}).done(function(data) {
-		console.log(data);
+		clog(data);
 		if (data.length > 0) {
 			loadCRFData(JSON.parse(data));
 			loadFrameInstance(currFrameInstanceID, false);
@@ -1824,7 +1563,7 @@ function removeSection(sectionName)
 			url: getDocumentAnnotationsAjax.url,
 			data: {docNamespace:docNamespace,docTable:docTable,docID:docID}
 		}).done(function(data) {
-			console.log("clear element ranges: " + data);
+			clog("clear element ranges: " + data);
 			annotList = JSON.parse(data);
 			getHighlightRanges();
 
@@ -1843,20 +1582,20 @@ function removeSection(sectionName)
 
 function addElement(id)
 {
-	console.log("add Element: docFeatureValue:" + docFeatureValue + " select flag: " + selectFlag);
+	clog("add Element: docFeatureValue:" + docFeatureValue + " select flag: " + selectFlag);
 
 	if (!selectFlag && docFeatureValue == null) {
 		index = id.lastIndexOf("_");
 		id = id.substring(0, index);
 
-		console.log("add element: " + id);
+		clog("add element: " + id);
 		openDialogLoad();
 		var addElementAjax = jsRoutes.controllers.Application.addElement(id);
 		$.ajax({
 			type: 'GET',
 			url: addElementAjax.url,
 		}).done(function(data) {
-			console.log(data);
+			clog(data);
 			if (data.length > 0) {
 				//loadCRFData(JSON.parse(data));
 				loadFrameInstance(currFrameInstanceID, false);
@@ -1871,7 +1610,7 @@ function addElement(id)
 
 function removeElement(id)
 {
-	console.log("remove element");
+	clog("remove element");
 	if (!selectFlag && docFeatureValue == null) {
 		var selection = $("#dataElementTable").jqxDataTable('getSelection');
 		if (selection != undefined) {
@@ -1879,18 +1618,18 @@ function removeElement(id)
 			index = id.lastIndexOf("_");
 			id = id.substring(0, index);
 
-			console.log("remove element: " + id);
+			clog("remove element: " + id);
 			openDialogLoad();
 			var removeElementAjax = jsRoutes.controllers.Application.removeElement(elementID, id);
 			$.ajax({
 				type: 'GET',
 				url: removeElementAjax.url,
 			}).done(function(data) {
-				console.log(data);
+				clog(data);
 				if (data.length > 0) {
 					var dataObj = JSON.parse(data);
 					highlightRangeMap = dataObj[1][1];
-					console.log("highlightrangemap: " + JSON.stringify(highlightRangeMap));
+					clog("highlightrangemap: " + JSON.stringify(highlightRangeMap));
 					
 					//loadCRFData(JSON.parse(data));
 					loadFrameInstance(currFrameInstanceID, false);
@@ -1903,7 +1642,7 @@ function removeElement(id)
 					url: getDocumentAnnotationsAjax.url,
 					data: {docNamespace:docNamespace,docTable:docTable,docID:docID}
 				}).done(function(data) {
-					console.log("clear element ranges: " + data);
+					clog("clear element ranges: " + data);
 					annotList = JSON.parse(data);
 					getHighlightRanges();
 
@@ -1952,7 +1691,7 @@ function loadCRFData(elementList)
 
 		gridData[i] = row;
 		gridData2[i] = row;
-		console.log(row["elementID"] + ", " + row["element"] + ", " + row["elementHTMLID"]);
+		clog(row["elementID"] + ", " + row["element"] + ", " + row["elementHTMLID"]);
 	}
 
 	gridSource.localData = gridData;
@@ -1976,9 +1715,9 @@ function clearElement()
 		gridData2[elementIndex]["end"] = -1;
 		gridData2[elementIndex]["elementValue"] = "";
 
-		console.log("clear: " +  elementID);
-		console.log("clear: " +  elementHTMLID);
-		console.log("clear: " +  elementType);
+		clog("clear: " +  elementID);
+		clog("clear: " +  elementHTMLID);
+		clog("clear: " +  elementType);
 
 		openDialogLoad();
 		var clearElementAjax = jsRoutes.controllers.Application.clearElement(elementID, elementHTMLID);
@@ -1986,7 +1725,7 @@ function clearElement()
 			type: 'GET',
 			url: clearElementAjax.url,
 		}).done(function(data) {
-			console.log(data);
+			clog(data);
 			var dataObj = JSON.parse(data);
 			frameInstanceData = dataObj[0];
 			highlightRangeMap = dataObj[1];
@@ -1998,7 +1737,7 @@ function clearElement()
 				url: getDocumentAnnotationsAjax.url,
 				data: {docNamespace:docNamespace,docTable:docTable,docID:docID}
 			}).done(function(data) {
-				console.log("clear element ranges: " + data);
+				clog("clear element ranges: " + data);
 				annotList = JSON.parse(data);
 				getHighlightRanges();
 
@@ -2048,7 +1787,7 @@ function clearValue(valueHTMLID)
 			url: getDocumentAnnotationsAjax.url,
 			data: {docNamespace:docNamespace,docTable:docTable,docID:docID}
 		}).done(function(data) {
-			console.log("clear element ranges: " + data);
+			clog("clear element ranges: " + data);
 			annotList = JSON.parse(data);
 			getHighlightRanges();
 
@@ -2106,18 +1845,12 @@ function clearAll()
 		closeDialogLoad();
 	})
 
-	//highlightRange.start = 0;
-	//highlightRange.end = -1;
-	//highlightRanges = [];
-	//highlightRangeList = undefined;
-    //highlightText();
-	//loadFrameInstance(currFrameInstanceID, true);
-    //loadFrameInstanceNoRT();
+
 }
 
 function valueClick(event)
 {
-	console.log("value click: " + event.target.id + " metaKey: " + event.metaKey + " ctrlKey: " + event.ctrlKey);
+	clog("value click: " + event.target.id + " metaKey: " + event.metaKey + " ctrlKey: " + event.ctrlKey);
 	clickValueElement = event.target;
 
 	var add = event.metaKey;
@@ -2130,7 +1863,7 @@ function valueClick(event)
 
 function valueClickCallback(add)
 {
-	console.log("value click count = " + valueClickCount1 + ", " + valueClickCount2) ;
+	clog("value click count = " + valueClickCount1 + ", " + valueClickCount2) ;
 
 	if (valueClickCount1 > 1)
 		valueClickCount1 = 0;
@@ -2150,7 +1883,7 @@ function valueClickCallback(add)
 
 		start = start2+1;
 		end = end2;
-		console.log("token-based: " + start + ", " + end);
+		clog("token-based: " + start + ", " + end);
 	}
 
 	var annotFeatures = null;
@@ -2162,11 +1895,11 @@ function valueClickCallback(add)
 		annotFeatures = '{"key":"' + docFeatureKey + '","value":"' + clickValue + '"}';
 	}
 
-	console.log("value click highlighted: " + start + "," + end + " selectFlag: " + selectFlag + " docFeatureValue: " + docFeatureValue);
-    //console.log(precedingRange.toString());
+	clog("value click highlighted: " + start + "," + end + " selectFlag: " + selectFlag + " docFeatureValue: " + docFeatureValue);
+    //clog(precedingRange.toString());
 
 	var htmlID = clickValueElement.id;
-	console.log("value click: " + htmlID + ", " + clickValueElement.checked);
+	clog("value click: " + htmlID + ", " + clickValueElement.checked);
 
 	if (!clickValueElement.checked && !add) {
 		//this element was clicked off (checkbox)
@@ -2224,7 +1957,7 @@ function valueClickCallback(add)
 					url: getDocumentAnnotationsAjax.url,
 					data: {docNamespace:docNamespace,docTable:docTable,docID:docID}
 				}).done(function(data) {
-					console.log("clear element ranges: " + data);
+					clog("clear element ranges: " + data);
 					annotList = JSON.parse(data);
 
 					//highlightRange.start = start;
@@ -2251,8 +1984,8 @@ function valueClickCallback(add)
 			if (elementIndex != undefined) {
 				var rowData = gridData2[elementIndex];
 
-				console.log("elementIndex: " + elementIndex + " htmlID: " + htmlID);
-				console.log("rowData: " + start + "," + end);
+				clog("elementIndex: " + elementIndex + " htmlID: " + htmlID);
+				clog("rowData: " + start + "," + end);
 
 
 				//rowData['start'] = start;
@@ -2288,7 +2021,7 @@ function valueClickCallback(add)
 
 function valueMouseover(valueElement)
 {
-	console.log("mouse over! " + valueElement.id + ", " + valueElement.name);
+	clog("mouse over! " + valueElement.id + ", " + valueElement.name);
 
 	highlightRangeList = highlightRangeMap[valueElement.id];
 	var highlightMap;
@@ -2301,8 +2034,8 @@ function valueMouseover(valueElement)
 		return;
 
 
-	console.log("rowStart: " + rowStart);
-	console.log("rowEnd: " + rowEnd);
+	clog("rowStart: " + rowStart);
+	clog("rowEnd: " + rowEnd);
 
 	var elementIndex = elementHTMLIDMap[valueElement.parentElement.id];
 
@@ -2315,12 +2048,12 @@ function valueMouseover(valueElement)
 	var rowStart = highlightMap["start"];
 	var rowEnd = highlightMap["end"];
 
-	//console.log("rowselect: " + docNamespace + "," + docTable + "," + docID);
+	//clog("rowselect: " + docNamespace + "," + docTable + "," + docID);
     var docIndex = docIndexMap["{\"docNamespace\":\"" + highlightMap["docNamespace"] + "\",\"docTable\":\"" + highlightMap["docTable"] + "\",\"docID\":" + highlightMap["docID"] + "}"];
     if (highlightMap["docNamespace"] != docNamespace || highlightMap["docTable"] != docTable || highlightMap["docID"] != docID) {
 	    getDocument("{\"docNamespace\":\"" + highlightMap["docNamespace"] + "\",\"docTable\":\"" + highlightMap["docTable"] + "\",\"docID\":" + highlightMap["docID"] + "}",
 	    	docIndex, true, [rowStart], function (options) {
-		    	console.log("highlightRangeList: " + JSON.stringify(highlightRangeList));
+		    	clog("highlightRangeList: " + JSON.stringify(highlightRangeList));
 		    	var rowStart = options[0];
 		    	/*
 		    	if (rowStart >= 0) {
@@ -2333,9 +2066,9 @@ function valueMouseover(valueElement)
 			    */
 			    if (rowData["annotFeatures"] != undefined && rowData["annotFeatures"].length > 0) {
 			    	//this is document metadata
-			    	console.log(rowData["annotFeatures"]);
+			    	clog(rowData["annotFeatures"]);
 			    	var annotFeatures = JSON.parse(rowData["annotFeatures"]);
-			    	console.log(annotFeatures);
+			    	clog(annotFeatures);
 			    	var id = annotFeatures["key"] + "_docfeature";
 			    	$('#' + id).prop('checked', true);
 			    	$('#' + id).next().html("<span class='highlight' style='background-color:yellow'>" + annotFeatures["key"] + ": " + annotFeatures["value"] + "</span>");
@@ -2366,9 +2099,9 @@ function valueMouseover(valueElement)
 
     if (rowData["annotFeatures"] != undefined && rowData["annotFeatures"].length > 0) {
     	//this is document metadata
-    	console.log(rowData["annotFeatures"]);
+    	clog(rowData["annotFeatures"]);
     	var annotFeatures = JSON.parse(rowData["annotFeatures"]);
-    	console.log(annotFeatures);
+    	clog(annotFeatures);
     	var id = annotFeatures["key"] + "_docfeature";
     	$('#' + id).prop('checked', true);
     	$('#' + id).next().html("<span class='highlight' style='background-color:yellow'>" + annotFeatures["key"] + ": " + annotFeatures["value"] + "</span>");
@@ -2396,7 +2129,7 @@ function valueMouseover(valueElement)
 	    }
     }
 
-    console.log("index: " + docIndex);
+    clog("index: " + docIndex);
 }
 
 function addDocumentHistory(docInfoStr)
@@ -2424,7 +2157,7 @@ function getDocumentHistory()
 			type: 'GET',
 			url: getDocHistAjax.url
 		}).done(function(data) {
-			console.log("doc hist: " + data);
+			clog("doc hist: " + data);
 			docHistory = JSON.parse(data);
 			for (var key in docHistory) {
 			    var keyStr = JSON.stringify(key);
@@ -2474,8 +2207,8 @@ function nextInstance()
 		currFrameInstanceIndex++;
 		var frameInstanceID = frameArray[currFrameInstanceIndex-1]["frameInstanceID"];
 
-		console.log("next currFrameInstanceIndex: " + currFrameInstanceIndex);
-		console.log("next frameInstanceID: " + frameInstanceID);
+		clog("next currFrameInstanceIndex: " + currFrameInstanceIndex);
+		clog("next frameInstanceID: " + frameInstanceID);
 
 		//$('#crfSelect').prop('selectedIndex', currFrameInstanceIndex);
 		$('#crfSelect').val(frameInstanceID).trigger("change");
@@ -2485,8 +2218,8 @@ function nextInstance()
 
 function docFeatureClicked(value, id)
 {
-	console.log("feature clicked! " + value + " id: " + id);
-	console.log($('#' + id).next().text());
+	clog("feature clicked! " + value + " id: " + id);
+	clog($('#' + id).next().text());
 
 	$('[name=docfeature]').each(function() {
 		var keyValue = JSON.parse($(this).val());
@@ -2503,7 +2236,7 @@ function docFeatureClicked(value, id)
 }
 
 function scrollTextareaToPosition($textarea, position) {
-	console.log("scrolltextarea: " + position);
+	clog("scrolltextarea: " + position);
 	var text = origText;
 	var textBeforePosition = text.substr(0, position);
 	var textAfterPosition = text.substr(position);
@@ -2514,23 +2247,13 @@ function scrollTextareaToPosition($textarea, position) {
 	
 	var innerHeight = $textarea.innerHeight();
 	
-	console.log("scrollheight: " + scrollHeight + ", innerHeight: " + innerHeight);
+	clog("scrollheight: " + scrollHeight + ", innerHeight: " + innerHeight);
 	if (scrollHeight > innerHeight)
 		$textarea.scrollTop(scrollHeight - (innerHeight / 2));
 	else {
 		$textarea.scrollTop(0);
 	}
 	
-
-    /*
-	var text = $textarea.val();
-	var textBeforePosition = text.substr(0, position);
-	$textarea.blur();
-	$textarea.val(textBeforePosition);
-	$textarea.focus();
-	$textarea.val(text);
-	//$textarea.setSelection(position, position); // assumes that you use jquery-fieldselection.js
-	*/
 }
 
 function update(e) {
@@ -2541,9 +2264,9 @@ function update(e) {
 
 	// here we fetch our text range object
 	selectRange = $(this).getSelection();
-	//console.log("selectRange: " + JSON.stringify(selectRange));
+	//clog("selectRange: " + JSON.stringify(selectRange));
 
-	//console.log("select range start: " + selectRange.start + " end: " + selectRange.end + " docFeatureRange start: " + docFeatureRange.start + " end: " + docFeatureRange.end + " selectFlag: " + selectFlag);
+	//clog("select range start: " + selectRange.start + " end: " + selectRange.end + " docFeatureRange start: " + docFeatureRange.start + " end: " + docFeatureRange.end + " selectFlag: " + selectFlag);
 
 	//clear doc features if selection made
 	if ((selectRange.start != docFeatureRange.start || selectRange.end != docFeatureRange.end) && selectRange.start < selectRange.end) {
@@ -2554,7 +2277,7 @@ function update(e) {
 		});
 
 		docFeatureValue = null;
-		console.log("!!!! select flag true");
+		clog("!!!! select flag true");
 		selectFlag = true;
 
 		//docFeatureRange.start = selectRange.start;
@@ -2566,19 +2289,7 @@ function update(e) {
 	else if (selectRange.start == selectRange.end)
 		selectFlag = false;
 
-	// just dump the values
-	/*
-	$('#output').html(
-	  "hexdump:\n" + hexdump(this.value, range.start, (range.end != range.start) ? range.end - 1 : range.end) + "\n\n" +
-		"id: " + this.id + "\n" +
-		"start: " + range.start + "\n" +
-		"length: " + range.length + "\n" +
-		"end: " + range.end + "\n" +
-		((typeof range['row'] != 'undefined') ? "caret row: " + range.row + "\n" : '') +
-		((typeof range['col'] != 'undefined') ? "caret col: " + range.col + "\n" : '') +
-		"selected text:\n<span class=\"txt\">" + (($('#ws').get(0).checked) ? range.text.whitespace() : range.text) + "</span>\n\n"
-		);
-*/
+
 }
 
 function onInput(input) {
@@ -2627,31 +2338,17 @@ function getHighlightRangesNoOverlap()
 		if (range[0] < range[1])
 			highlightRanges.push(range);
 
-		/*
-		var inserted = false;
-		for (var j=0; j<highlightRanges.length; j++) {
-			var range2 = highlightRanges[j];
-			if (range[0] < range2[0]) {
-				highlightRanges.splice(j, 0, range);
-				inserted = true;
-				break;
-			}
-		}
 
-		if (!inserted)
-			highlightRanges.push(range);
-			*/
-		
 	}
 
-	console.log("highlightranges: " + JSON.stringify(highlightRanges));
+	clog("highlightranges: " + JSON.stringify(highlightRanges));
 
 }
 
 function getHighlightRanges()
 {
-	console.log("gethighlightranges: " + JSON.stringify(highlightRangeList));
-	console.log("annot list: " + JSON.stringify(annotList));
+	clog("gethighlightranges: " + JSON.stringify(highlightRangeList));
+	clog("annot list: " + JSON.stringify(annotList));
 
 	highlightRanges = [];
 	highlightIndexes = [];
@@ -2794,10 +2491,10 @@ function getHighlightRanges()
 		}
 	}
 
-	console.log("annot list: " + JSON.stringify(annotList));
-	console.log("annot list2: " + JSON.stringify(annotList2));
-	console.log("highlightranges: " + JSON.stringify(highlightRanges));
-	console.log("highlightindexes: " + JSON.stringify(highlightIndexes));
+	clog("annot list: " + JSON.stringify(annotList));
+	clog("annot list2: " + JSON.stringify(annotList2));
+	clog("highlightranges: " + JSON.stringify(highlightRanges));
+	clog("highlightindexes: " + JSON.stringify(highlightIndexes));
 }
 
 function fillSlot(htmlID)
@@ -2828,7 +2525,7 @@ function fillSlot(htmlID)
 
 				//set the row in the data table
 				for (var i=0; i<gridData.length; i++) {
-					console.log("elementID: " + gridData[i]["elementID"] + ", " + elementID);
+					clog("elementID: " + gridData[i]["elementID"] + ", " + elementID);
 					if (gridData[i]["elementID"] == elementID) {
 						$('#dataElementTable').jqxDataTable('selectRow', i);
 						gridData[i]["start"] = start;
@@ -2839,42 +2536,6 @@ function fillSlot(htmlID)
 						break;
 					}
 				}
-
-				/*
-				rowData['start'] = start;
-				rowData['end'] = end;
-				rowData['elementValue'] = value;
-				rowData['valueHTMLID'] = htmlID;
-				rowData['vScrollPos'] = Math.round($("#docPanel").jqxPanel('getVScrollPosition'));
-				rowData['scrollHeight'] = Math.round($("#docPanel").jqxPanel('getScrollHeight'));
-				rowData['scrollWidth'] = Math.round($("#docPanel").jqxPanel('getScrollWidth'));
-				rowData['docNamespace'] = docNamespace;
-				rowData['docTable'] = docTable;
-				rowData['docID'] = docID;
-				rowData['annotFeatures'] = annotFeatures;
-				*/
-
-				/*
-				//set HTML elements
-			    for (var i=0; i<frameInstanceData.length; i++) {
-			    	var htmlID = frameInstanceData[i]["htmlID"];
-			    	var value = frameInstanceData[i]["value"];
-
-			    	console.log("htmlID: " + jq(htmlID));
-			    	var element = $(jq(htmlID));
-
-					console.log(element.prop('tagName') + "," + element.attr('type'));
-					if (element.prop('tagName').toLowerCase() == "input") {
-						var elType = element.attr('type').toLowerCase();
-						if (elType == "text") {
-							element.val(value);
-						}
-						else if (elType == "checkbox" || elType == "radio") {
-							element.prop('checked', true);
-						}
-					}
-			    }
-			    */
 
 				setHTMLElements();
 
@@ -2893,7 +2554,7 @@ function clearFromMenu()
 			$('#dataElementTable').jqxDataTable('selectRow', i);
 			clearElement();
 
-			//console.log("frameInstanceData: " + JSON.stringify(frameInstanceData) + ", " + JSON.stringify(gridData));
+			//clog("frameInstanceData: " + JSON.stringify(frameInstanceData) + ", " + JSON.stringify(gridData));
 
 			//remove from frameInstanceData
 			for (var j=0; j<frameInstanceData.length; j++) {
@@ -2974,10 +2635,10 @@ function setHTMLElements()
     	if (elementType != 'text' && elementType != 'textarea')
     		htmlID = valueHTMLID;
 
-    	console.log("htmlID: " + jq(htmlID));
+    	clog("htmlID: " + jq(htmlID));
     	var element = $(jq(htmlID));
 
-		console.log(element + "," + element.prop('tagName') + "," + element.attr('type'));
+		clog(element + "," + element.prop('tagName') + "," + element.attr('type'));
 		var tagName = element.prop('tagName').toLowerCase();
 		if (tagName == "input") {
 			var elType = element.attr('type').toLowerCase();
@@ -2998,13 +2659,13 @@ function setHTMLElements()
 
 function docPanelSelect(event)
 {
-  console.log("docpanel select " + event + ", " + event.metaKey);
+  clog("docpanel select " + event + ", " + event.metaKey);
 	if (event.metaKey || event.ctrlKey) {
 		if (window.getSelection) {
 		  if (window.getSelection().empty) {  // Chrome
 		    window.getSelection().empty();
 		  } else if (window.getSelection().removeAllRanges) {
-			  console.log("here2: " + window.getSelection()); // Firefox
+			  clog("here2: " + window.getSelection()); // Firefox
 		    window.getSelection().removeAllRanges();
 		  }
 		} else if (document.selection) {  // IE?
@@ -3093,12 +2754,12 @@ function docPanelClick(cursorPosition)
 	var valueHTMLID;
 
 	for (var elementID in highlightRangeMap) {
-		console.log("elementID: " + elementID);
+		clog("elementID: " + elementID);
 		var annotList = highlightRangeMap[elementID];
-		console.log(JSON.stringify(annotList));
+		clog(JSON.stringify(annotList));
 
 		annotList.forEach(function (annot) {
-			console.log("start: " + annot['start'] + " end: " + annot['end']);
+			clog("start: " + annot['start'] + " end: " + annot['end']);
 			if (annot['start'] <= cursorPosition && annot['end'] >= cursorPosition) {
 				highlightElementID = elementID;
 			}
@@ -3108,7 +2769,7 @@ function docPanelClick(cursorPosition)
 	/*
 	for (var i=0; i<frameInstanceData.length; i++) {
 		var element = frameInstanceData[i];
-		//console.log("frameInstanceData: " + JSON.stringify(element) + ", " + element["elementHTMLID"] + ", " + element["valueHTMLID"]);
+		//clog("frameInstanceData: " + JSON.stringify(element) + ", " + element["elementHTMLID"] + ", " + element["valueHTMLID"]);
 		if (element["elementHTMLID"] == highlightElementID)
 			valueHTMLID = element["valueHTMLID"];
 	}
@@ -3120,12 +2781,12 @@ function docPanelClick(cursorPosition)
 		
 		var name = el.name;
 		
-		console.log('highlightelementid: ' + highlightElementID + " name: " + name + " valuehtmlid: " + valueHTMLID);
+		clog('highlightelementid: ' + highlightElementID + " name: " + name + " valuehtmlid: " + valueHTMLID);
 		
 		
 		for (index=0; index<gridData2.length; index++) {
 			var rowData = gridData2[index];
-			//console.log(rowData['elementHTMLID']);
+			//clog(rowData['elementHTMLID']);
 			if (rowData['elementHTMLID'] == name || rowData['elementHTMLID'] == highlightElementID) {
 				$('#dataElementTable').jqxDataTable('selectRow', index);
 				break;
@@ -3134,6 +2795,14 @@ function docPanelClick(cursorPosition)
 		
 		loadFrameInstanceNoRT();
 	}
+}
+
+
+function clog(message) {
+    try {
+        console.log(message);
+    } 
+    catch (ex) {}
 }
 
 
