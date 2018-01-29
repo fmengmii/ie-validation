@@ -2799,10 +2799,9 @@ function docPanelClick(cursorPosition)
 
 
 function clog(message) {
-    try {
+    if (window.console) {
         console.log(message);
     } 
-    catch (ex) {}
 }
 
 
