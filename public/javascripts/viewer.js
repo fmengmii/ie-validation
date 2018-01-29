@@ -383,7 +383,8 @@ function getDocument(docInfoStr, index, clear, options, callback)
 	$.ajax({
 		type: "POST",
 		url: getDocumentAjax.url,
-		data:{docNamespace:docNamespace, docTable:docTable, docID:docID}
+		data:{docNamespace:docNamespace, docTable:docTable, docID:docID},
+		cache: false
 	}).done(function(data) {
 		clog(data);
 		var docData = JSON.parse(data);
@@ -579,6 +580,7 @@ function undoAction() {
   var undoAjax = jsRoutes.controllers.Application.getHistory();
   clog(undoAjax);
   $.ajax({
+	cache: false,
     type: 'GET',
     url: undoAjax.url,
   }).done(function(data) {
@@ -604,6 +606,7 @@ function clearElementOnDoubleRightClick(elementID, elementHTMLID, elementType) {
   $.ajax({
     type: 'GET',
     url: clearElementAjax.url,
+    cache:false
   }).done(function(data) {
     var dataObj = JSON.parse(data);
     frameInstanceData = dataObj[0];
@@ -614,7 +617,8 @@ function clearElementOnDoubleRightClick(elementID, elementHTMLID, elementType) {
     $.ajax({
       type: 'POST',
       url: getDocumentAnnotationsAjax.url,
-      data: {docNamespace:docNamespace,docTable:docTable,docID:docID}
+      data: {docNamespace:docNamespace,docTable:docTable,docID:docID},
+      cache: false
     }).done(function(data) {
       clog("clear element ranges: " + data);
       annotList = JSON.parse(data);
@@ -671,7 +675,8 @@ function logout() {
   var log = jsRoutes.controllers.Application.logout();
 	$.ajax({
 			type: 'GET',
-			url: log.url
+			url: log.url,
+			cache: false
 		}).done(function(data) {
 			docHistory = {};
 		//	closeDialogLoad();
@@ -1017,7 +1022,8 @@ function rowSelect(row)
 				$.ajax({
 						type: 'POST',
 						url: addAnnotationAjax.url,
-					    data:{htmlID:htmlID, value:value,start:start,end:end,docNamespace:docNamespace,docTable:docTable,docID:docID,features:annotFeatures,add:add}
+					    data:{htmlID:htmlID, value:value,start:start,end:end,docNamespace:docNamespace,docTable:docTable,docID:docID,features:annotFeatures,add:add},
+					    cache: false
 					}).done(function(data) {
 						clog("highlight: start=" + start + " end=" + end + " docFeatureValue=" + docFeatureValue);
 						clog("add annot data: " + data);
@@ -1032,7 +1038,8 @@ function rowSelect(row)
 						$.ajax({
 							type: 'POST',
 							url: getDocumentAnnotationsAjax.url,
-							data: {docNamespace:docNamespace,docTable:docTable,docID:docID}
+							data: {docNamespace:docNamespace,docTable:docTable,docID:docID},
+							cache: false
 						}).done(function(data) {
 							clog("clear element ranges: " + data);
 							annotList = JSON.parse(data);
@@ -1210,6 +1217,7 @@ function loadCRF(crfName)
 	$.ajax({
 		type: 'GET',
 		url: getCRFAjax.url,
+		cache: false
 	}).done(function(data) {
 		//clog(data);
 
@@ -1226,6 +1234,7 @@ function loadProject(projName)
 	$.ajax({
 		type: 'GET',
 		url: loadProjectAjax.url,
+		cache: false
 	}).done(function(data) {
 		clog(data);
 
@@ -1309,7 +1318,8 @@ function loadFrameInstance(frameInstanceID, clearDoc)
     closeFrameInstanceLock();
     $.ajax({
         type: "GET",
-        url: "frameinstancelock/"+frameInstanceID
+        url: "frameinstancelock/"+frameInstanceID,
+        cache: false
     }).done(function(data) {
         data = JSON.parse(data);
         if (data.Success == 'true'){
@@ -1323,6 +1333,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
             $.ajax({
                 type: 'GET',
                 url: loadFrameInstanceAjax.url,
+                cache: false
             }).done(function(data) {
                 clog(data);
 
@@ -1504,6 +1515,7 @@ function loadEntity(colNames, colValues)
 	$.ajax({
 		type: 'GET',
 		url: getFrameInstanceIDAjax.url,
+		cache: false
 	}).done(function(data) {
 		clog("getframeinstanceid: " + data);
 		var map = JSON.parse(data);
@@ -1525,6 +1537,7 @@ function addSection(sectionName)
 	$.ajax({
 		type: 'GET',
 		url: addSectionAjax.url,
+		cache: false
 	}).done(function(data) {
 		clog(data);
 		if (data.length > 0) {
@@ -1548,6 +1561,7 @@ function removeSection(sectionName)
 	$.ajax({
 		type: 'GET',
 		url: removeSectionAjax.url,
+		cache: false
 	}).done(function(data) {
 		clog(data);
 		if (data.length > 0) {
@@ -1561,7 +1575,8 @@ function removeSection(sectionName)
 		$.ajax({
 			type: 'POST',
 			url: getDocumentAnnotationsAjax.url,
-			data: {docNamespace:docNamespace,docTable:docTable,docID:docID}
+			data: {docNamespace:docNamespace,docTable:docTable,docID:docID},
+			cache: false
 		}).done(function(data) {
 			clog("clear element ranges: " + data);
 			annotList = JSON.parse(data);
@@ -1594,6 +1609,7 @@ function addElement(id)
 		$.ajax({
 			type: 'GET',
 			url: addElementAjax.url,
+			cache: false
 		}).done(function(data) {
 			clog(data);
 			if (data.length > 0) {
@@ -1624,6 +1640,7 @@ function removeElement(id)
 			$.ajax({
 				type: 'GET',
 				url: removeElementAjax.url,
+				cache: false
 			}).done(function(data) {
 				clog(data);
 				if (data.length > 0) {
@@ -1640,7 +1657,8 @@ function removeElement(id)
 				$.ajax({
 					type: 'POST',
 					url: getDocumentAnnotationsAjax.url,
-					data: {docNamespace:docNamespace,docTable:docTable,docID:docID}
+					data: {docNamespace:docNamespace,docTable:docTable,docID:docID},
+					cache: false
 				}).done(function(data) {
 					clog("clear element ranges: " + data);
 					annotList = JSON.parse(data);
@@ -1724,6 +1742,7 @@ function clearElement()
 		$.ajax({
 			type: 'GET',
 			url: clearElementAjax.url,
+			cache: false
 		}).done(function(data) {
 			clog(data);
 			var dataObj = JSON.parse(data);
@@ -1735,7 +1754,8 @@ function clearElement()
 			$.ajax({
 				type: 'POST',
 				url: getDocumentAnnotationsAjax.url,
-				data: {docNamespace:docNamespace,docTable:docTable,docID:docID}
+				data: {docNamespace:docNamespace,docTable:docTable,docID:docID},
+				cache: false
 			}).done(function(data) {
 				clog("clear element ranges: " + data);
 				annotList = JSON.parse(data);
@@ -1775,6 +1795,7 @@ function clearValue(valueHTMLID)
 	$.ajax({
 		type: 'GET',
 		url: clearElementAjax.url,
+		cache: false
 	}).done(function(data) {
 		var dataObj = JSON.parse(data);
 		frameInstanceData = dataObj[0];
@@ -1785,7 +1806,8 @@ function clearValue(valueHTMLID)
 		$.ajax({
 			type: 'POST',
 			url: getDocumentAnnotationsAjax.url,
-			data: {docNamespace:docNamespace,docTable:docTable,docID:docID}
+			data: {docNamespace:docNamespace,docTable:docTable,docID:docID},
+			cache: false
 		}).done(function(data) {
 			clog("clear element ranges: " + data);
 			annotList = JSON.parse(data);
@@ -1826,7 +1848,8 @@ function clearAll()
 	$.ajax({
 		type: 'POST',
 		url: clearAllAjax.url,
-		data: {docNamespace:docNamespace,docTable:docTable,docID:docID}
+		data: {docNamespace:docNamespace,docTable:docTable,docID:docID},
+		cache: false
 		//async: false
 	}).done(function(data) {
 		annotList = JSON.parse(data);
@@ -1935,7 +1958,8 @@ function valueClickCallback(add)
 			type: 'POST',
 			url: addAnnotationAjax.url,
 		    data:{htmlID:htmlID, value:clickValue,start:start,end:end,docNamespace:docNamespace,docTable:docTable,docID:docID,
-		    	features:annotFeatures,add:add}
+		    features:annotFeatures,add:add},
+		    cache: false
 		}).done(function(data) {
 
 			var dataObj = JSON.parse(data);
@@ -1955,7 +1979,8 @@ function valueClickCallback(add)
 				$.ajax({
 					type: 'POST',
 					url: getDocumentAnnotationsAjax.url,
-					data: {docNamespace:docNamespace,docTable:docTable,docID:docID}
+					data: {docNamespace:docNamespace,docTable:docTable,docID:docID},
+					cache: false
 				}).done(function(data) {
 					clog("clear element ranges: " + data);
 					annotList = JSON.parse(data);
@@ -2142,7 +2167,8 @@ function addDocumentHistory(docInfoStr)
 			type: 'POST',
 			url: addDocHistAjax.url,
 			data:{docNamespace:docInfo["docNamespace"],
-				docTable:docInfo["docTable"],docID:docInfo["docID"]}
+			docTable:docInfo["docTable"],docID:docInfo["docID"]},
+			cache: false
 		}).done(function(data) {
 			closeDialogLoad();
 		}).fail(function () {
@@ -2155,7 +2181,8 @@ function getDocumentHistory()
 	var getDocHistAjax = jsRoutes.controllers.Application.getDocumentHistory();
 	$.ajax({
 			type: 'GET',
-			url: getDocHistAjax.url
+			url: getDocHistAjax.url,
+			cache: false
 		}).done(function(data) {
 			clog("doc hist: " + data);
 			docHistory = JSON.parse(data);
@@ -2176,7 +2203,8 @@ function clearDocumentHistory()
 	var clearDocHistAjax = jsRoutes.controllers.Application.clearDocumentHistory();
 	$.ajax({
 			type: 'GET',
-			url: clearDocHistAjax.url
+			url: clearDocHistAjax.url,
+			cache: false
 		}).done(function(data) {
 			docHistory = {};
 			$('#docListBox').jqxListBox('clearSelection');
@@ -2510,7 +2538,8 @@ function fillSlot(htmlID)
 			$.ajax({
 					type: 'POST',
 					url: fillSlotAjax.url,
-					data: {slotName:htmlID,start:start,end:end,docNamespace:docNamespace,docTable:docTable,docID:docID}
+					data: {slotName:htmlID,start:start,end:end,docNamespace:docNamespace,docTable:docTable,docID:docID},
+					cache: false
 				}).done(function(data) {
 				var valueMap = JSON.parse(data);
 				var newRow = {};
@@ -2577,7 +2606,8 @@ function fillAll()
 	var fillAllAjax = jsRoutes.controllers.Application.fillAll();
 	$.ajax({
 			type: 'GET',
-			url: clearDocHistAjax.url
+			url: clearDocHistAjax.url,
+			cache: false
 		}).done(function(data) {
 			docHistory = {};
 			$('#docListBox').jqxListBox('clearSelection');
@@ -2702,7 +2732,8 @@ function frameInstanceValidated() {
     var frameInstanceValidatedAjax = jsRoutes.controllers.Application.frameInstanceValidated();
 	$.ajax({
 		type: 'GET',
-		url: frameInstanceValidatedAjax.url
+		url: frameInstanceValidatedAjax.url,
+		cache: false
 	}).done(function(data) {
 		//$('#docListBox font').css("background-color", "#32CD32");
 
