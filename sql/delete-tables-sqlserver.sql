@@ -1,3 +1,5 @@
+-- crfs only
+
 delete from SCHEMA.crf;
 DBCC CHECKIDENT ("SCHEMA.crf", RESEED, 0)
 
