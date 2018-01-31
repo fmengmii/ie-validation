@@ -1,5 +1,6 @@
 
 DROP TABLE IF EXISTS "annotation";
+
 CREATE TABLE SCHEMA."annotation" (
   "id" int NOT NULL,
   "document_namespace" varchar(500) NOT NULL,
@@ -13,7 +14,7 @@ CREATE TABLE SCHEMA."annotation" (
   "features" text,
   "provenance" varchar(500) DEFAULT NULL,
   "score" float DEFAULT '1',
-)
+);
 
   --
   -- Table structure for table "crf"
@@ -27,7 +28,7 @@ DROP TABLE IF EXISTS "crf";
     "html_id" varchar(500) NOT NULL,
     "frame_id" int DEFAULT NULL,
     PRIMARY KEY ("crf_id"),
-  )
+  );
 
   --
   -- Table structure for table "crf_element"
@@ -39,7 +40,7 @@ DROP TABLE IF EXISTS "crf";
     "crf_id" int NOT NULL,
     "element_id" int NOT NULL,
     PRIMARY KEY ("crf_id","element_id")
-  )
+  );
 
   --
   -- Table structure for table "crf_project"
@@ -52,7 +53,7 @@ CREATE TABLE SCHEMA."crf_project" (
   "crf_id" int DEFAULT NULL,
   "project_id" int DEFAULT NULL,
   PRIMARY KEY ("crf_project_id")
-)
+);
 
 --
 -- Table structure for table "crf_section"
@@ -66,7 +67,7 @@ CREATE TABLE SCHEMA."crf_section" (
   "crf_id" int NOT NULL,
   "repeat" int DEFAULT NULL,
   PRIMARY KEY ("section_id")
-)
+);
 
 --
 -- Table structure for table "data_type"
@@ -78,7 +79,7 @@ CREATE TABLE SCHEMA."data_type" (
   "id" int NOT NULL IDENTITY(1,1),
   "name" varchar(500) DEFAULT NULL,
   PRIMARY KEY ("id")
-)
+);
 
 INSERT INTO SCHEMA."data_type" (name) VALUES ('number');
 INSERT INTO SCHEMA."data_type" (name) VALUES ('string');
@@ -99,7 +100,7 @@ CREATE TABLE SCHEMA."document_status" (
   "status" int DEFAULT '0',
   "user_id" int DEFAULT NULL,
   PRIMARY KEY ("document_namespace","document_table","document_id")
-)
+);
 
 
 --
@@ -119,7 +120,7 @@ CREATE TABLE SCHEMA."element" (
   "slot_id" int DEFAULT NULL,
   "primary_key" tinyint DEFAULT NULL,
   PRIMARY KEY ("element_id")
-)
+);
 
 --
 -- Table structure for table "element_type"
@@ -130,7 +131,7 @@ CREATE TABLE SCHEMA."element_type" (
   "element_type_id" int NOT NULL IDENTITY(1,1),
   "element_type_name" varchar(500) DEFAULT NULL,
   PRIMARY KEY ("element_type_id")
-)
+);
 
 INSERT INTO SCHEMA."element_type" (element_type_name) VALUES ('text');
 INSERT INTO SCHEMA."element_type" (element_type_name) VALUES ('number');
@@ -150,7 +151,7 @@ CREATE TABLE SCHEMA."element_value" (
   "element_id" int NOT NULL,
   "value_id" int NOT NULL,
   PRIMARY KEY ("element_id","value_id")
-)
+);
 
 --
 -- Table structure for table "frame"
@@ -162,7 +163,7 @@ CREATE TABLE SCHEMA."frame" (
   "frame_id" int NOT NULL IDENTITY(1,1),
   "name" varchar(500) DEFAULT NULL,
   PRIMARY KEY ("frame_id")
-)
+);
 
 --
 -- Table structure for table "frame_instance"
@@ -175,7 +176,7 @@ CREATE TABLE SCHEMA."frame_instance" (
   "name" varchar(500) DEFAULT NULL,
   "frame_id" int DEFAULT NULL,
   PRIMARY KEY ("frame_instance_id")
-)
+);
 
 --
 -- Table structure for table "frame_instance_annotation"
@@ -196,7 +197,7 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
   "provenance" varchar(500) DEFAULT NULL,
   "score" float DEFAULT '1',
     PRIMARY KEY ("id")
-  )
+  );
   
   --
   -- Table structure for table "frame_instance_data"
@@ -219,7 +220,7 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
     "v_scroll_pos" int DEFAULT NULL,
     "scroll_height" int DEFAULT NULL,
     "scroll_width" int DEFAULT NULL
-  )
+  );
 
   --
   -- Table structure for table "frame_instance_document"
@@ -237,7 +238,7 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
     "document_name" varchar(500) DEFAULT NULL,
     "document_order" int DEFAULT NULL,
     "document_features" varchar(max) DEFAULT NULL
-  )
+  );
 
   --
   -- Table structure for table "frame_instance_document_history"
@@ -275,7 +276,7 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
     "frame_instance_id" int NOT NULL,
     "section_id" int DEFAULT NULL,
     "repeat_num" int DEFAULT NULL
-  )
+  );
   
   --
   -- Table structure for table "frame_instance_status"
@@ -288,7 +289,7 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
     "status" int DEFAULT NULL,
     "user_id" int DEFAULT NULL,
     PRIMARY KEY ("frame_instance_id")
-  )
+  );
 
   --
   -- Table structure for table "frame_slot"
@@ -300,7 +301,7 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
     "frame_id" int NOT NULL,
     "slot_id" int NOT NULL,
     PRIMARY KEY ("frame_id","slot_id")
-  )
+  );
   
   --
   -- Table structure for table "history"
@@ -313,7 +314,7 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
     "html_id" varchar(255) DEFAULT NULL,
     "extra_information" varchar(1000) DEFAULT NULL,
     PRIMARY KEY ("id")
-  )
+  );
 
   --
   -- Table structure for table "project"
@@ -325,7 +326,7 @@ DROP TABLE IF EXISTS "project";
     "project_id" int NOT NULL IDENTITY(1,1),
     "name" varchar(500) DEFAULT NULL,
     PRIMARY KEY ("project_id")
-  )
+  );
   
   -- comment
 
@@ -339,18 +340,19 @@ DROP TABLE IF EXISTS "project";
     "project_id" int NOT NULL,
     "frame_instance_id" int NOT NULL,
     PRIMARY KEY ("project_id","frame_instance_id")
-  )
+  );
 
   --
   -- Table structure for table "provenance"
   --
 
+  DROP TABLE IF EXISTS "provenance";
 CREATE TABLE SCHEMA."provenance" (
   "id" int NOT NULL IDENTITY(1,1),
   "name" varchar(500) DEFAULT NULL,
   "priority" int DEFAULT NULL,
   PRIMARY KEY ("id")
-)
+);
 
 --
 -- Table structure for table "slot"
@@ -365,7 +367,7 @@ CREATE TABLE SCHEMA."slot" (
   "slot_type" int NOT NULL,
   "cond" text,
   PRIMARY KEY ("slot_id")
-)
+);
 
 --
 -- Table structure for table "tablename_lookup"
@@ -377,7 +379,7 @@ CREATE TABLE SCHEMA."tablename_lookup" (
   "annotation_type" varchar(500) DEFAULT NULL,
   "table_type" varchar(100) DEFAULT NULL,
   "table_name" varchar(500) DEFAULT NULL
-)
+);
 
 --
 -- Table structure for table "user"
@@ -391,7 +393,7 @@ CREATE TABLE SCHEMA."user" (
   "frame_instance_id" int DEFAULT NULL,
   "pw" text,
   PRIMARY KEY ("user_id")
-)
+);
 
 --
 -- Table structure for table "value"
@@ -405,14 +407,14 @@ CREATE TABLE SCHEMA."value" (
   "slot_id" int DEFAULT NULL,
   "html_id" varchar(500) NOT NULL,
   PRIMARY KEY ("value_id")
-)
+);
 
 
 DROP TABLE IF EXISTS "project_preload";
 CREATE TABLE SCHEMA."project_preload" (
   "project_id" int DEFAULT NULL,
   "annotation_type" varchar(500) DEFAULT NULL
-)
+);
 
 
 DROP TABLE IF EXISTS "frame_instance_lock";
@@ -421,7 +423,7 @@ CREATE TABLE SCHEMA."frame_instance_lock" (
   "username" varchar(50) NOT NULL,
   "created_at" datetime DEFAULT getdate(),
   PRIMARY KEY ("frame_instance_id")
-)
+);
 
 
 DROP TABLE IF EXISTS "user_project";
@@ -429,5 +431,5 @@ CREATE TABLE SCHEMA."user_project" (
   "user_id" int DEFAULT NULL,
   "project_id" int DEFAULT NULL,
   "frame_instance_id" int DEFAULT NULL
-)
+);
 
