@@ -245,7 +245,7 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
   --
 
 
-  DROP TABLE IF EXISTS SCHEMA."frame_instance_docuent_history";
+  DROP TABLE IF EXISTS SCHEMA."frame_instance_document_history";
   CREATE TABLE SCHEMA."frame_instance_document_history" (
     "frame_instance_id" int DEFAULT NULL,
     "document_namespace" varchar(500) DEFAULT NULL,
