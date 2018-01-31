@@ -374,7 +374,7 @@ CREATE TABLE SCHEMA."slot" (
 --
 
 
-DROP TABLE IF EXISTS SCHEMA."talename_lookup";
+DROP TABLE IF EXISTS SCHEMA."tablename_lookup";
 CREATE TABLE SCHEMA."tablename_lookup" (
   "annotation_type" varchar(500) DEFAULT NULL,
   "table_type" varchar(100) DEFAULT NULL,
