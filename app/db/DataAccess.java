@@ -1,7 +1,7 @@
 package db;
 
 import play.Logger;
-import play.db.DB;
+import play.db.*;
 
 import java.sql.*;
 import java.util.*;
@@ -24,6 +24,8 @@ public class DataAccess {
 	private List<Map<String, Object>> sectionList;
 	private int crfID;
 	private long currDocID;
+	
+	private Map<String, Database> dbMap;
 
 	/*
 	private String docTable = "";
@@ -39,6 +41,27 @@ public class DataAccess {
 		this.sectionList = sectionList;
 		gson = new Gson();
 		crfReader = new CRFReader(schema);
+		
+		/*
+		Database db = Databases.createFrom("test", "com.mysql.jdbc.Driver", "jdbc:mysql://localhost/test");
+		
+		
+		Connection conn = db.getConnection();
+		conn = DB.getConnection("test");
+		
+		try {
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery("select * from element_type");
+			while (rs.next()) {
+				System.out.println(rs.getString(2));
+			}
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		*/
+		
 	}
 
 	//new code
@@ -330,11 +353,14 @@ public class DataAccess {
 
 	public String loadProject(String username, int projID) throws SQLException {
 		Connection conn = DB.getConnection();
+		String rq = getReservedQuote(conn);
 		Statement stmt = conn.createStatement();
-		Statement stmt1 = conn.createStatement();
+		PreparedStatement pstmt = conn.prepareStatement("SELECT b.user_name FROM " + schema
+				+ "frame_instance_status a, " + schema + rq + "user" + rq + " b "
+				+ "WHERE a.frame_instance_id = ?"
+				+ " AND (a.status = 1 or a.status = -2) AND a.user_id = b.user_id ");
 		ResultSet rs1;
 		//schema = (String) Cache.get("schemaName");
-		String rq = getReservedQuote(conn);
 
 		List<Map<String, Object>> frameList = new ArrayList<Map<String, Object>>();
 
@@ -360,10 +386,8 @@ public class DataAccess {
 			if (frameInstanceID == lastFrameInstanceID)
 				lastFrameInstanceIndex = index;
 
-			rs1 = stmt1.executeQuery("SELECT b.user_name FROM " + schema
-					+ "frame_instance_status a, " + schema + rq + "user" + rq + " b "
-					+ "WHERE a.frame_instance_id = " + frameInstanceID
-					+ " AND (a.status = 1 or a.status = -2) AND a.user_id = b.user_id ");
+			pstmt.setInt(1, frameInstanceID);
+			rs1 = pstmt.executeQuery();
 			if (rs1.next()) {
 				userName = rs1.getString(1);
 			}
@@ -397,6 +421,8 @@ public class DataAccess {
 
 		 */
 
+		stmt.close();
+		pstmt.close();
 		conn.close();
 
 		return gson.toJson(frameList) + ",{\"lastFrameInstanceID\":" + lastFrameInstanceID + ",\"lastFrameInstanceIndex\":" + lastFrameInstanceIndex + "}";
@@ -2176,6 +2202,7 @@ public class DataAccess {
 						+ docTable + "', " + docID + ", -2, " + userID + ")" );
 
 			}
+			
 			conn.close();
 			return true;
 		} catch ( SQLException ex ) {
