@@ -355,13 +355,7 @@ public class DataAccess {
 		Connection conn = DB.getConnection();
 		String rq = getReservedQuote(conn);
 		Statement stmt = conn.createStatement();
-		PreparedStatement pstmt = conn.prepareStatement("SELECT b.user_name FROM " + schema
-				+ "frame_instance_status a, " + schema + rq + "user" + rq + " b "
-				+ "WHERE a.frame_instance_id = ?"
-				+ " AND (a.status = 1 or a.status = -2) AND a.user_id = b.user_id ");
-		ResultSet rs1;
-		//schema = (String) Cache.get("schemaName");
-
+		
 		List<Map<String, Object>> frameList = new ArrayList<Map<String, Object>>();
 
 		int lastFrameInstanceID = 0;
@@ -372,11 +366,12 @@ public class DataAccess {
 		if (rs.next()) {
 			lastFrameInstanceID = rs.getInt(1);
 		}
-
-		rs = stmt.executeQuery("select a.frame_instance_id, b.name from "
-				+ schema + "project_frame_instance a, " + schema
-				+ "frame_instance b where a.frame_instance_id = b.frame_instance_id and "
-				+ "a.project_id = " + projID + " order by frame_instance_id");
+		
+		rs = stmt.executeQuery("select a.frame_instance_id, b.name, d.user_name "
+			+ "from " + schema + "project_frame_instance a "
+			+ "join " + schema + "frame_instance b on a.frame_instance_id = b.frame_instance_id and project_id = " + projID
+			+ " left join " + schema + "frame_instance_status c on b.frame_instance_id = c.frame_instance_id "
+			+ "left join " + schema + rq + "user" + rq + " d on c.user_id = d.user_id");
 
 		int index = 1;
 		while (rs.next()) {
@@ -384,15 +379,14 @@ public class DataAccess {
 			
 			System.out.println("load proj: " + frameInstanceID);
 			String name = rs.getString(2);
-			String userName = "";
+			String userName = rs.getString(3);
+			
+			if (userName == null)
+				userName = "";
+
 			if (frameInstanceID == lastFrameInstanceID)
 				lastFrameInstanceIndex = index;
 
-			pstmt.setInt(1, frameInstanceID);
-			rs1 = pstmt.executeQuery();
-			if (rs1.next()) {
-				userName = rs1.getString(1);
-			}
 			Map<String, Object> frameMap = new HashMap<String, Object>();
 			frameMap.put("frameInstanceID", frameInstanceID);
 			frameMap.put("name", name);
@@ -406,7 +400,7 @@ public class DataAccess {
 			lastFrameInstanceIndex = 1;
 			lastFrameInstanceID = (Integer) frameList.get(0).get("frameInstanceID");
 		}
-
+		
 
 		//update user projectID
 		/*
@@ -424,7 +418,6 @@ public class DataAccess {
 		 */
 
 		stmt.close();
-		pstmt.close();
 		conn.close();
 
 		return gson.toJson(frameList) + ",{\"lastFrameInstanceID\":" + lastFrameInstanceID + ",\"lastFrameInstanceIndex\":" + lastFrameInstanceIndex + "}";

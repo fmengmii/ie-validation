@@ -212,6 +212,8 @@ public class Application extends Controller
     	if (annotThreshold == null)
     		annotThreshold = "0.5";
     	session("annotThreshold", annotThreshold);
+    	
+    	String userName = session("userName");
 
     	//session("schemaName", "validator.");
     	//String schema = "validator.";
@@ -257,7 +259,7 @@ public class Application extends Controller
     	//FrameFillerThread ffThread = new FrameFillerThread();
     	
 
-        return ok(viewer.render(array, colNames, colValues));
+        return ok(viewer.render(array, colNames, colValues, userName));
     }
 
     public Result annotIndex()
@@ -913,9 +915,10 @@ public class Application extends Controller
 		if( da.updateValidationStatus(docID, un)) {
 			int projID = Integer.parseInt(session("projID"));
 			try {
-				String frameList = da.loadProject(un, projID);
+				//String frameList = da.loadProject(un, projID);
 				Logger.info("frameInstanceValidated: return ok.");
-				return ok("[" + frameList + "]");
+				//return ok("[" + frameList + "]");
+				return ok();
 			}catch(Exception e) {
     			e.printStackTrace();
 				return ok("Error:There is an error during updating validation status.");

@@ -1,4 +1,4 @@
-@(projList: Array[Map[String, String]], colNames:String, colValues:String)
+@(projList: Array[Map[String, String]], colNames:String, colValues:String, username:String)
 
 <!DOCTYPE html>
 <html>
@@ -39,6 +39,12 @@
 			    
 	    <!-- our own scripts -->
 	    <script src="@routes.Assets.at("javascripts/viewer.js")"></script>
+	    
+	    
+	    <!--  username global variable -->
+	    <script type='text/javascript' > 
+  			var username = '@username'; 
+		</script>
 	    
 	    <!-- Embedded Javascript router -->
         @helper.javascriptRouter("jsRoutes")(

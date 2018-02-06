@@ -1104,7 +1104,7 @@ function highlightText()
 		$('#docPanel').highlightWithinTextarea(onInput);
 		
 		$('.hwt-content mark').each(function (index) {
-			clog("setting " + index + " to " + highlightRanges[index][2]);
+			//clog("setting " + index + " to " + highlightRanges[index][2]);
 			//$(this).css("background-color","lightgray");
 			$(this).css("background-color", highlightRanges[index][2]);
 		});
@@ -1133,7 +1133,7 @@ function highlightText()
 		
 		$('.hwt-content mark').each(function (index) {
 			if (index != highlightIndexes[highlightIndex]) {
-				clog("setting " + index + " to " + highlightRanges[index][2]);
+				//clog("setting " + index + " to " + highlightRanges[index][2]);
 				//$(this).css("background-color","lightgray");
 				$(this).css("background-color", highlightRanges[index][2]);
 			}
@@ -1242,20 +1242,12 @@ function loadProject(projName)
 		frameArray = result[0];
 		var lastFrameAccessed = result[1];
 		var crfData = result[2];
-		var optionsStr = "<option selected disabled value=''>Select Instance</option>";
-		for(var i = 0; i < frameArray.length; i++) {
-		    if( frameArray[i]["validatedByUserName"] != "" ) {
-		        optionsStr += "<option value='" + frameArray[i]["frameInstanceID"]
-		            + "'>" + frameArray[i]["name"] + " : "
-		            + frameArray[i]["validatedByUserName"] + "</option>";
-		    } else {
-		        optionsStr += "<option value='" + frameArray[i]["frameInstanceID"] + "'>" + frameArray[i]["name"] + "</option>";
-		    }
-		}
+		
+		updateCRFSelect();
 
-		$("#crfSelect").find('option').remove().end().append($(optionsStr));
-		document.getElementById('crfSelect').selectedIndex = 0;
 		$('#crfSelect').select2();
+
+
 
 		loadCRFData(crfData);
 
@@ -1272,7 +1264,9 @@ function loadProject(projName)
 			//loadFrameInstance(frameInstanceID, true);
 			//$('#crfSelect').prop('selectedIndex', currFrameInstanceIndex);
 			//$('#crfSelect').prop('selectedIndex', currFrameInstanceIndex);
-			$('#crfSelect').val(frameInstanceID).trigger("change");
+			
+			frameInstanceValidated(frameInstanceID);
+			//$('#crfSelect').val(frameInstanceID).trigger("change");
 		}
 
 
@@ -1286,7 +1280,7 @@ function frameInstanceSelected(frameInstanceID, clearDoc, frameInstanceIndex)
 {
 	$('#instanceText').val('');
 	currFrameInstanceIndex = frameInstanceIndex;
-    if (crfSelectDisabled){
+    if (crfSelectDisabled) {
         crfSelectDisabled = false;
         return;
     }
@@ -1450,7 +1444,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 	                	$('#docListBox').jqxListBox('selectIndex', 0);
 	                }
 	                
-	                frameInstanceValidated();
+	                //frameInstanceValidated(frameInstanceID);
                 }
 
                 getDocumentHistory();
@@ -2224,8 +2218,9 @@ function prevInstance()
 		currFrameInstanceIndex--;
 		var frameInstanceID = frameArray[currFrameInstanceIndex-1]["frameInstanceID"];
 		//$('#crfSelect').prop('selectedIndex', currFrameInstanceIndex);
-		$('#crfSelect').val(frameInstanceID).trigger("change");
-		//loadFrameInstance(frameInstanceID, true)
+		//$('#crfSelect').val(frameInstanceID).trigger("change");
+		//loadFrameInstance(frameInstanceID, true);
+		frameInstanceValidated(frameInstanceID);
 	}
 }
 
@@ -2239,7 +2234,9 @@ function nextInstance()
 		clog("next frameInstanceID: " + frameInstanceID);
 
 		//$('#crfSelect').prop('selectedIndex', currFrameInstanceIndex);
-		$('#crfSelect').val(frameInstanceID).trigger("change");
+		
+		frameInstanceValidated(frameInstanceID);
+		//$('#crfSelect').val(frameInstanceID).trigger("change");
 		//loadFrameInstance(frameInstanceID, true)
 	}
 }
@@ -2727,7 +2724,25 @@ function toggleTokenSelect()
     }
 })(jQuery);
 
-function frameInstanceValidated() {
+function updateCRFSelect()
+{
+	var optionsStr = "<option selected disabled value=''>Select Instance</option>";
+	for(var i = 0; i < frameArray.length; i++) {
+	    if( frameArray[i]["validatedByUserName"] != "" ) {
+	        optionsStr += "<option value='" + frameArray[i]["frameInstanceID"]
+	            + "'>" + frameArray[i]["name"] + " : "
+	            + frameArray[i]["validatedByUserName"] + "</option>";
+	    } else {
+	        optionsStr += "<option value='" + frameArray[i]["frameInstanceID"] + "'>" + frameArray[i]["name"] + "</option>";
+	    }
+	}
+	
+
+	$("#crfSelect").find('option').remove().end().append($(optionsStr));
+}
+
+function frameInstanceValidated(frameInstanceID)
+{
 	openDialogLoad();
     var frameInstanceValidatedAjax = jsRoutes.controllers.Application.frameInstanceValidated();
 	$.ajax({
@@ -2735,41 +2750,31 @@ function frameInstanceValidated() {
 		url: frameInstanceValidatedAjax.url,
 		cache: false
 	}).done(function(data) {
-		//$('#docListBox font').css("background-color", "#32CD32");
+		
+		//var text = $('#crfSelect option[value="' + frameInstanceID + '"]').text();
+		//$('#crfSelect option[value="' + frameInstanceID + '"]').text(text + ' : ' + username);
+		
+		var crfSelect = document.getElementById('crfSelect');
+		var index = -1;	
+		for (var i = 0; i < frameArray.length; i++) {
+			clog("frameArray: " + frameArray[i]["frameInstanceID"] + ", " + frameArray[i]["validatedByUserName"]);
 
-		if( data.lastIndexOf("Error:") == 0) {
-            var message = data.replace("Error:", "");
-            alertBoxShow(message);
-        } else {
-            var message = "The document(s) was validated successfully";
-            //successBoxShow(message);
-
-            var result = JSON.parse(data);
-		    frameArray = result[0];
-		    var lastFrameAccessed = result[1];
-		    var optionsStr = "<option selected disabled value=''>Select Instance</option>";
-		    for(var i = 0; i < frameArray.length; i++) {
-		        if( frameArray[i]["validatedByUserName"] != "" ) {
-		            optionsStr += "<option value='" + frameArray[i]["frameInstanceID"]
-		                + "'>" + frameArray[i]["name"] + " : " + frameArray[i]["validatedByUserName"] + "</option>";
-		        } else {
-		            optionsStr += "<option value='" + frameArray[i]["frameInstanceID"]
-		            + "'>" + frameArray[i]["name"] + "</option>";
-		        }
+		    if (frameArray[i]["frameInstanceID"] == frameInstanceID) {
+		        index = i;
+		        break;
 		    }
-            if (colNames.length > 0) {
-			    loadEntity(colNames, colValues);
-		    }
-		    else {
-		        $("#crfSelect").find('option').remove().end().append($(optionsStr));
-		        document.getElementById('crfSelect').selectedIndex = 0;
-		        $('#crfSelect').select2();
-		        currFrameInstanceIndex = lastFrameAccessed["lastFrameInstanceIndex"];
-			    var frameInstanceID = lastFrameAccessed["lastFrameInstanceID"];
-                crfSelectDisabled = true;
-			    $('#crfSelect').val(frameInstanceID).trigger("change");
-            }
-        }
+		}
+		
+		if (index >= 0 && frameArray[index]["validatedByUserName"].length == "") {
+			frameArray[index]["validatedByUserName"] = username;
+			clog(frameArray[index]["frameInstanceID"] + ", " + frameArray[index]["validatedByUserName"]);
+			updateCRFSelect();
+		}
+		
+		$('#crfSelect').val(frameInstanceID).trigger("change");
+		
+		//$('#crfSelect').selectedIndex = index;
+		
 		
 		closeDialogLoad();
 		

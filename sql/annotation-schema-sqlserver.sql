@@ -16,6 +16,12 @@ CREATE TABLE SCHEMA."annotation" (
   "score" float DEFAULT '1',
 );
 
+
+create index "idx_annot_type" on "annotation" ("annotation_type" (255));
+create index "idx_annot_start" on "annotation" ("start");
+create index "idx_prov" on "annotation" ("provenance" (100));
+create index "idx_id" on "annotation" ("id");
+
   --
   -- Table structure for table "crf"
   --
@@ -219,7 +225,7 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
     "element_id" int DEFAULT NULL,
     "v_scroll_pos" int DEFAULT NULL,
     "scroll_height" int DEFAULT NULL,
-    "scroll_width" int DEFAULT NULL
+    "scroll_width" int DEFAULT NULL,
   );
 
   --
@@ -237,7 +243,8 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
     "document_text_column" varchar(500) DEFAULT NULL,
     "document_name" varchar(500) DEFAULT NULL,
     "document_order" int DEFAULT NULL,
-    "document_features" varchar(max) DEFAULT NULL
+    "document_features" varchar(max) DEFAULT NULL,
+    PRIMARY KEY ("frame_instance_id", "document_id");
   );
 
   --
