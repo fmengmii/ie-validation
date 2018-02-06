@@ -377,7 +377,6 @@ public class DataAccess {
 		while (rs.next()) {
 			int frameInstanceID = rs.getInt(1);
 			
-			System.out.println("load proj: " + frameInstanceID);
 			String name = rs.getString(2);
 			String userName = rs.getString(3);
 			
