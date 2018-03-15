@@ -1265,7 +1265,8 @@ function loadProject(projName)
 			//$('#crfSelect').prop('selectedIndex', currFrameInstanceIndex);
 			//$('#crfSelect').prop('selectedIndex', currFrameInstanceIndex);
 			
-			frameInstanceValidated(frameInstanceID);
+			if (frameInstanceID != -1)
+				frameInstanceValidated(frameInstanceID);
 			//$('#crfSelect').val(frameInstanceID).trigger("change");
 		}
 

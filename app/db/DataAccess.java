@@ -358,7 +358,7 @@ public class DataAccess {
 		
 		List<Map<String, Object>> frameList = new ArrayList<Map<String, Object>>();
 
-		int lastFrameInstanceID = 0;
+		int lastFrameInstanceID = -1;
 		int lastFrameInstanceIndex = -1;
 		ResultSet rs = stmt.executeQuery("select a.frame_instance_id from "
 				+ schema + rq + "user_project" + rq + "a, " + schema + rq + "user" + rq + " b where b.user_name = '"
@@ -395,10 +395,12 @@ public class DataAccess {
 			index++;
 		}
 
+		/*
  		if (lastFrameInstanceIndex == -1) {
 			lastFrameInstanceIndex = 1;
 			lastFrameInstanceID = (Integer) frameList.get(0).get("frameInstanceID");
 		}
+		*/
 		
 
 		//update user projectID
