@@ -395,7 +395,7 @@ public class DataAccess {
 			index++;
 		}
 
-		if (lastFrameInstanceIndex == -1) {
+ 		if (lastFrameInstanceIndex == -1) {
 			lastFrameInstanceIndex = 1;
 			lastFrameInstanceID = (Integer) frameList.get(0).get("frameInstanceID");
 		}
@@ -2154,7 +2154,7 @@ public class DataAccess {
 				if( status != 1 ) {
 					stmt.executeUpdate( "UPDATE " + schema
 							+ "frame_instance_status SET status = " + status + ", user_id = " + userID
-							+ " WHERE frame_instance_id = " + frameInstanceID );
+							+ " WHERE frame_instance_id = " + frameInstanceID + " and status < 2" );
 				} else {
 					if( preUserID != userID ) {
 						stmt.executeUpdate( "UPDATE " + schema

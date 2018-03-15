@@ -2258,6 +2258,7 @@ function docFeatureClicked(value, id)
 	docFeatureID = id;
 	docFeatureRange.start = selectRange.start;
 	docFeatureRange.end = selectRange.end;
+	selectFlag = true;
 }
 
 function scrollTextareaToPosition($textarea, position) {
