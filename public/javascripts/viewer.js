@@ -1278,7 +1278,7 @@ function loadProject(projName)
 }
 
 function frameInstanceSelected(frameInstanceID, clearDoc, frameInstanceIndex)
-{
+{	
 	$('#instanceText').val('');
 	currFrameInstanceIndex = frameInstanceIndex;
     if (crfSelectDisabled) {
@@ -1286,6 +1286,7 @@ function frameInstanceSelected(frameInstanceID, clearDoc, frameInstanceIndex)
         return;
     }
 	loadFrameInstance(frameInstanceID, clearDoc);
+	frameInstanceValidated(frameInstanceID);
 }
 
 function frameInstanceSelectedText(frameInstanceName)
@@ -2773,6 +2774,7 @@ function frameInstanceValidated(frameInstanceID)
 			updateCRFSelect();
 		}
 		
+		crfSelectDisabled = true;
 		$('#crfSelect').val(frameInstanceID).trigger("change");
 		
 		//$('#crfSelect').selectedIndex = index;

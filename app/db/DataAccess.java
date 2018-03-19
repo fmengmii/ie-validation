@@ -371,7 +371,7 @@ public class DataAccess {
 			+ "from " + schema + "project_frame_instance a "
 			+ "join " + schema + "frame_instance b on a.frame_instance_id = b.frame_instance_id and project_id = " + projID
 			+ " left join " + schema + "frame_instance_status c on b.frame_instance_id = c.frame_instance_id "
-			+ "left join " + schema + rq + "user" + rq + " d on c.user_id = d.user_id");
+			+ "left join " + schema + rq + "user" + rq + " d on c.user_id = d.user_id order by frame_instance_id");
 
 		int index = 1;
 		while (rs.next()) {
