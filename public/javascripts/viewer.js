@@ -1281,11 +1281,14 @@ function frameInstanceSelected(frameInstanceID, clearDoc, frameInstanceIndex)
 {	
 	$('#instanceText').val('');
 	currFrameInstanceIndex = frameInstanceIndex;
-    if (crfSelectDisabled) {
+    
+	loadFrameInstance(frameInstanceID, clearDoc);
+	
+	if (crfSelectDisabled) {
         crfSelectDisabled = false;
         return;
     }
-	loadFrameInstance(frameInstanceID, clearDoc);
+	
 	frameInstanceValidated(frameInstanceID);
 }
 
