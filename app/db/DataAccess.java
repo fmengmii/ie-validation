@@ -367,6 +367,8 @@ public class DataAccess {
 			lastFrameInstanceID = rs.getInt(1);
 		}
 		
+		System.out.println("username: " + username + " lastFrameInstanceID load: " + lastFrameInstanceID);
+		
 		rs = stmt.executeQuery("select a.frame_instance_id, b.name, d.user_name "
 			+ "from " + schema + "project_frame_instance a "
 			+ "join " + schema + "frame_instance b on a.frame_instance_id = b.frame_instance_id and project_id = " + projID
@@ -1972,6 +1974,8 @@ public class DataAccess {
 	public boolean isInstanceLockedByOthers(int frameInstanceID, String username, int timeout) throws SQLException {
 		Map<String, Object> lock = getFrameInstanceLock(frameInstanceID);
 		boolean locked = false;
+		
+		System.out.println("username: " + username + " frameInstanceID: " + frameInstanceID);
 		if (lock != null && !username.equals((String) lock.get("username")) && (new Date().getTime() - ((Timestamp) lock.get("created_at")).getTime())/1000/60 < timeout){
 			return true;
 		}
@@ -2122,6 +2126,7 @@ public class DataAccess {
 				System.out.println("SELECT frame_instance_id, "
 						+ "document_namespace, document_table FROM "
 						+ schema + "frame_instance_document WHERE document_id = " + docID);
+				conn.close();
 				return false;
 			}
 
@@ -2133,6 +2138,7 @@ public class DataAccess {
 			if( projectID == 0 ) {
 				System.out.println("SELECT project_id FROM " + schema
 						+ "project_frame_instance WHERE frame_instance_id = " + frameInstanceID);
+				conn.close();
 				return false;
 			}
 			rs = stmt.executeQuery("SELECT a.user_id FROM " + schema + rq + "user" + rq + " a, " + schema + "user_project b "
@@ -2144,6 +2150,7 @@ public class DataAccess {
 				System.out.println("SELECT user_id FROM " + schema + rq + "user" + rq
 						+ "WHERE user_name = '" + userName + "' AND project_id = "
 						+ projectID );
+				conn.close();
 				return false;
 			}
 			rs = stmt.executeQuery("SELECT status, user_id FROM " + schema

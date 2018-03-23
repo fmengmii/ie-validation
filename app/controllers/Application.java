@@ -39,8 +39,8 @@ public class Application extends Controller
 
     }*/
 
-    private String un;
-    private String pw;
+    //private String un;
+    //private String pw;
 	private int crfID;
 
 
@@ -101,8 +101,8 @@ public class Application extends Controller
         try {
 
             DynamicForm df = Form.form().bindFromRequest();
-            un = df.get("username");
-            pw = df.get("password");
+            String un = df.get("username");
+            String pw = df.get("password");
 
 
             gson = new Gson();
@@ -495,6 +495,8 @@ public class Application extends Controller
     		gson = new Gson();
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	//sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
+	    	String un = session("userName");
+	    	
     		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		frameList = da.loadProject(un, projID); // was changed
 
@@ -510,6 +512,10 @@ public class Application extends Controller
 				lastFrameInstanceIndex = Integer.parseInt(matcher.group(2));
 			}
 			// **** end of add
+			
+			System.out.println("lastFrameInstanceID: " + lastFrameInstanceID);
+			
+			
     		int crfID = da.getCRFID(projID);
     		session("crfID", Integer.toString(crfID));
 
@@ -541,6 +547,8 @@ public class Application extends Controller
     		gson = new Gson();
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
+	    	String un = session("userName");
+	    	
     		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		int projID = Integer.parseInt(session("projID"));
     		frameInstanceStr = da.loadFrameInstance(un, frameInstanceID, projID); // was changed
@@ -906,6 +914,7 @@ public class Application extends Controller
 		List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 		sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
 		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
+		String un = session("userName");
 
 		if( frameInstanceID == 0 ) {
 			return ok("Error: The frameInstanceID is 0.");

@@ -22,7 +22,7 @@ var currSelectedDoc;
 var docIndexMap = {};
 var frameArray;
 var currFrameInstanceIndex;
-var prevFrameInstanceIndex;
+var prevFrameInstanceIndex = -1;
 var docFeatures;
 var docFeatureKey;
 var docFeatureValue = null;
@@ -674,6 +674,8 @@ function getAnnotFromHighlight(start, end) {
 
 function logout() {
   //clog("logout");
+	prevFrameInstanceIndex = -1;
+	
   var log = jsRoutes.controllers.Application.logout();
 	$.ajax({
 			type: 'GET',
@@ -1268,7 +1270,8 @@ function loadProject(projName)
 			//$('#crfSelect').prop('selectedIndex', currFrameInstanceIndex);
 			
 			if (frameInstanceID != -1)
-				frameInstanceValidated(frameInstanceID);
+				//frameInstanceValidated(frameInstanceID);
+				loadFrameInstance(frameInstanceID, true);
 			//$('#crfSelect').val(frameInstanceID).trigger("change");
 		}
 
@@ -1282,25 +1285,18 @@ function loadProject(projName)
 function frameInstanceSelected(frameInstanceID, clearDoc, frameInstanceIndex)
 {
 	
-	if (crfSelectDisabled2) {
-		crfSelectDisabled2 = false;
+	if (crfSelectDisabled) {
+		crfSelectDisabled = false;
 		return;
 	}
 	
 	$('#instanceText').val('');
 	currFrameInstanceIndex = frameInstanceIndex;
     
-	flag = loadFrameInstance(frameInstanceID, clearDoc);
+	loadFrameInstance(frameInstanceID, clearDoc);
+
 	
-	//if (!flag)
-	//	return;
-	
-	if (crfSelectDisabled) {
-        crfSelectDisabled = false;
-        return;
-    }
-	
-	frameInstanceValidated(frameInstanceID);
+	//frameInstanceValidated(frameInstanceID);
 }
 
 function frameInstanceSelectedText(frameInstanceName)
@@ -1321,9 +1317,10 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 {
 	clog(frameInstanceID);
     $("#validatedButtonDiv").hide();
-	
-	openDialogLoad();
-    //closeFrameInstanceLock();
+    
+    
+    
+    //check to see if frame instance is locked by another user
     $.ajax({
         type: "GET",
         url: "frameinstancelock/"+frameInstanceID,
@@ -1339,163 +1336,171 @@ function loadFrameInstance(frameInstanceID, clearDoc)
             
             closeDialogLoad();
             
-            //crfSelectDisabled = true;
-            crfSelectDisabled2 = true;
+            crfSelectDisabled = true;
+            
             //currFrameInstanceIndex = frameInstanceIndex;
             //frameInstanceID = currFrameInstanceID;
             
             currFrameInstanceIndex = prevFrameInstanceIndex;
-            frameInstanceValidated(currFrameInstanceID);
-            return false;
+            //loadFrameInstance(currFrameInstanceID);
             
-            //$('#crfSelect').val(currFrameInstanceID).trigger("change");
+            if (currFrameInstanceIndex == -1)	 {
+            	$('#crfSelect').val('default').trigger("change");
+            }
+            else
+            	$('#crfSelect').val(currFrameInstanceID).trigger("change");
             //return true;
         }
-        
-       // closeDialogLoad();
+    
+        else {
+    
+	
+			openDialogLoad();
+			
+			currFrameInstanceID = frameInstanceID;
+			docSelectIndex = -1;
+		
+		    var loadFrameInstanceAjax = jsRoutes.controllers.Application.loadFrameInstance(frameInstanceID);
+		    $.ajax({
+		        type: 'GET',
+		        url: loadFrameInstanceAjax.url,
+		        cache: false
+		    }).done(function(data) {
+		        clog(data);
+		
+		        var dataObj = JSON.parse(data);
+		
+		        //load highlight range map
+		        highlightRangeMap = dataObj[4];
+		
+		
+		        var crfData = dataObj[1];
+		        loadCRFData(crfData);
+		
+		
+		        frameInstanceData = dataObj[3];
+		        for (var i=0; i<frameInstanceData.length; i++) {
+		            //var value = frameInstanceData[i]["value"];
+		            var elementID = frameInstanceData[i]["elementID"];
+		            //var htmlID = frameInstanceData[i]["htmlID"];
+		            var start = frameInstanceData[i]["start"];
+		            var end = frameInstanceData[i]["end"];
+		            var docNamespaceLocal = frameInstanceData[i]["docNamespace"];
+		            var docTableLocal = frameInstanceData[i]["docTable"];
+		            var docIDLocal = frameInstanceData[i]["docID"];
+		            //var vScrollPos = frameInstanceData[i]["vScrollPos"];
+		            //var scrollHeight = frameInstanceData[i]["scrollHeight"];
+		            //var scrollWidth = frameInstanceData[i]["scrollWidth"];
+		            var annotFeatures = frameInstanceData[i]["features"];
+		
+		            var elementIndex = elementIDMap[elementID];
+		            clog("elementID: " + elementID);
+		            //gridData[elementIndex]["start"] = start;
+		            //gridData[elementIndex]["end"] = end;
+		            //gridData[elementIndex]["elementValue"] = value;
+		            gridData[elementIndex]["docNamespace"] = docNamespaceLocal;
+		            gridData[elementIndex]["docTable"] = docTableLocal;
+		            gridData[elementIndex]["docID"] = docIDLocal;
+		            //gridData[elementIndex]["vScrollPos"] = vScrollPos;
+		            //gridData[elementIndex]["scrollHeight"] = scrollHeight;
+		            //gridData[elementIndex]["scrollWidth"] = scrollWidth;
+		            gridData[elementIndex]["annotFeatures"] = annotFeatures;
+		
+		
+		            /*
+		             var element = $("#" + htmlID);
+		             clog(element.prop('tagName') + "," + element.attr('type'));
+		             if (element.prop('tagName').toLowerCase() == "input") {
+		             var elType = element.attr('type').toLowerCase();
+		             if (elType == "text") {
+		             element.val(value);
+		             }
+		             else if (elType == "checkbox" || elType == "radio") {
+		             element.prop('selected', true);
+		             }
+		             }
+		             */
+		        }
+		
+		
+		        //reload grid data into table
+		        gridSource.localData = gridData;
+		        dataAdapter = new $.jqx.dataAdapter(gridSource, {
+		            loadComplete: function (data) { },
+		            loadError: function (xhr, status, error) { }
+		        });
+		        $("#dataElementTable").jqxDataTable({ source: dataAdapter });
+		
+		
+		        setHTMLElements();
+		
+		
+		
+		        if (clearDoc) {
+		            //set document panel title
+		            $("#docTitleDiv").text("No Document Selected");
+		
+		            //clear document panel
+		            $('#docPanel').val('');
+		            //highlightRange.start = 0;
+		            //highlightRange.end = -1;
+		            //highlightRanges = [];
+		            highlightRangeList = undefined;
+		            highlightText();
+		
+		            //remove doc metadata
+		            $('#docFeatures').html("");
+		
+		            docNamespace = "";
+		            docTable = "";
+		            docID = -1;
+		
+		            //load document list
+		
+		            var docList = dataObj[2];
+		
+		
+		
+		            //load document list into listbox
+		            var docListBoxSource = [];
+		            for (var i = 0; i < docList.length; i++) {
+		                var oneDoc = {};
+		                oneDoc["label"] = docList[i]["docName"];
+		                oneDoc["value"] = "{\"docNamespace\":\"" + docList[i]["docNamespace"] + "\",\"docTable\":\"" + docList[i]["docTable"]
+		                    + "\",\"docID\":" + docList[i]["docID"] + "}";
+		                docIndexMap["{\"docNamespace\":\"" + docList[i]["docNamespace"] + "\",\"docTable\":\"" + docList[i]["docTable"]
+		                + "\",\"docID\":" + docList[i]["docID"] + "}"] = i;
+		
+		                docListBoxSource.push(oneDoc);        
+		            }
+		            
+		            $("#docListBox").jqxListBox({source: docListBoxSource});
+		            $('#docListBox').jqxListBox('refresh');
+		            
+		            if (docList.length == 1) {
+		            	$('#docListBox').jqxListBox('selectIndex', 0);
+		            }
+		            
+		            crfSelectDisable = true;
+		            frameInstanceValidated(frameInstanceID);
+			        prevFrameInstanceIndex = currFrameInstanceIndex;
 
-        //openDialogLoad();
-    	currFrameInstanceID = frameInstanceID;
-    	docSelectIndex = -1;
+		        }
+		
+		        getDocumentHistory();
+		
+		        
+		        //highlightText();
+		
+		        clog("end of load frame docNamespace: " + docNamespace + ", docTable: " + docTable + ", docID: " + docID);
+		
+		        closeDialogLoad();
+		        
 
-        var loadFrameInstanceAjax = jsRoutes.controllers.Application.loadFrameInstance(frameInstanceID);
-        $.ajax({
-            type: 'GET',
-            url: loadFrameInstanceAjax.url,
-            cache: false
-        }).done(function(data) {
-            clog(data);
-
-            var dataObj = JSON.parse(data);
-
-            //load highlight range map
-            highlightRangeMap = dataObj[4];
-
-
-            var crfData = dataObj[1];
-            loadCRFData(crfData);
-
-
-            frameInstanceData = dataObj[3];
-            for (var i=0; i<frameInstanceData.length; i++) {
-                //var value = frameInstanceData[i]["value"];
-                var elementID = frameInstanceData[i]["elementID"];
-                //var htmlID = frameInstanceData[i]["htmlID"];
-                var start = frameInstanceData[i]["start"];
-                var end = frameInstanceData[i]["end"];
-                var docNamespaceLocal = frameInstanceData[i]["docNamespace"];
-                var docTableLocal = frameInstanceData[i]["docTable"];
-                var docIDLocal = frameInstanceData[i]["docID"];
-                //var vScrollPos = frameInstanceData[i]["vScrollPos"];
-                //var scrollHeight = frameInstanceData[i]["scrollHeight"];
-                //var scrollWidth = frameInstanceData[i]["scrollWidth"];
-                var annotFeatures = frameInstanceData[i]["features"];
-
-                var elementIndex = elementIDMap[elementID];
-                clog("elementID: " + elementID);
-                //gridData[elementIndex]["start"] = start;
-                //gridData[elementIndex]["end"] = end;
-                //gridData[elementIndex]["elementValue"] = value;
-                gridData[elementIndex]["docNamespace"] = docNamespaceLocal;
-                gridData[elementIndex]["docTable"] = docTableLocal;
-                gridData[elementIndex]["docID"] = docIDLocal;
-                //gridData[elementIndex]["vScrollPos"] = vScrollPos;
-                //gridData[elementIndex]["scrollHeight"] = scrollHeight;
-                //gridData[elementIndex]["scrollWidth"] = scrollWidth;
-                gridData[elementIndex]["annotFeatures"] = annotFeatures;
-
-
-                /*
-                 var element = $("#" + htmlID);
-                 clog(element.prop('tagName') + "," + element.attr('type'));
-                 if (element.prop('tagName').toLowerCase() == "input") {
-                 var elType = element.attr('type').toLowerCase();
-                 if (elType == "text") {
-                 element.val(value);
-                 }
-                 else if (elType == "checkbox" || elType == "radio") {
-                 element.prop('selected', true);
-                 }
-                 }
-                 */
-            }
-
-
-            //reload grid data into table
-            gridSource.localData = gridData;
-            dataAdapter = new $.jqx.dataAdapter(gridSource, {
-                loadComplete: function (data) { },
-                loadError: function (xhr, status, error) { }
-            });
-            $("#dataElementTable").jqxDataTable({ source: dataAdapter });
-
-
-            setHTMLElements();
-
-
-
-            if (clearDoc) {
-                //set document panel title
-                $("#docTitleDiv").text("No Document Selected");
-
-                //clear document panel
-                $('#docPanel').val('');
-                //highlightRange.start = 0;
-                //highlightRange.end = -1;
-                //highlightRanges = [];
-                highlightRangeList = undefined;
-                highlightText();
-
-                //remove doc metadata
-                $('#docFeatures').html("");
-
-                docNamespace = "";
-                docTable = "";
-                docID = -1;
-
-                //load document list
-
-                var docList = dataObj[2];
-
-
-
-                //load document list into listbox
-                var docListBoxSource = [];
-                for (var i = 0; i < docList.length; i++) {
-                    var oneDoc = {};
-                    oneDoc["label"] = docList[i]["docName"];
-                    oneDoc["value"] = "{\"docNamespace\":\"" + docList[i]["docNamespace"] + "\",\"docTable\":\"" + docList[i]["docTable"]
-                        + "\",\"docID\":" + docList[i]["docID"] + "}";
-                    docIndexMap["{\"docNamespace\":\"" + docList[i]["docNamespace"] + "\",\"docTable\":\"" + docList[i]["docTable"]
-                    + "\",\"docID\":" + docList[i]["docID"] + "}"] = i;
-
-                    docListBoxSource.push(oneDoc);        
-                }
-                
-                $("#docListBox").jqxListBox({source: docListBoxSource});
-                $('#docListBox').jqxListBox('refresh');
-                
-                if (docList.length == 1) {
-                	$('#docListBox').jqxListBox('selectIndex', 0);
-                }
-                
-                //frameInstanceValidated(frameInstanceID);
-            }
-
-            getDocumentHistory();
-
-            
-            //highlightText();
-
-            clog("end of load frame docNamespace: " + docNamespace + ", docTable: " + docTable + ", docID: " + docID);
-
-            closeDialogLoad();
-        })
+		    }
+        )};
     });
 	
-    prevFrameInstanceIndex = currFrameInstanceIndex;
-    
-    return true;
 }
 
 function loadFrameInstanceNoRT()
@@ -2255,8 +2260,8 @@ function prevInstance()
 		var frameInstanceID = frameArray[currFrameInstanceIndex-1]["frameInstanceID"];
 		//$('#crfSelect').prop('selectedIndex', currFrameInstanceIndex);
 		//$('#crfSelect').val(frameInstanceID).trigger("change");
-		//loadFrameInstance(frameInstanceID, true);
-		frameInstanceValidated(frameInstanceID);
+		loadFrameInstance(frameInstanceID, true);
+		//frameInstanceValidated(frameInstanceID);
 	}
 }
 
@@ -2271,9 +2276,9 @@ function nextInstance()
 
 		//$('#crfSelect').prop('selectedIndex', currFrameInstanceIndex);
 		
-		frameInstanceValidated(frameInstanceID);
+		//frameInstanceValidated(frameInstanceID);
 		//$('#crfSelect').val(frameInstanceID).trigger("change");
-		//loadFrameInstance(frameInstanceID, true)
+		loadFrameInstance(frameInstanceID, true)
 	}
 }
 
@@ -2763,7 +2768,7 @@ function toggleTokenSelect()
 
 function updateCRFSelect()
 {
-	var optionsStr = "<option selected disabled value=''>Select Instance</option>";
+	var optionsStr = "<option selected disabled value='default'>Select Instance</option>";
 	for(var i = 0; i < frameArray.length; i++) {
 	    if( frameArray[i]["validatedByUserName"] != "" ) {
 	        optionsStr += "<option value='" + frameArray[i]["frameInstanceID"]
@@ -2781,6 +2786,8 @@ function updateCRFSelect()
 function frameInstanceValidated(frameInstanceID)
 {
 	openDialogLoad();
+	
+
     var frameInstanceValidatedAjax = jsRoutes.controllers.Application.frameInstanceValidated();
 	$.ajax({
 		type: 'GET',
@@ -2816,8 +2823,9 @@ function frameInstanceValidated(frameInstanceID)
 		
 		closeDialogLoad();
 		
-    }).fail(function(){
-    });
+    }).fail(function(){}
+    	
+    )
 }
 
 
