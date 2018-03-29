@@ -97,6 +97,9 @@ public class Application extends Controller
 
     	String docSchema = Play.application().configuration().getString("docSchema") + ".";
     	session("docSchemaName", docSchema);
+    	
+    	String loadStatus = Play.application().configuration().getString("loadStatus");
+    	session("loadStatus", loadStatus);
 
         try {
 
@@ -548,10 +551,14 @@ public class Application extends Controller
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
 	    	String un = session("userName");
+	    	Boolean loadStatus = false;
+	    	String loadStatusStr = session("loadStatus");
+	    	if (loadStatusStr != null)
+	    		loadStatus = Boolean.parseBoolean(loadStatusStr);
 	    	
     		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		int projID = Integer.parseInt(session("projID"));
-    		frameInstanceStr = da.loadFrameInstance(un, frameInstanceID, projID); // was changed
+    		frameInstanceStr = da.loadFrameInstance(un, frameInstanceID, projID, loadStatus); // was changed
     		long docID = da.getCurrDocID();
     		session("docID", Long.toString(docID));
 

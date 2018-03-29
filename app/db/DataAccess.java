@@ -446,7 +446,7 @@ public class DataAccess {
 		return crfStr;
 	}
 
-	public String loadFrameInstance(String username, int frameInstanceID, int projID) throws SQLException {
+	public String loadFrameInstance(String username, int frameInstanceID, int projID, boolean loadStatus) throws SQLException {
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 		String rq = getReservedQuote(conn);
@@ -615,9 +615,26 @@ public class DataAccess {
 		else {
 			stmt.execute("update " + schema + rq + "user_project" + rq + " set frame_instance_id = " + frameInstanceID + " where user_id = " + userID + " and project_id = " + projID);
 		}
+		
+		
+		//get frame instance status if flag is set
+		List<String> statusList = new ArrayList<String>();
+		if (loadStatus) {
+			rs = stmt.executeQuery("select c.user_name from " + schema + "project_frame_instance a left outer join " + schema + "frame_instance_status b on (a.frame_instance_id = b.frame_instance_id) "
+				+ "left join " + schema + "user c on (b.user_id = c.user_id) "
+				+ "where a.project_id = " + projID + " order by a.frame_instance_id");
+			while (rs.next()) {
+				String user = rs.getString(1);
+				
+				statusList.add(user);
+			}
+		}
+		
+		String statusListStr = gson.toJson(statusList);
+		
 		conn.close();
 
-		String frameInstanceJSON = "[" + docJSON + "," + crfJSON + "," + docListJSON + "," + frameDataStr + "]";
+		String frameInstanceJSON = "[" + docJSON + "," + crfJSON + "," + docListJSON + "," + frameDataStr + "," + statusListStr + "]";
 
 		return frameInstanceJSON;
 	}

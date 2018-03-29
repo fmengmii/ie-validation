@@ -1366,7 +1366,6 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		        url: loadFrameInstanceAjax.url,
 		        cache: false
 		    }).done(function(data) {
-		        clog(data);
 		
 		        var dataObj = JSON.parse(data);
 		
@@ -1376,6 +1375,21 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		
 		        var crfData = dataObj[1];
 		        loadCRFData(crfData);
+		        
+		        
+		        //reload crf select elements
+		        var userStatus = dataObj[5];
+		        if (userStatus.length > 0) {
+			        for (var i=0; i<userStatus.length; i++) {
+			        	if (userStatus[i] != null)
+			        		frameArray[i]["validatedByUserName"] = userStatus[i];
+			        }
+			        
+			        updateCRFSelect();
+			        
+			        crfSelectDisabled = true;
+					$('#crfSelect').val(frameInstanceID).trigger("change");
+		        }
 		
 		
 		        frameInstanceData = dataObj[3];
