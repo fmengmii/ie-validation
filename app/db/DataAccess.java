@@ -621,7 +621,7 @@ public class DataAccess {
 		List<String> statusList = new ArrayList<String>();
 		if (loadStatus) {
 			rs = stmt.executeQuery("select c.user_name from " + schema + "project_frame_instance a left outer join " + schema + "frame_instance_status b on (a.frame_instance_id = b.frame_instance_id) "
-				+ "left join " + schema + "user c on (b.user_id = c.user_id) "
+				+ "left join " + schema + rq + "user" + rq + " c on (b.user_id = c.user_id) "
 				+ "where a.project_id = " + projID + " order by a.frame_instance_id");
 			while (rs.next()) {
 				String user = rs.getString(1);
