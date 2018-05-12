@@ -255,6 +255,8 @@ $(document).ready(function () {
    //$('textarea').keyup(update).mousedown(update).mousemove(update).mouseup(update);
    $('textarea').keyup(update).mousedown(update).mouseup(update);
    
+   $('crfPanel').mousedown(function(e) {clog("mousedown: " + e.target.id); selectFlag = false;});
+   
    
    $('#docPanel').highlightWithinTextarea(onInput);
    $('#docPanel').click(function(event) {
@@ -272,6 +274,15 @@ $(document).ready(function () {
 		docFeatureValue = null;
 
    });
+   
+   $(document).click(function(event) {
+	   if (event.target.tagName == "TEXTAREA")
+		   return;
+	   
+	   if (event.target.tagName != "TD" && selectFlag) {
+		   selectFlag = false;
+	   }
+	 });
    
 
    	//load the entity if there's an entity ID
