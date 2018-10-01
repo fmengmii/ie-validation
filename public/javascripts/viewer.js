@@ -745,6 +745,8 @@ function rowSelect(row)
 		return;
 	}
 	*/
+	
+	
 
 	var add = row.originalEvent.metaKey;
 	if (!add)
@@ -818,6 +820,8 @@ function rowSelect(row)
 		    clog("rowselect: " + docNamespace + "," + docTable + "," + docID);
 		    clog("elementhtmlid: " + elementHTMLID + " highlightrangemap: " + JSON.stringify(highlightRangeMap));
 		    clog("highlightmap: " + JSON.stringify(highlightMap));
+		    
+		    
 		    var docIndex = docIndexMap["{\"docNamespace\":\"" + highlightMap["docNamespace"] + "\",\"docTable\":\"" + highlightMap["docTable"] + "\",\"docID\":" + highlightMap["docID"] + "}"];
 		    if (highlightMap["docNamespace"] != docNamespace || highlightMap["docTable"] != docTable || highlightMap["docID"] != docID) {
 			    getDocument("{\"docNamespace\":\"" + highlightMap["docNamespace"] + "\",\"docTable\":\"" + highlightMap["docTable"] + "\",\"docID\":" + highlightMap["docID"] + "}",
@@ -944,6 +948,13 @@ function rowSelect(row)
 	
 	//something was highlighted
 	if (selectFlag && (start != end || docFeatureValue != null)) {
+		
+		clog("highlight add element: " + elementHTMLID);
+		
+		//add row if it is repeatable
+		if (document.getElementById(elementHTMLID + '_add') != null || document.getElementById(elementHTMLID + '_remove') != null) {
+			addElement(elementHTMLID + '_add');
+		}
 
 		if (docFeatureValue != null) {
 			start = -1;
@@ -1378,6 +1389,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		        cache: false
 		    }).done(function(data) {
 		
+		    	clog(data);
 		        var dataObj = JSON.parse(data);
 		
 		        //load highlight range map
@@ -1659,7 +1671,7 @@ function addElement(id)
 {
 	clog("add Element: docFeatureValue:" + docFeatureValue + " select flag: " + selectFlag);
 
-	if (!selectFlag && docFeatureValue == null) {
+	if (selectFlag && docFeatureValue == null) {
 		index = id.lastIndexOf("_");
 		id = id.substring(0, index);
 

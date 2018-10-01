@@ -983,12 +983,12 @@ public class DataAccess {
 			stmt.execute("insert into " + schema + "frame_instance_data (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, "
 					+ "document_table, document_id, annotation_id, provenance, element_id) "
 					+ "values (" + frameInstanceID + "," + slotID + ",'" + value + "'," + sectionSlotNum + "," + elementSlotNum + ",'" + docNamespace + "', '" + docTable
-					+ "', " + docID + "," + annotID + ",'namespace'," + elementID + ")");
+					+ "', " + docID + "," + annotID + ",'validation-tool'," + elementID + ")");
 
 			System.out.println("insert into " + schema + "frame_instance_data (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, "
 					+ "document_table, document_id, annotation_id, provenance, element_id) "
 					+ "values (" + frameInstanceID + "," + slotID + ",'" + value + "'," + sectionSlotNum + "," + elementSlotNum + ",'" + docNamespace + "', '" + docTable
-					+ "', " + docID + "," + annotID + ",'namespace'," + elementID + ")");
+					+ "', " + docID + "," + annotID + ",'validation-tool'," + elementID + ")");
 
 			ret = getFrameData(frameInstanceID);
 
@@ -1015,7 +1015,7 @@ public class DataAccess {
 				+ "from " + schema + "frame_instance_data a, " + schema + "element b, " + schema + "annotation c, " + schema + "value d, " + schema + "element_type e "
 				+ "where a.element_id = b.element_id and a.annotation_id = c.id and a.document_namespace = c.document_namespace and a.document_table = c.document_table and a.document_id = c.document_id and "
 				+ "a.frame_instance_id = " + frameInstanceID + " and b.element_type = e.element_type_id and a.slot_id = d.slot_id "
-				+ "order by a.element_id, a.section_slot_number, a.element_slot_number");
+				+ "order by a.element_id, a.section_slot_number, a.element_slot_number, c.start");
 
 		while (rs.next()) {
 			String value = rs.getString(1);
@@ -1723,25 +1723,75 @@ public class DataAccess {
 		
 		//get annotations for these documents
 		List<Map<String, Object>> annotList = new ArrayList<Map<String, Object>>();
+		Map<String, Boolean> annotMap = new HashMap<String, Boolean>();
+		
 		//rs = stmt.executeQuery("select distinct start, " + rq + "end" + rq + ", annotation_type from " + schema + "annotation where document_namespace = '" + docNamespace + "' and "
 		rs = stmt.executeQuery("select start, " + rq + "end" + rq + ", annotation_type from "
 				+ schema + "annotation where document_namespace = '" + docNamespace + "' and "
 				+ "document_table = '" + docTable + "' and document_id = " + docID
 				+ " and score > " + annotThreshold + " and annotation_type in "
-				+ strBlder.toString() + " order by start");
+				+ strBlder.toString() + " and provenance != '##auto-recheck' order by start");
 
 		while (rs.next()) {
 			long start = rs.getLong(1);
 			long end = rs.getLong(2);
 			String annotType = rs.getString(3);
+			
+			String color = "lightskyblue";
+			
 			Map<String, Object> annot = new HashMap<String, Object>();
 			annot.put("start", start);
 			annot.put("end", end);
 			annot.put("annotType", annotType);
-			annot.put("color", "lightskyblue");
+			annot.put("color", color);
 
 			annotList.add(annot);
+			
+			annotMap.put(Long.toString(start), true);
 		}
+		
+		
+		
+		//re-check
+		rs = stmt.executeQuery("select start, " + rq + "end" + rq + ", annotation_type from "
+			+ schema + "annotation where document_namespace = '" + docNamespace + "' and "
+			+ "document_table = '" + docTable + "' and document_id = " + docID
+			+ " and score > " + annotThreshold + " and annotation_type in "
+			+ strBlder.toString() + " and provenance = '##auto-recheck' order by start");
+
+		while (rs.next()) {
+			long start = rs.getLong(1);
+			long end = rs.getLong(2);
+			String annotType = rs.getString(3);
+			
+			if (annotMap.get(Long.toString(start)) != null)
+				continue;
+			
+			String color = "lightcoral";
+			
+			Map<String, Object> annot = new HashMap<String, Object>();
+			annot.put("start", start);
+			annot.put("end", end);
+			annot.put("annotType", annotType);
+			annot.put("color", color);
+
+			boolean inserted = false;
+			for (int i=0; i<annotList.size(); i++) {
+				Map<String, Object> annot2 = annotList.get(i);
+				if (start == ((Long) annot2.get("start")))
+					annot2.put("color", color);
+				
+				if (start < ((Long) annot2.get("start"))) {
+					annotList.add(i, annot);
+					inserted = true;
+					break;
+				}
+			}
+			
+			if (!inserted)
+				annotList.add(annot);
+		}
+		
 		
 		
 		//preload
@@ -1756,6 +1806,11 @@ public class DataAccess {
 				long start = rs.getLong(1);
 				long end = rs.getLong(2);
 				String annotType = rs.getString(3);
+				
+				if (annotMap.get(Long.toString(start)) != null)
+					continue;
+				
+				
 				Map<String, Object> annot = new HashMap<String, Object>();
 				annot.put("start", start);
 				annot.put("end", end);
@@ -1765,6 +1820,7 @@ public class DataAccess {
 				boolean inserted = false;
 				for (int i=0; i<annotList.size(); i++) {
 					Map<String, Object> annot2 = annotList.get(i);
+					
 					if (start < ((Long) annot2.get("start"))) {
 						annotList.add(i, annot);
 						inserted = true;
