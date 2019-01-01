@@ -31,6 +31,8 @@ POST	/get/annotations									controllers.Application.getDocumentAnnotations()
 GET		/get/slotvalues/:annotType							controllers.Application.getSlotValues(annotType: String)
 GET		/get/framedata/:frameInstanceID						controllers.Application.getFrameData(frameInstanceID: Int)
 GET		/get/frameinstance/id/:colNames/:colValues			controllers.Application.getFrameInstanceID(colNames: String, colValues: String)
+GET		/undo												controllers.Application.undo()
+GET		/redo												controllers.Application.redo()
 
 #new stuff
 POST    /                                                   controllers.Application.authenticate()

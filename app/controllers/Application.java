@@ -100,7 +100,9 @@ public class Application extends Controller
     	
     	String loadStatus = Play.application().configuration().getString("loadStatus");
     	session("loadStatus", loadStatus);
-
+    	
+    	session("undoNum", "0");
+    	
         try {
 
             DynamicForm df = Form.form().bindFromRequest();
@@ -121,6 +123,7 @@ public class Application extends Controller
                 //return index();
                 loggedIn = true;
 				session("userName", un);
+				da.clearUndoHistory();
             } else {
 
                 //return ok(login.render(false));
@@ -603,6 +606,8 @@ public class Application extends Controller
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
     		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
+    		int undoNum = Integer.parseInt(session("undoNum"));
+    		da.setUndoNum(undoNum);
     		//int docID = Integer.parseInt(session("docID"));
     		int crfID = Integer.parseInt(session("crfID"));
     		ret = da.addAnnotation(frameInstanceID, htmlID, value, start, end, docNamespace, docTable, docID, crfID, features, add);
@@ -610,6 +615,7 @@ public class Application extends Controller
     		String sectionListStr = gson.toJson(sectionList);
     		session("sectionList", sectionListStr);
     		
+    		session("undoNum", Integer.toString(undoNum + 1));
     		
     		// new code
     		//String information = "start:" + start + "; end:" + end;
@@ -636,6 +642,8 @@ public class Application extends Controller
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
     		int frameInstanceID = Integer.parseInt(session("frameInstanceID"));
     		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
+    		int undoNum = Integer.parseInt(session("undoNum"));
+    		da.setUndoNum(undoNum);
 
     		int index = elementIDStr.indexOf("_");
     		System.out.println("index: " + index);
@@ -647,6 +655,8 @@ public class Application extends Controller
 
     		String sectionListStr = gson.toJson(sectionList);
     		session("sectionList", sectionListStr);
+    		
+    		session("undoNum", Integer.toString(undoNum + 1));
     		
     		System.out.println("done clearing element");
     		
@@ -952,6 +962,7 @@ public class Application extends Controller
 
 
 			List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
+			System.out.println("sectionList: " + session("sectionList"));
 			sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
 			DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
 			int timeout = Play.application().configuration().getInt("frameInstanceLockTimeout");
@@ -965,4 +976,59 @@ public class Application extends Controller
 		}
 		return ok("Error");
 	}
+	
+	public Result undo()
+    {
+		String ret = "";
+		
+		try {
+			List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
+			int frameInstanceID = Integer.parseInt(session("frameInstanceID"));
+			sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
+			DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
+			
+    		int undoNum = Integer.parseInt(session("undoNum"));
+			if (undoNum > 0)
+				undoNum--;
+			
+    		da.setUndoNum(undoNum);
+    		ret = da.undo(frameInstanceID);
+    		session("undoNum", Integer.toString(undoNum));
+
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return ok(ret);
+    }
+	
+	public Result redo()
+    {
+		String ret = "";
+		
+		try {
+			List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
+			int frameInstanceID = Integer.parseInt(session("frameInstanceID"));
+			sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
+			DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
+			
+    		int undoNum = Integer.parseInt(session("undoNum"));
+			
+    		da.setUndoNum(undoNum);
+    		ret = da.redo(frameInstanceID);
+    		
+    		if (ret.length() > 2)
+    			undoNum++;
+    		session("undoNum", Integer.toString(undoNum));
+
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return ok(ret);
+    }
 }

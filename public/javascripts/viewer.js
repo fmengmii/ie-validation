@@ -1795,7 +1795,8 @@ function loadCRFData(elementList)
 function clearElement()
 {
 	var selection = $("#dataElementTable").jqxDataTable('getSelection');
-	if (selection != undefined) {
+
+	if (typeof (selection[0]) != "undefined") {
 		var elementID = selection[0]["elementID"];
 		var elementHTMLID = selection[0]["elementHTMLID"];
 		var elementType = selection[0]["elementType"];
@@ -2916,6 +2917,114 @@ function docPanelClick(cursorPosition)
 	}
 }
 
+function undo()
+{
+	clog("undo!");
+	openDialogLoad();
+	var undoAjax = jsRoutes.controllers.Application.undo();
+	$.ajax({
+		type: 'GET',
+		url: undoAjax.url,
+		cache: false
+	}).done(function(data) {
+		var dataObj = JSON.parse(data);
+		
+		if (dataObj.length > 0) {
+			frameInstanceData = dataObj[0];
+			highlightRangeMap = dataObj[1];
+			
+			setHTMLElements();
+			
+			
+			//reload document annotations
+			var getDocumentAnnotationsAjax = jsRoutes.controllers.Application.getDocumentAnnotations();
+			$.ajax({
+				type: 'POST',
+				url: getDocumentAnnotationsAjax.url,
+				data: {docNamespace:docNamespace,docTable:docTable,docID:docID},
+				cache: false
+			}).done(function(data) {
+				clog("clear element ranges: " + data);
+				annotList = JSON.parse(data);
+				getHighlightRanges();
+	
+				//clear user-highlighted element
+				//highlightRange.start = 0;
+				//highlightRange.end = -1;
+				//highlightRanges = [];
+				highlightRangeList = undefined;
+				highlightText();
+				selectFlag = false;
+				
+				$("#docFeatures input:radio").attr("checked", false);
+				$('[name=docfeature]').each(function() {
+					var keyValue = JSON.parse($(this).val());
+					$(this).next().html(keyValue["key"] + ": " + keyValue["value"]);
+				});
+				
+				closeDialogLoad();
+			})
+		}
+		
+		else
+			closeDialogLoad();
+
+	});
+}
+
+
+function redo()
+{
+	clog("redo!");
+	openDialogLoad();
+	var redoAjax = jsRoutes.controllers.Application.redo();
+	$.ajax({
+		type: 'GET',
+		url: redoAjax.url,
+		cache: false
+	}).done(function(data) {
+		var dataObj = JSON.parse(data);
+		if (dataObj.length > 0)	{
+			frameInstanceData = dataObj[0];
+			highlightRangeMap = dataObj[1];
+			
+			setHTMLElements();
+			
+			
+			//reload document annotations
+			var getDocumentAnnotationsAjax = jsRoutes.controllers.Application.getDocumentAnnotations();
+			$.ajax({
+				type: 'POST',
+				url: getDocumentAnnotationsAjax.url,
+				data: {docNamespace:docNamespace,docTable:docTable,docID:docID},
+				cache: false
+			}).done(function(data) {
+				clog("clear element ranges: " + data);
+				annotList = JSON.parse(data);
+				getHighlightRanges();
+	
+				//clear user-highlighted element
+				//highlightRange.start = 0;
+				//highlightRange.end = -1;
+				//highlightRanges = [];
+				highlightRangeList = undefined;
+				highlightText();
+				selectFlag = false;
+				
+				$("#docFeatures input:radio").attr("checked", false);
+				$('[name=docfeature]').each(function() {
+					var keyValue = JSON.parse($(this).val());
+					$(this).next().html(keyValue["key"] + ": " + keyValue["value"]);
+				});
+	
+				closeDialogLoad();
+			})
+		}
+		else
+			closeDialogLoad();
+
+	});
+}
 
 function clog(message) {
     if (window.console) {
