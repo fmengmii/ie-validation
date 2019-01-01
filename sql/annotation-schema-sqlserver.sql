@@ -456,3 +456,29 @@ CREATE TABLE SCHEMA."user_project" (
   "frame_instance_id" int DEFAULT NULL
 );
 
+
+CREATE TABLE "annotation_history" (
+  "id" int(11) NOT NULL,
+  "document_namespace" varchar(500) NOT NULL,
+  "document_table" varchar(500) NOT NULL,
+  "document_id" bigint(20) NOT NULL,
+  "document_name" varchar(100) DEFAULT NULL,
+  "annotation_type" varchar(500) DEFAULT NULL,
+  "start" int(11) DEFAULT NULL,
+  "end" int(11) DEFAULT NULL,
+  "value" text,
+  "features" text,
+  "provenance" varchar(500) DEFAULT NULL,
+  "score" double DEFAULT '1',
+  "undo_num" int(11) DEFAULT NULL,
+  "undo_action" varchar(45) DEFAULT NULL,
+);
+
+
+CREATE TABLE "frame_instance_document_history" (
+  "frame_instance_id" int(11) DEFAULT NULL,
+  "document_namespace" varchar(500) DEFAULT NULL,
+  "document_table" varchar(500) DEFAULT NULL,
+  "document_id" bigint(20) DEFAULT NULL
+);
+

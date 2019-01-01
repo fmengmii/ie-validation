@@ -478,3 +478,34 @@ CREATE TABLE `user_project` (
   `frame_instance_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
+CREATE TABLE `annotation_history` (
+  `id` int(11) NOT NULL,
+  `document_namespace` varchar(500) NOT NULL,
+  `document_table` varchar(500) NOT NULL,
+  `document_id` bigint(20) NOT NULL,
+  `document_name` varchar(100) DEFAULT NULL,
+  `annotation_type` varchar(500) DEFAULT NULL,
+  `start` int(11) DEFAULT NULL,
+  `end` int(11) DEFAULT NULL,
+  `value` text,
+  `features` text,
+  `provenance` varchar(500) DEFAULT NULL,
+  `score` double DEFAULT '1',
+  `undo_num` int(11) DEFAULT NULL,
+  `undo_action` varchar(45) DEFAULT NULL,
+  KEY `idx_annot_type` (`annotation_type`(255)),
+  KEY `idx_annot_start` (`start`),
+  KEY `idx_prov` (`provenance`(100)),
+  KEY `idx_id` (`id`),
+  KEY `idx_annot_doc_id` (`document_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `frame_instance_document_history` (
+  `frame_instance_id` int(11) DEFAULT NULL,
+  `document_namespace` varchar(500) DEFAULT NULL,
+  `document_table` varchar(500) DEFAULT NULL,
+  `document_id` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
