@@ -123,7 +123,7 @@ public class Application extends Controller
                 //return index();
                 loggedIn = true;
 				session("userName", un);
-				da.clearUndoHistory();
+				da.clearUndoHistory(un);
             } else {
 
                 //return ok(login.render(false));
