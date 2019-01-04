@@ -479,6 +479,7 @@ CREATE TABLE `user_project` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+DROP TABLE IF EXISTS `annotation_history`;
 CREATE TABLE `annotation_history` (
   `id` int(11) NOT NULL,
   `document_namespace` varchar(500) NOT NULL,
@@ -503,6 +504,7 @@ CREATE TABLE `annotation_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `frame_instance_data_history`;
 CREATE TABLE `frame_instance_data_history` (
   `frame_instance_id` int(11) NOT NULL,
   `slot_id` int(11) NOT NULL,
