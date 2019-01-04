@@ -25,6 +25,8 @@ public class DataAccess {
 	private int crfID;
 	private long currDocID;
 	private int undoNum;  //undoNum is the sequence number for UNDO/REDO - undoAction: 0=add, 1=delete, 2=add and add element, 3=delete and remove element
+	private int addRemoveElement; // 0 = no action, 1=add element, 2=remove element
+	private String userName;
 	
 	private Map<String, Database> dbMap;
 
@@ -112,6 +114,15 @@ public class DataAccess {
 		System.out.println("undoNum: " + undoNum);
 	}
 	
+	public void setUserName(String userName)
+	{
+		this.userName = userName;
+	}
+	
+	public int getAddRemoveElement()
+	{
+		return addRemoveElement;
+	}
 
 	public List<Map<String, String>> getHistory() throws SQLException {
 		List<Map<String, String>> history = new ArrayList<Map<String, String>>();
@@ -711,9 +722,9 @@ public class DataAccess {
 			
 			
 			//UNDO/REDO
-			stmt.execute("delete from " + schema + "annotation_history where (document_namespace, document_table, document_id, id, provenance) in "
-			+ "(select document_namespace, document_table, document_id, annotation_id, provenance from " + schema + "frame_instance_data_history where undo_num >= " + undoNum + ")");
-			stmt.execute("delete from " + schema + "frame_instance_data_history where undo_num >= " + undoNum);
+			stmt.execute("delete from " + schema + "annotation_history where (document_namespace, document_table, document_id, id, provenance, user_name) in "
+			+ "(select document_namespace, document_table, document_id, annotation_id, provenance, user_name from " + schema + "frame_instance_data_history where undo_num >= " + undoNum + " and user_name = '" + userName + "')");
+			stmt.execute("delete from " + schema + "frame_instance_data_history where undo_num >= " + undoNum + " and user_name = '" + userName + "'");
 
 			
 			
@@ -828,8 +839,8 @@ public class DataAccess {
 					
 					
 					//UNDO/REDO
-					stmt.execute("insert into " + schema + "frame_instance_data_history (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, action, undo_num) "
-							+ "select frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, " + 1 + ", " + undoNum 
+					stmt.execute("insert into " + schema + "frame_instance_data_history (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, action, undo_num, user_name) "
+							+ "select frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, " + 1 + ", " + undoNum + ", '" + userName + "'" 
 							+ " from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and slot_id = " + slotID + " and section_slot_number = "
 							+ sectionSlotNum + " and element_slot_number = " + elementSlotNum);
 					
@@ -856,8 +867,8 @@ public class DataAccess {
 					
 					
 					//UNDO/REDO
-					stmt.execute("insert into " + schema + "frame_instance_data_history (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, action, undo_num) "
-							+ "select frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, " + 1 + ", " + undoNum 
+					stmt.execute("insert into " + schema + "frame_instance_data_history (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, action, undo_num, user_name) "
+							+ "select frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, " + 1 + ", " + undoNum + ", '" + userName + "'"
 							+ " from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and element_id = " + elementID + " and section_slot_number = "
 							+ sectionSlotNum + " and element_slot_number = " + elementSlotNum);
 					
@@ -869,8 +880,8 @@ public class DataAccess {
 				for (Map<String, String> annotMap : annotInfoList) {
 					
 					//UNDO/REDO
-					stmt.execute("insert into " + schema + "annotation_history (id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, undo_num, undo_action) "
-						+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, " + undoNum + ", 1 from " + schema + "annotation where document_namespace = '" + annotMap.get("docNamespace") + "' and document_table = '" + annotMap.get("docTable") + "' "
+					stmt.execute("insert into " + schema + "annotation_history (id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, undo_num, undo_action, user_name) "
+						+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, " + undoNum + ", 1, '" + userName + "' from " + schema + "annotation where document_namespace = '" + annotMap.get("docNamespace") + "' and document_table = '" + annotMap.get("docTable") + "' "
 						+ "and document_id = " + annotMap.get("docID") + " and id = " + annotMap.get("annotID"));
 					
 					
@@ -1033,10 +1044,10 @@ public class DataAccess {
 			
 			//UNDO/REDO
 			stmt.execute("insert into " + schema + "annotation_history (id, document_namespace, document_table, document_id, annotation_type, start, "
-					+ rq + "end" + rq + ", value, features, provenance, undo_num, undo_action) "
+					+ rq + "end" + rq + ", value, features, provenance, undo_num, undo_action, user_name) "
 					+ "values "
 					+ "(" + annotID + ",'" + docNamespace + "','" + docTable + "'," + docID + ",'" + annotType + "'," + start + "," + end + ",'"
-					+ value + "', '" + features + "', 'validation-tool', " + undoNum + ", 0)");
+					+ value + "', '" + features + "', 'validation-tool', " + undoNum + ", 0, '" + userName + "')");
 			
 			
 			
@@ -1053,8 +1064,8 @@ public class DataAccess {
 			
 			
 			//UNDO/REDO
-			stmt.execute("insert into " + schema + "frame_instance_data_history (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, action, undo_num) "
-					+ "select frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, 0, " + undoNum 
+			stmt.execute("insert into " + schema + "frame_instance_data_history (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, action, undo_num, user_name) "
+					+ "select frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, 0, " + undoNum + ", '" + userName + "'" 
 					+ " from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and element_id = " + elementID + " and section_slot_number = "
 					+ sectionSlotNum + " and element_slot_number = " + elementSlotNum);
 			
@@ -1503,21 +1514,25 @@ public class DataAccess {
 		
 		
 		//UNDO/REDO
-		stmt.execute("delete from " + schema + "annotation_history where (document_namespace, document_table, document_id, id, provenance) in "
-			+ "(select document_namespace, document_table, document_id, annotation_id, provenance from " + schema + "frame_instance_data_history where undo_num >= " + undoNum + ")");
-		stmt.execute("delete from " + schema + "frame_instance_data_history where undo_num >= " + undoNum);
+		stmt.execute("delete from " + schema + "annotation_history where (document_namespace, document_table, document_id, id, provenance, user_name) in "
+		+ "(select document_namespace, document_table, document_id, annotation_id, provenance, user_name from " + schema + "frame_instance_data_history where undo_num >= " + undoNum + " and user_name = '" + userName + "')");
+		stmt.execute("delete from " + schema + "frame_instance_data_history where undo_num >= " + undoNum + " and user_name = '" + userName + "'");
 	
 		
 		
 
 		System.out.println("frameInstanceID: " + frameInstanceID + " elementID: " + elementID + " sectionSlotNum: " + sectionSlotNum + " elementSlotNum: " + elementSlotNum);
+		
+		int undoAction = 1;
+		if (remove)
+			undoAction = 3;
 
 		PreparedStatement pstmt = conn.prepareStatement("update " + schema + "annotation set score = 0.0 where document_namespace = ? and document_table = ? and document_id = ? and id = ? and provenance = ?");
 		PreparedStatement pstmt2 = conn.prepareStatement("delete from " + schema + "annotation where document_namespace = ? and document_table = ? and document_id = ? and id = ? and provenance = ?");
 		
 		//UNDO/REDO
-		PreparedStatement pstmt3 = conn.prepareStatement("insert into " + schema + "annotation_history (id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, undo_num, undo_action) "
-			+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, " + undoNum  + ", 1"
+		PreparedStatement pstmt3 = conn.prepareStatement("insert into " + schema + "annotation_history (id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, undo_num, undo_action, user_name) "
+			+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, " + undoNum  + ", " + undoAction + ", '" + userName + "'"
 			+ " from " + schema + "annotation where document_namespace = ? and document_table = ? and document_id = ? and id = ? and provenance = ?");
 		
 		
@@ -1567,14 +1582,12 @@ public class DataAccess {
 		}
 
 		
-		int undoAction = 1;
-		if (remove)
-			undoAction = 3;
+		
 		
 		
 		//UNDO/REDO
-		stmt.execute("insert into " + schema + "frame_instance_data_history (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, action, undo_num) "
-			+ "select frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, " + undoAction + ", " + undoNum 
+		stmt.execute("insert into " + schema + "frame_instance_data_history (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, action, undo_num, user_name) "
+			+ "select frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, " + undoAction + ", " + undoNum + ", '" + userName + "'"
 			+ " from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and section_slot_number = "
 				+ sectionSlotNum + " and element_slot_number = " + elementSlotNum + " and element_id = " + elementID);
 		
@@ -1606,9 +1619,9 @@ public class DataAccess {
 		
 		
 		//UNDO/REDO
-		stmt.execute("delete from " + schema + "annotation_history where (document_namespace, document_table, document_id, id, provenance) in "
-			+ "(select document_namespace, document_table, document_id, annotation_id, provenance from " + schema + "frame_instance_data_history where undo_num >= " + undoNum + ")");
-		stmt.execute("delete from " + schema + "frame_instance_data_history where undo_num >= " + undoNum);
+		stmt.execute("delete from " + schema + "annotation_history where (document_namespace, document_table, document_id, id, provenance, user_name) in "
+		+ "(select document_namespace, document_table, document_id, annotation_id, provenance, user_name from " + schema + "frame_instance_data_history where undo_num >= " + undoNum + " and user_name = '" + userName + "')");
+		stmt.execute("delete from " + schema + "frame_instance_data_history where undo_num >= " + undoNum + " and user_name = '" + userName + "'");
 				
 				
 
@@ -1670,8 +1683,8 @@ public class DataAccess {
 			
 			
 			//UNDO/REDO
-			stmt.execute("insert into " + schema + "annotation_history (id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, undo_num, undo_action) "
-				+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, " + undoNum + ", 1 from " + schema + "annotation where document_namespace = '" + docNamespace + "' and document_table = '"
+			stmt.execute("insert into " + schema + "annotation_history (id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, undo_num, undo_action, user_name) "
+				+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, " + undoNum + ", 1, '" + userName + "' from " + schema + "annotation where document_namespace = '" + docNamespace + "' and document_table = '"
 				+ docTable + "' and document_id = " + docID + " and id = " + annotID + " and provenance = '" + provenance + "'");
 			
 
@@ -1683,8 +1696,8 @@ public class DataAccess {
 		
 		
 		//UNDO/REDO
-		stmt.execute("insert into " + schema + "frame_instance_data_history (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, action, undo_num) "
-			+ "select frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, " + 1 + ", " + undoNum 
+		stmt.execute("insert into " + schema + "frame_instance_data_history (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, action, undo_num, user_name) "
+			+ "select frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, " + 1 + ", " + undoNum + ", '" + userName + "'" 
 			+ " from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and section_slot_number = "
 			+ sectionSlotNum + " and element_slot_number = " + elementSlotNum + " and element_id = " + elementID + " and slot_id = " + slotID);
 				
@@ -2436,12 +2449,12 @@ public class DataAccess {
 		}
 	}
 	
-	public void clearUndoHistory() throws SQLException
+	public void clearUndoHistory(String userName) throws SQLException
 	{
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
-		stmt.execute("delete from " + schema + "annotation_history");
-		stmt.execute("delete from " + schema + "frame_instance_data_history");
+		stmt.execute("delete from " + schema + "annotation_history where user_name = '" + userName + "'");
+		stmt.execute("delete from " + schema + "frame_instance_data_history where user_name = '" + userName + "'");
 		conn.close();
 	}
 	
@@ -2451,8 +2464,9 @@ public class DataAccess {
 		Statement stmt = conn.createStatement();
 		Statement stmt2 = conn.createStatement();
 		
+		
 		ResultSet rs = stmt.executeQuery("select action, frame_instance_id, section_slot_number, element_slot_number, element_id, slot_id, annotation_id, document_namespace, document_table, document_id, provenance, value "
-			+ "from " + schema + "frame_instance_data_history where undo_num = " + undoNum + " order by action");
+			+ "from " + schema + "frame_instance_data_history where undo_num = " + undoNum + " and user_name = '" + userName + "' order by action");
 		
 		int count = 0;
 		while (rs.next()) {
@@ -2469,9 +2483,45 @@ public class DataAccess {
 			String provenance = rs.getString(11);
 			String value = rs.getString(12);
 			
+			System.out.println("undoNum: " + undoNum + " undoAction: " + undoAction);
+			
+			if (undoAction == 3) {
+				stmt2.execute("update " + schema + "frame_instance_data set element_slot_number = element_slot_number + 1 "
+					+ "where element_slot_number >= " + elementSlotNum + " and frame_instance_id = " + frameInstanceID
+					+ " and element_id = " + elementID + " and section_slot_number = " + sectionSlotNum);
+				
+				System.out.println("update " + schema + "frame_instance_data set element_slot_number = element_slot_number + 1 "
+					+ "where element_slot_number >= " + elementSlotNum + " and frame_instance_id = " + frameInstanceID
+					+ " and element_id = " + elementID + " and section_slot_number = " + sectionSlotNum);
+				
+				
+				
+				ResultSet rs2 = stmt2.executeQuery("select repeat_num from " + schema + "frame_instance_element_repeat where frame_instance_id = " + frameInstanceID + " and "
+					+ "element_id = " + elementID);
+							
+					int repeatNum = -1;
+					if (rs2.next()) {
+						repeatNum = rs2.getInt(1);
+						//repeatNum += increment;
+					}
+							
+					if (repeatNum == -1) {
+						stmt2.execute("insert into " + schema + "frame_instance_element_repeat (frame_instance_id, element_id, section_slot_num, repeat_num) values ('" + frameInstanceID + "',"
+							+ elementID + "," + sectionSlotNum + ",1)");
+					}
+					
+					else {
+						repeatNum++;
+						if (repeatNum >= 0)
+							stmt2.execute("update " + schema + "frame_instance_element_repeat set repeat_num = " + repeatNum + " where frame_instance_id = " + frameInstanceID + " and "
+								+ "element_id = " + elementID);
+					}
+			}
+			
+			
 			if (undoAction == 0) {
 				stmt2.execute("delete from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and section_slot_number = "
-				+ sectionSlotNum + " and element_slot_number = " + elementSlotNum + " and element_id = " + elementID + " and slot_id = " + slotID);
+				+ sectionSlotNum + " and element_slot_number = " + elementSlotNum + " and element_id = " + elementID + " and slot_id = " + slotID );
 				
 				System.out.println("delete from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and section_slot_number = "
 						+ sectionSlotNum + " and element_slot_number = " + elementSlotNum + " and element_id = " + elementID + " and slot_id = " + slotID);
@@ -2480,7 +2530,8 @@ public class DataAccess {
 				
 				System.out.println("delete from " + schema + "annotation where id = " + annotID + " and document_namespace = '" + docNamespace + "' and document_table = '" + docTable + "' and document_id = " + docID + " and provenance = '" + provenance + "'");
 			}
-			else if (undoAction == 1) {
+			else if (undoAction == 1 || undoAction == 3) {
+				
 				stmt2.execute("insert into " + schema + "frame_instance_data (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id) "
 					+ "values (" + frameInstanceID + "," + slotID + ",'" + value + "'," + sectionSlotNum + "," + elementSlotNum + ",'" + docNamespace + "','" + docTable + "'," + docID + "," + annotID + ",'" + provenance + "'," + elementID + ")");
 				
@@ -2493,6 +2544,7 @@ public class DataAccess {
 				System.out.println("insert into " + schema + "annotation (id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score) "
 					+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score from " + schema + "annotation_history where undo_num = " + undoNum + " and undo_action = " + undoAction);
 			}
+			
 			
 			count++;
 		}
@@ -2513,7 +2565,7 @@ public class DataAccess {
 		Statement stmt2 = conn.createStatement();
 		
 		ResultSet rs = stmt.executeQuery("select action, frame_instance_id, section_slot_number, element_slot_number, element_id, slot_id, annotation_id, document_namespace, document_table, document_id, provenance, value "
-			+ "from " + schema + "frame_instance_data_history where undo_num = " + undoNum + " order by action desc");
+			+ "from " + schema + "frame_instance_data_history where undo_num = " + undoNum + " and user_name = '" + userName + "' order by action desc");
 		
 		int count = 0;
 		while (rs.next()) {
@@ -2530,7 +2582,8 @@ public class DataAccess {
 			String provenance = rs.getString(11);
 			String value = rs.getString(12);
 			
-			if (undoAction == 1) {
+			
+			if (undoAction == 1 || undoAction == 3) {
 				stmt2.execute("delete from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and section_slot_number = "
 				+ sectionSlotNum + " and element_slot_number = " + elementSlotNum + " and element_id = " + elementID + " and slot_id = " + slotID);
 				
@@ -2554,6 +2607,46 @@ public class DataAccess {
 				System.out.println("insert into " + schema + "annotation (id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score) "
 					+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score from " + schema + "annotation_history where undo_num = " + undoNum + " and undo_action = " + undoAction);
 			}
+			else if (undoAction == 2) {
+				stmt.execute("update " + schema + "frame_instance_data set element_slot_number = element_slot_number - 1 "
+					+ "where element_slot_number > " + elementSlotNum + " and frame_instance_id = " + frameInstanceID
+					+ " and element_id = " + elementID + " and section_slot_number = " + sectionSlotNum);
+				addRemoveElement = 2;
+			}
+			
+			if (undoAction == 3) {
+				stmt2.execute("update " + schema + "frame_instance_data set element_slot_number = element_slot_number - 1 "
+					+ "where element_slot_number >= " + elementSlotNum + " and frame_instance_id = " + frameInstanceID
+					+ " and element_id = " + elementID + " and section_slot_number = " + sectionSlotNum);
+				
+				System.out.println("update " + schema + "frame_instance_data set element_slot_number = element_slot_number - 1 "
+					+ "where element_slot_number >= " + elementSlotNum + " and frame_instance_id = " + frameInstanceID
+					+ " and element_id = " + elementID + " and section_slot_number = " + sectionSlotNum);
+				
+				
+				
+				ResultSet rs2 = stmt2.executeQuery("select repeat_num from " + schema + "frame_instance_element_repeat where frame_instance_id = " + frameInstanceID + " and "
+					+ "element_id = " + elementID);
+							
+					int repeatNum = -1;
+					if (rs2.next()) {
+						repeatNum = rs2.getInt(1);
+						//repeatNum += increment;
+					}
+							
+					if (repeatNum == -1) {
+						stmt2.execute("insert into " + schema + "frame_instance_element_repeat (frame_instance_id, element_id, section_slot_num, repeat_num) values ('" + frameInstanceID + "',"
+							+ elementID + "," + sectionSlotNum + ",1)");
+					}
+					
+					else {
+						repeatNum--;
+						if (repeatNum >= 0)
+							stmt2.execute("update " + schema + "frame_instance_element_repeat set repeat_num = " + repeatNum + " where frame_instance_id = " + frameInstanceID + " and "
+								+ "element_id = " + elementID);
+					}
+			}
+			
 			
 			count++;
 		}

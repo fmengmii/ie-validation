@@ -547,6 +547,7 @@ public class Application extends Controller
     public Result loadFrameInstance(int frameInstanceID)
     {
     	String frameInstanceStr = "";
+    	int oldFrameInstanceID = Integer.parseInt(session("frameInstanceID"));    	
     	session("frameInstanceID", Integer.toString(frameInstanceID));
 
     	try {
@@ -560,6 +561,11 @@ public class Application extends Controller
 	    		loadStatus = Boolean.parseBoolean(loadStatusStr);
 	    	
     		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
+    		if (oldFrameInstanceID != frameInstanceID) {
+    			da.clearUndoHistory(un);
+    			session("undoNum", "0");
+    		}
+    		
     		int projID = Integer.parseInt(session("projID"));
     		frameInstanceStr = da.loadFrameInstance(un, frameInstanceID, projID, loadStatus); // was changed
     		long docID = da.getCurrDocID();
@@ -608,6 +614,7 @@ public class Application extends Controller
     		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		int undoNum = Integer.parseInt(session("undoNum"));
     		da.setUndoNum(undoNum);
+    		da.setUserName(session("userName"));
     		//int docID = Integer.parseInt(session("docID"));
     		int crfID = Integer.parseInt(session("crfID"));
     		ret = da.addAnnotation(frameInstanceID, htmlID, value, start, end, docNamespace, docTable, docID, crfID, features, add);
@@ -644,6 +651,7 @@ public class Application extends Controller
     		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		int undoNum = Integer.parseInt(session("undoNum"));
     		da.setUndoNum(undoNum);
+    		da.setUserName(session("userName"));
 
     		int index = elementIDStr.indexOf("_");
     		System.out.println("index: " + index);
@@ -714,7 +722,10 @@ public class Application extends Controller
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
     		int frameInstanceID = Integer.parseInt(session("frameInstanceID"));
     		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
-
+    		int undoNum = Integer.parseInt(session("undoNum"));
+    		da.setUndoNum(undoNum);
+    		da.setUserName(session("userName"));
+    		
     		ret = da.clearValue(frameInstanceID, htmlID);
 
     		String sectionListStr = gson.toJson(sectionList);
@@ -772,12 +783,17 @@ public class Application extends Controller
 	    		CRFReader crfProc = new CRFReader(session("schemaName"));
 	    		String crfStr = crfProc.addRemoveElement(crfID, frameInstanceID, htmlID, -1, sectionList);
 	    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
-
+	    		int undoNum = Integer.parseInt(session("undoNum"));
+	    		da.setUndoNum(undoNum);
+	    		da.setUserName(session("userName"));
+	    		
 	    		int index = elementIDStr.indexOf("_");
 	    		elementIDStr = elementIDStr.substring(0, index);
 
 	    		int elementID = Integer.parseInt(elementIDStr);
 	    		String frameStr = da.removeElement(frameInstanceID, elementID, htmlID);
+	    		
+	    		session("undoNum", Integer.toString(undoNum + 1));
 
 	    		ret = "[" + crfStr + "," + frameStr + "]";
 	    	}
@@ -992,9 +1008,9 @@ public class Application extends Controller
 				undoNum--;
 			
     		da.setUndoNum(undoNum);
+    		da.setUserName(session("userName"));
     		ret = da.undo(frameInstanceID);
     		session("undoNum", Integer.toString(undoNum));
-
 		}
 		catch(Exception e)
 		{
@@ -1017,6 +1033,7 @@ public class Application extends Controller
     		int undoNum = Integer.parseInt(session("undoNum"));
 			
     		da.setUndoNum(undoNum);
+    		da.setUserName(session("userName"));
     		ret = da.redo(frameInstanceID);
     		
     		if (ret.length() > 2)
