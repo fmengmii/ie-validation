@@ -17,9 +17,9 @@ CREATE TABLE SCHEMA."annotation" (
 );
 
 
-create index "idx_annot_type" on "annotation" ("annotation_type" (255));
+create index "idx_annot_type" on "annotation" ("annotation_type");
 create index "idx_annot_start" on "annotation" ("start");
-create index "idx_prov" on "annotation" ("provenance" (100));
+create index "idx_prov" on "annotation" ("provenance");
 create index "idx_id" on "annotation" ("id");
 
   --
