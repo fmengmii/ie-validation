@@ -244,7 +244,7 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
     "document_name" varchar(500) DEFAULT NULL,
     "document_order" int DEFAULT NULL,
     "document_features" varchar(max) DEFAULT NULL,
-    PRIMARY KEY ("frame_instance_id", "document_id");
+    PRIMARY KEY ("frame_instance_id", "document_id")
   );
 
   
@@ -259,7 +259,7 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
     "document_name" varchar(500) DEFAULT NULL,
     "document_order" int DEFAULT NULL,
     "document_features" varchar(max) DEFAULT NULL,
-    PRIMARY KEY ("frame_instance_id", "document_id");
+    PRIMARY KEY ("frame_instance_id", "document_id")
   );
   
   
@@ -274,7 +274,7 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
     "document_namespace" varchar(500) DEFAULT NULL,
     "document_table" varchar(500) DEFAULT NULL,
     "document_id" bigint DEFAULT NULL
-  )
+  );
 
   --
   -- Table structure for table "frame_instance_element_repeat"
@@ -287,7 +287,7 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
     "element_id" int DEFAULT NULL,
     "section_slot_num" int DEFAULT NULL,
     "repeat_num" int DEFAULT NULL
-  )
+  );
   
   --
   -- Table structure for table "frame_instance_section_repeat"
@@ -475,7 +475,7 @@ CREATE TABLE SCHEMA."annotation_history" (
   "undo_num" int(11) DEFAULT NULL,
   "undo_action" int(11) DEFAULT NULL,
   "user_name" varchar(100) DEFAULT NULL
-)
+);
 
 
 DROP TABLE IF EXISTS SCHEMA."frame_instance_data_history";
@@ -497,6 +497,6 @@ CREATE TABLE SCHEMA."frame_instance_data_history" (
   "action" int(11) DEFAULT NULL,
   "undo_num" int(11) DEFAULT NULL,
   "user_name" varchar(100) DEFAULT NULL
-)
+);
 
 
