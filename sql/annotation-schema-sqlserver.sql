@@ -457,7 +457,9 @@ CREATE TABLE SCHEMA."user_project" (
 );
 
 
-CREATE TABLE "annotation_history" (
+
+DROP TABLE IF EXISTS SCHEMA."annotation_history";
+CREATE TABLE SCHEMA."annotation_history" (
   "id" int(11) NOT NULL,
   "document_namespace" varchar(500) NOT NULL,
   "document_table" varchar(500) NOT NULL,
@@ -471,14 +473,30 @@ CREATE TABLE "annotation_history" (
   "provenance" varchar(500) DEFAULT NULL,
   "score" double DEFAULT '1',
   "undo_num" int(11) DEFAULT NULL,
-  "undo_action" varchar(45) DEFAULT NULL,
-);
+  "undo_action" int(11) DEFAULT NULL,
+  "user_name" varchar(100) DEFAULT NULL
+)
 
 
-CREATE TABLE "frame_instance_document_history" (
-  "frame_instance_id" int(11) DEFAULT NULL,
+DROP TABLE IF EXISTS SCHEMA."frame_instance_data_history";
+CREATE TABLE SCHEMA."frame_instance_data_history" (
+  "frame_instance_id" int(11) NOT NULL,
+  "slot_id" int(11) NOT NULL,
+  "value" text,
+  "section_slot_number" int(11) DEFAULT '0',
+  "element_slot_number" int(11) DEFAULT '0',
   "document_namespace" varchar(500) DEFAULT NULL,
   "document_table" varchar(500) DEFAULT NULL,
-  "document_id" bigint(20) DEFAULT NULL
-);
+  "document_id" bigint(20) DEFAULT NULL,
+  "annotation_id" int(11) DEFAULT NULL,
+  "provenance" varchar(500) DEFAULT NULL,
+  "element_id" int(11) DEFAULT NULL,
+  "v_scroll_pos" int(11) DEFAULT NULL,
+  "scroll_height" int(11) DEFAULT NULL,
+  "scroll_width" int(11) DEFAULT NULL,
+  "action" int(11) DEFAULT NULL,
+  "undo_num" int(11) DEFAULT NULL,
+  "user_name" varchar(100) DEFAULT NULL
+)
+
 
