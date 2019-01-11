@@ -249,7 +249,7 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
 
   
   DROP TABLE IF EXISTS SCHEMA."frame_instance_document_staging";
-  CREATE TABLE SCHEMA."frame_instance_document" (
+  CREATE TABLE SCHEMA."frame_instance_document_staging" (
     "frame_instance_id" int DEFAULT NULL,
     "document_id" bigint DEFAULT NULL,
     "document_table" varchar(500) DEFAULT NULL,
@@ -259,6 +259,7 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
     "document_name" varchar(500) DEFAULT NULL,
     "document_order" int DEFAULT NULL,
     "document_features" varchar(max) DEFAULT NULL,
+    "etl_timestamp" datetime DEFAULT NULL,
     PRIMARY KEY ("frame_instance_id", "document_id")
   );
   
