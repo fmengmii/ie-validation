@@ -461,42 +461,42 @@ CREATE TABLE SCHEMA."user_project" (
 
 DROP TABLE IF EXISTS SCHEMA."annotation_history";
 CREATE TABLE SCHEMA."annotation_history" (
-  "id" int(11) NOT NULL,
+  "id" int NOT NULL,
   "document_namespace" varchar(500) NOT NULL,
   "document_table" varchar(500) NOT NULL,
-  "document_id" bigint(20) NOT NULL,
+  "document_id" bigint NOT NULL,
   "document_name" varchar(100) DEFAULT NULL,
   "annotation_type" varchar(500) DEFAULT NULL,
-  "start" int(11) DEFAULT NULL,
-  "end" int(11) DEFAULT NULL,
+  "start" int DEFAULT NULL,
+  "end" int DEFAULT NULL,
   "value" text,
   "features" text,
   "provenance" varchar(500) DEFAULT NULL,
   "score" float DEFAULT '1',
-  "undo_num" int(11) DEFAULT NULL,
-  "undo_action" int(11) DEFAULT NULL,
+  "undo_num" int DEFAULT NULL,
+  "undo_action" int DEFAULT NULL,
   "user_name" varchar(100) DEFAULT NULL
 );
 
 
 DROP TABLE IF EXISTS SCHEMA."frame_instance_data_history";
 CREATE TABLE SCHEMA."frame_instance_data_history" (
-  "frame_instance_id" int(11) NOT NULL,
-  "slot_id" int(11) NOT NULL,
+  "frame_instance_id" int NOT NULL,
+  "slot_id" int NOT NULL,
   "value" varchar(max),
-  "section_slot_number" int(11) DEFAULT '0',
-  "element_slot_number" int(11) DEFAULT '0',
+  "section_slot_number" int DEFAULT '0',
+  "element_slot_number" int DEFAULT '0',
   "document_namespace" varchar(500) DEFAULT NULL,
   "document_table" varchar(500) DEFAULT NULL,
-  "document_id" bigint(20) DEFAULT NULL,
-  "annotation_id" int(11) DEFAULT NULL,
+  "document_id" bigint DEFAULT NULL,
+  "annotation_id" int DEFAULT NULL,
   "provenance" varchar(500) DEFAULT NULL,
-  "element_id" int(11) DEFAULT NULL,
-  "v_scroll_pos" int(11) DEFAULT NULL,
-  "scroll_height" int(11) DEFAULT NULL,
-  "scroll_width" int(11) DEFAULT NULL,
-  "action" int(11) DEFAULT NULL,
-  "undo_num" int(11) DEFAULT NULL,
+  "element_id" int DEFAULT NULL,
+  "v_scroll_pos" int DEFAULT NULL,
+  "scroll_height" int DEFAULT NULL,
+  "scroll_width" int DEFAULT NULL,
+  "action" int DEFAULT NULL,
+  "undo_num" int DEFAULT NULL,
   "user_name" varchar(100) DEFAULT NULL
 );
 
