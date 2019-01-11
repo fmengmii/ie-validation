@@ -469,10 +469,10 @@ CREATE TABLE SCHEMA."annotation_history" (
   "annotation_type" varchar(500) DEFAULT NULL,
   "start" int(11) DEFAULT NULL,
   "end" int(11) DEFAULT NULL,
-  "value" varchar(max),
-  "features" varchar(max),
+  "value" text,
+  "features" text,
   "provenance" varchar(500) DEFAULT NULL,
-  "score" double DEFAULT '1',
+  "score" float DEFAULT '1',
   "undo_num" int(11) DEFAULT NULL,
   "undo_action" int(11) DEFAULT NULL,
   "user_name" varchar(100) DEFAULT NULL
