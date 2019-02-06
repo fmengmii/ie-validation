@@ -1,6 +1,7 @@
 
 DROP TABLE IF EXISTS SCHEMA."annotation";
 
+
 CREATE TABLE SCHEMA."annotation" (
   "id" int NOT NULL,
   "document_namespace" varchar(500) NOT NULL,
