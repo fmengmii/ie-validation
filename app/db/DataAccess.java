@@ -722,11 +722,20 @@ public class DataAccess {
 			
 			
 			//UNDO/REDO
-			stmt.execute("delete from " + schema + "annotation_history where (document_namespace, document_table, document_id, id, provenance, user_name) in "
-			+ "(select document_namespace, document_table, document_id, annotation_id, provenance, user_name from " + schema + "frame_instance_data_history where undo_num >= " + undoNum + " and user_name = '" + userName + "')");
+			//String queryStr = "delete from " + schema + "annotation_history where (document_namespace, document_table, document_id, id, provenance, user_name) in "
+			//		+ "(select document_namespace, document_table, document_id, annotation_id, provenance, user_name from " + schema + "frame_instance_data_history where undo_num >= " + undoNum + " and user_name = '" + userName + "')";
+						
+			stmt.execute("delete from " + schema + "annotation_history where exists "
+					+ "(select b.annotation_id from " + schema + "frame_instance_data_history b where b.undo_num >= " + undoNum + " and b.user_name = '" + userName + "' "
+					+ "and document_namespace = b.document_namespace and document_table = b.document_table and id = b.annotation_id and provenance = b.provenance and user_name = b.user_name)");			
 			stmt.execute("delete from " + schema + "frame_instance_data_history where undo_num >= " + undoNum + " and user_name = '" + userName + "'");
 
 			
+			/*
+			System.out.println("delete from " + schema + "annotation_history where exists "
+					+ "(select b.annotation_id from " + schema + "frame_instance_data_history b where b.undo_num >= " + undoNum + " and b.user_name = '" + userName + "' "
+					+ "and document_namespace = b.document_namespace and document_table = b.document_table and id = b.annotation_id and provenance = b.provenance and user_name = b.user_name)");
+					*/
 			
 
 			//separate slot number from html ID
@@ -1514,8 +1523,9 @@ public class DataAccess {
 		
 		
 		//UNDO/REDO
-		stmt.execute("delete from " + schema + "annotation_history where (document_namespace, document_table, document_id, id, provenance, user_name) in "
-		+ "(select document_namespace, document_table, document_id, annotation_id, provenance, user_name from " + schema + "frame_instance_data_history where undo_num >= " + undoNum + " and user_name = '" + userName + "')");
+		stmt.execute("delete from " + schema + "annotation_history where exists "
+			+ "(select b.annotation_id from " + schema + "frame_instance_data_history b where b.undo_num >= " + undoNum + " and b.user_name = '" + userName + "' "
+			+ "and document_namespace = b.document_namespace and document_table = b.document_table and id = b.annotation_id and provenance = b.provenance and user_name = b.user_name)");
 		stmt.execute("delete from " + schema + "frame_instance_data_history where undo_num >= " + undoNum + " and user_name = '" + userName + "'");
 	
 		
@@ -1619,8 +1629,9 @@ public class DataAccess {
 		
 		
 		//UNDO/REDO
-		stmt.execute("delete from " + schema + "annotation_history where (document_namespace, document_table, document_id, id, provenance, user_name) in "
-		+ "(select document_namespace, document_table, document_id, annotation_id, provenance, user_name from " + schema + "frame_instance_data_history where undo_num >= " + undoNum + " and user_name = '" + userName + "')");
+		stmt.execute("delete from " + schema + "annotation_history where exists "
+				+ "(select b.annotation_id from " + schema + "frame_instance_data_history b where b.undo_num >= " + undoNum + " and b.user_name = '" + userName + "' "
+				+ "and document_namespace = b.document_namespace and document_table = b.document_table and id = b.annotation_id and provenance = b.provenance and user_name = b.user_name)");
 		stmt.execute("delete from " + schema + "frame_instance_data_history where undo_num >= " + undoNum + " and user_name = '" + userName + "'");
 				
 				

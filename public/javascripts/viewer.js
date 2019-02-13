@@ -1284,6 +1284,9 @@ function loadProject(projName)
 		else {
 			currFrameInstanceIndex = lastFrameAccessed["lastFrameInstanceIndex"];
 			var frameInstanceID = lastFrameAccessed["lastFrameInstanceID"];
+			
+			if (frameInstanceID == -1)
+				frameInstanceID = frameArray[0]["frameInstanceID"];
 
 			clog("frameInstanceID: " + frameInstanceID);
 
