@@ -701,7 +701,6 @@ public class DataAccess {
 
 		System.out.println("htmlID: " + htmlID);
 		
-		
 
 		String docName = docNamespace + "-" + docTable + "-" + docID;
 
@@ -889,8 +888,8 @@ public class DataAccess {
 				for (Map<String, String> annotMap : annotInfoList) {
 					
 					//UNDO/REDO
-					stmt.execute("insert into " + schema + "annotation_history (id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, undo_num, undo_action, user_name) "
-						+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, " + undoNum + ", 1, '" + userName + "' from " + schema + "annotation where document_namespace = '" + annotMap.get("docNamespace") + "' and document_table = '" + annotMap.get("docTable") + "' "
+					stmt.execute("insert into " + schema + "annotation_history (id, document_namespace, document_table, document_id, document_name, annotation_type, start, " + rq + "end" + rq + ", value, features, provenance, score, undo_num, undo_action, user_name) "
+						+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, " + rq + "end" + rq + ", value, features, provenance, score, " + undoNum + ", 1, '" + userName + "' from " + schema + "annotation where document_namespace = '" + annotMap.get("docNamespace") + "' and document_table = '" + annotMap.get("docTable") + "' "
 						+ "and document_id = " + annotMap.get("docID") + " and id = " + annotMap.get("annotID"));
 					
 					
@@ -1520,6 +1519,7 @@ public class DataAccess {
 
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
+		String rq = getReservedQuote(conn);
 		
 		
 		//UNDO/REDO
@@ -1541,8 +1541,8 @@ public class DataAccess {
 		PreparedStatement pstmt2 = conn.prepareStatement("delete from " + schema + "annotation where document_namespace = ? and document_table = ? and document_id = ? and id = ? and provenance = ?");
 		
 		//UNDO/REDO
-		PreparedStatement pstmt3 = conn.prepareStatement("insert into " + schema + "annotation_history (id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, undo_num, undo_action, user_name) "
-			+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, " + undoNum  + ", " + undoAction + ", '" + userName + "'"
+		PreparedStatement pstmt3 = conn.prepareStatement("insert into " + schema + "annotation_history (id, document_namespace, document_table, document_id, document_name, annotation_type, start, " + rq + "end" + rq + ", value, features, provenance, score, undo_num, undo_action, user_name) "
+			+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, " + rq + "end" + rq + ", value, features, provenance, score, " + undoNum  + ", " + undoAction + ", '" + userName + "'"
 			+ " from " + schema + "annotation where document_namespace = ? and document_table = ? and document_id = ? and id = ? and provenance = ?");
 		
 		
@@ -1625,6 +1625,7 @@ public class DataAccess {
 
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
+		String rq = getReservedQuote(conn);
 		
 		
 		
@@ -1694,8 +1695,8 @@ public class DataAccess {
 			
 			
 			//UNDO/REDO
-			stmt.execute("insert into " + schema + "annotation_history (id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, undo_num, undo_action, user_name) "
-				+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score, " + undoNum + ", 1, '" + userName + "' from " + schema + "annotation where document_namespace = '" + docNamespace + "' and document_table = '"
+			stmt.execute("insert into " + schema + "annotation_history (id, document_namespace, document_table, document_id, document_name, annotation_type, start, " + rq + "end" + rq + ", value, features, provenance, score, undo_num, undo_action, user_name) "
+				+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, " + rq + "end" + rq + ", value, features, provenance, score, " + undoNum + ", 1, '" + userName + "' from " + schema + "annotation where document_namespace = '" + docNamespace + "' and document_table = '"
 				+ docTable + "' and document_id = " + docID + " and id = " + annotID + " and provenance = '" + provenance + "'");
 			
 
@@ -2015,6 +2016,7 @@ public class DataAccess {
 	public String fillSlot(int frameInstanceID, String docNamespace, String docTable, long docID, String slotName, int start, int end) throws SQLException {
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
+		String rq = getReservedQuote(conn);
 
 		//get slotID and elementID using annotation type
 		int slotID = -1;
@@ -2034,7 +2036,7 @@ public class DataAccess {
 		int annotID = -1;
 		String value = "";
 		rs = stmt.executeQuery("select id, value from " + schema + "annotation where document_namespace = '" + docNamespace + "' and document_table = '" + docTable + "' "
-				+ "and document_id = " + docID + " and annotation_type = '" + annotType + "' and start = " + start + " and end = " + end);
+				+ "and document_id = " + docID + " and annotation_type = '" + annotType + "' and start = " + start + " and " + rq + "end" + rq + " = " + end);
 		if (rs.next()) {
 			annotID = rs.getInt(1);
 			value = rs.getString(2);
@@ -2474,6 +2476,7 @@ public class DataAccess {
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 		Statement stmt2 = conn.createStatement();
+		String rq = getReservedQuote(conn);
 		
 		
 		ResultSet rs = stmt.executeQuery("select action, frame_instance_id, section_slot_number, element_slot_number, element_id, slot_id, annotation_id, document_namespace, document_table, document_id, provenance, value "
@@ -2549,11 +2552,11 @@ public class DataAccess {
 				System.out.println("insert into " + schema + "frame_instance_data (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id) "
 					+ "values (" + frameInstanceID + "," + slotID + ",'" + value + "'," + sectionSlotNum + "," + elementSlotNum + ",'" + docNamespace + "','" + docTable + "'," + docID + "," + annotID + ",'" + provenance + "'," + elementID + ")");
 				
-				stmt2.execute("insert into " + schema + "annotation (id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score) "
-					+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score from " + schema + "annotation_history where undo_num = " + undoNum + " and undo_action = " + undoAction);
+				stmt2.execute("insert into " + schema + "annotation (id, document_namespace, document_table, document_id, document_name, annotation_type, start, " + rq + "end" + rq + ", value, features, provenance, score) "
+					+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, " + rq + "end" + rq + ", value, features, provenance, score from " + schema + "annotation_history where undo_num = " + undoNum + " and undo_action = " + undoAction);
 				
-				System.out.println("insert into " + schema + "annotation (id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score) "
-					+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score from " + schema + "annotation_history where undo_num = " + undoNum + " and undo_action = " + undoAction);
+				System.out.println("insert into " + schema + "annotation (id, document_namespace, document_table, document_id, document_name, annotation_type, start, " + rq + "end" + rq + ", value, features, provenance, score) "
+					+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, " + rq + "end" + rq + ", value, features, provenance, score from " + schema + "annotation_history where undo_num = " + undoNum + " and undo_action = " + undoAction);
 			}
 			
 			
@@ -2574,6 +2577,7 @@ public class DataAccess {
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 		Statement stmt2 = conn.createStatement();
+		String rq = getReservedQuote(conn);
 		
 		ResultSet rs = stmt.executeQuery("select action, frame_instance_id, section_slot_number, element_slot_number, element_id, slot_id, annotation_id, document_namespace, document_table, document_id, provenance, value "
 			+ "from " + schema + "frame_instance_data_history where undo_num = " + undoNum + " and user_name = '" + userName + "' order by action desc");
@@ -2612,11 +2616,11 @@ public class DataAccess {
 				System.out.println("insert into " + schema + "frame_instance_data (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id) "
 					+ "values (" + frameInstanceID + "," + slotID + ",'" + value + "'," + sectionSlotNum + "," + elementSlotNum + ",'" + docNamespace + "','" + docTable + "'," + docID + "," + annotID + ",'" + provenance + "'," + elementID + ")");
 				
-				stmt2.execute("insert into " + schema + "annotation (id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score) "
-					+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score from " + schema + "annotation_history where undo_num = " + undoNum + " and undo_action = " + undoAction);
+				stmt2.execute("insert into " + schema + "annotation (id, document_namespace, document_table, document_id, document_name, annotation_type, start, " + rq + "end" + rq + ", value, features, provenance, score) "
+					+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, " + rq + "end" + rq + ", value, features, provenance, score from " + schema + "annotation_history where undo_num = " + undoNum + " and undo_action = " + undoAction);
 				
-				System.out.println("insert into " + schema + "annotation (id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score) "
-					+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, end, value, features, provenance, score from " + schema + "annotation_history where undo_num = " + undoNum + " and undo_action = " + undoAction);
+				System.out.println("insert into " + schema + "annotation (id, document_namespace, document_table, document_id, document_name, annotation_type, start, " + rq + "end" + rq + ", value, features, provenance, score) "
+					+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, " + rq + "end" + rq + ", value, features, provenance, score from " + schema + "annotation_history where undo_num = " + undoNum + " and undo_action = " + undoAction);
 			}
 			else if (undoAction == 2) {
 				stmt.execute("update " + schema + "frame_instance_data set element_slot_number = element_slot_number - 1 "
