@@ -99,6 +99,8 @@ public class Application extends Controller
     	session("docSchemaName", docSchema);
     	
     	String loadStatus = Play.application().configuration().getString("loadStatus");
+    	if (loadStatus == null)
+    		loadStatus = "false";
     	session("loadStatus", loadStatus);
     	
     	session("undoNum", "0");
