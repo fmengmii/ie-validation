@@ -6,6 +6,8 @@ var frameInstanceData;
 var highlightStart;
 var highlightEnd;
 var currFrameInstanceID;
+var currRowIndex;
+var currTableOffset;
 var docNamespace;
 var docTable;
 var docID;
@@ -217,6 +219,14 @@ $(document).ready(function () {
     		     sectionName = sectionNameShort;
            }
            return sectionName;
+       },
+       rendered: function() {
+    	   if (currTableOffset != undefined) {
+    		   //clog("table rendered scroll offset: " + currTableOffset.top + ", " + currTableOffset.left);
+    		   $("#dataElementTable").jqxDataTable('scrollOffset', currTableOffset.top, currTableOffset.left);
+    	   }
+    	   else
+    		   currTableOffset = $("#dataElementTable").jqxDataTable('scrollOffset');
        }
    });
 
@@ -358,7 +368,7 @@ function getDocument(docInfoStr, index, clear, options, callback)
     // new code
     clearHistory();
 
-	clog("getDocument: " + docInfoStr);
+	//clog("getDocument: " + docInfoStr);
 	docHistory[docInfoStr] = true;
 	//var docInfo = JSON.parse(docInfoStr);
 	addDocumentHistory(docInfoStr);
@@ -399,14 +409,14 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		data:{docNamespace:docNamespace, docTable:docTable, docID:docID},
 		cache: false
 	}).done(function(data) {
-		clog(data);
+		//clog(data);
 		var docData = JSON.parse(data);
 		docName = docData["docName"];
 		origText = docData["docText"];
-		clog("text len: " + origText.length);
+		//clog("text len: " + origText.length);
 
 		origText = origText.replace(/[\r]/g, '');
-		clog("text len: " + origText.length);
+		//clog("text len: " + origText.length);
 
 		//var text = origText.split("\n").join("&nbsp;<br />");
 		var text = origText;
@@ -417,7 +427,7 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		$('#docPanel').val(text);
 
 		annotList = docData["annotList"];
-		clog("annotList: " + JSON.stringify(annotList));
+		//clog("annotList: " + JSON.stringify(annotList));
 		//getHighlightRanges();
 		//highlightText();
 
@@ -725,7 +735,11 @@ function toLogIn() {
 
 function rowSelect(row)
 {
+	openDialogLoad();
+	
+	
 	var index = row.index;
+	currRowIndex = row.index;
 	var rowData = gridData2[index];
 	var rowValue = rowData["elementValue"];
 	var elementType = rowData['elementType'];
@@ -746,6 +760,7 @@ function rowSelect(row)
 	}
 	*/
 	
+	currTableOffset = $("#dataElementTable").jqxDataTable('scrollOffset');
 	
 
 	var add = row.originalEvent.metaKey;
@@ -949,12 +964,12 @@ function rowSelect(row)
 	//something was highlighted
 	if (selectFlag && (start != end || docFeatureValue != null)) {
 		
-		clog("highlight add element: " + elementHTMLID);
+		//clog("highlight add element: " + elementHTMLID);
 		
 		//add row if it is repeatable
-		if (document.getElementById(elementHTMLID + '_add') != null || document.getElementById(elementHTMLID + '_remove') != null) {
-			addElement(elementHTMLID + '_add');
-		}
+		//if (document.getElementById(elementHTMLID + '_add') != null || document.getElementById(elementHTMLID + '_remove') != null) {
+		//	addElement(elementHTMLID + '_add');
+		//}
 
 		if (docFeatureValue != null) {
 			start = -1;
@@ -1021,16 +1036,16 @@ function rowSelect(row)
 
 		if (value != rowData['elementValue']) {
 			//var elementType = rowData['elementType'];
-			clog("elementType: " + elementType);
+			//clog("elementType: " + elementType);
 
 			var htmlID = rowData['elementHTMLID'];
 			var element = $(jq(htmlID))
-			clog(element.prop('id'));
+			//clog(element.prop('id'));
 
 			if (elementType != undefined && (elementType == 'text') || elementType == 'textarea') {
 				element.val(value);
 
-				clog("Add: " + docNamespace + "," + docTable + "," + docID);
+				//clog("Add: " + docNamespace + "," + docTable + "," + docID);
 
 				/*
 				var newRow = {};
@@ -1057,6 +1072,12 @@ function rowSelect(row)
 						var dataObj = JSON.parse(data);
 						frameInstanceData = dataObj[0];
 						highlightRangeMap = dataObj[1];
+						
+						//add row if repeatable
+						clog("highlight add element: " + elementHTMLID);
+						if (document.getElementById(elementHTMLID + '_add') != null || document.getElementById(elementHTMLID + '_remove') != null) {
+							addElement(elementHTMLID + '_add');
+						}
 
 						//add to annotList
 
@@ -1095,9 +1116,10 @@ function rowSelect(row)
 							}
 							
 							selectFlag = false;
+							closeDialogLoad();
 						});
 
-						closeDialogLoad();
+						//closeDialogLoad();
 
 					}).fail(function () {
 				});
@@ -1109,12 +1131,13 @@ function rowSelect(row)
 					highlightText();
 				}
 
-				selectFlag = false;
+				//selectFlag = false;
 			}
 		}
 
 	}
 
+	closeDialogLoad();
 }
 
 function highlightText()
@@ -1262,7 +1285,7 @@ function loadProject(projName)
 		url: loadProjectAjax.url,
 		cache: false
 	}).done(function(data) {
-		clog(data);
+		//clog(data);
 
 		var result = JSON.parse(data);
 		frameArray = result[0];
@@ -1341,9 +1364,18 @@ function frameInstanceSelectedText(frameInstanceName)
 function loadFrameInstance(frameInstanceID, clearDoc)
 {
 	clog(frameInstanceID);
+	
+	openDialogLoad();
+	
+	//offset = $("#dataElementTable").jqxDataTable('scrollOffset');
+	//clog("scroll offset: " + offset.top + ", " + offset.left);
+	
     $("#validatedButtonDiv").hide();
     
-    
+    //validate curr frame instance
+    //clog("currFrameInstanceID: " + currFrameInstanceID);
+    if (currFrameInstanceID != undefined && currFrameInstanceID != null)
+    	frameInstanceValidated(currFrameInstanceID);
     
     //check to see if frame instance is locked by another user
     $.ajax({
@@ -1352,7 +1384,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
         cache: false
     }).done(function(data) {
         data = JSON.parse(data);
-        clog(data);
+        //clog(data);
         
         if (data.Success == 'true'){
         	clog("frame instance locked!");
@@ -1379,8 +1411,6 @@ function loadFrameInstance(frameInstanceID, clearDoc)
     
         else {
     
-	
-			openDialogLoad();
 			
 			currFrameInstanceID = frameInstanceID;
 			docSelectIndex = -1;
@@ -1392,7 +1422,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		        cache: false
 		    }).done(function(data) {
 		
-		    	clog(data);
+		    	//clog(data);
 		        var dataObj = JSON.parse(data);
 		
 		        //load highlight range map
@@ -1466,10 +1496,19 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		        //reload grid data into table
 		        gridSource.localData = gridData;
 		        dataAdapter = new $.jqx.dataAdapter(gridSource, {
-		            loadComplete: function (data) { },
+		            loadComplete: function (data) {
+		            	$("#dataElementTable").jqxDataTable('refresh');
+		            },
 		            loadError: function (xhr, status, error) { }
 		        });
 		        $("#dataElementTable").jqxDataTable({ source: dataAdapter });
+		        
+		        if (currRowIndex != undefined) {
+		        	var rows = $("#dataElementTable").jqxDataTable('getRows');
+		        	if (currRowIndex < rows.length) {
+			        	$("#dataElementTable").jqxDataTable('selectRow', currRowIndex);
+		        	}
+		        }
 		
 		
 		        setHTMLElements();
@@ -1522,12 +1561,16 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		            }
 		            
 		            crfSelectDisable = true;
-		            frameInstanceValidated(frameInstanceID);
+		            //frameInstanceValidated(frameInstanceID);
 			        prevFrameInstanceIndex = currFrameInstanceIndex;
 
 		        }
 		
 		        getDocumentHistory();
+		        
+		        $('#crfSelect').val(frameInstanceID).trigger("change");
+		        
+		        //$("#dataElementTable").jqxDataTable('refresh');
 		
 		        
 		        //highlightText();
@@ -1535,8 +1578,6 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		        clog("end of load frame docNamespace: " + docNamespace + ", docTable: " + docTable + ", docID: " + docID);
 		
 		        closeDialogLoad();
-		        
-
 		    }
         )};
     });
@@ -1674,7 +1715,8 @@ function addElement(id)
 {
 	clog("add Element: docFeatureValue:" + docFeatureValue + " select flag: " + selectFlag);
 
-	if (selectFlag && docFeatureValue == null) {
+	//if (selectFlag && docFeatureValue == null) {
+	if (docFeatureValue == null) {
 		index = id.lastIndexOf("_");
 		id = id.substring(0, index);
 
@@ -1784,7 +1826,7 @@ function loadCRFData(elementList)
 
 		gridData[i] = row;
 		gridData2[i] = row;
-		clog(row["elementID"] + ", " + row["element"] + ", " + row["elementHTMLID"]);
+		//clog(row["elementID"] + ", " + row["element"] + ", " + row["elementHTMLID"]);
 	}
 
 	gridSource.localData = gridData;
@@ -2301,6 +2343,9 @@ function prevInstance()
 		var frameInstanceID = frameArray[currFrameInstanceIndex-1]["frameInstanceID"];
 		//$('#crfSelect').prop('selectedIndex', currFrameInstanceIndex);
 		//$('#crfSelect').val(frameInstanceID).trigger("change");
+		
+		currTableOffset.top = 0;
+		currTableOffset.left = 0;
 		loadFrameInstance(frameInstanceID, true);
 		//frameInstanceValidated(frameInstanceID);
 	}
@@ -2319,6 +2364,8 @@ function nextInstance()
 		
 		//frameInstanceValidated(frameInstanceID);
 		//$('#crfSelect').val(frameInstanceID).trigger("change");
+		currTableOffset.top = 0;
+		currTableOffset.left = 0;
 		loadFrameInstance(frameInstanceID, true)
 	}
 }
@@ -2449,14 +2496,14 @@ function getHighlightRangesNoOverlap()
 
 	}
 
-	clog("highlightranges: " + JSON.stringify(highlightRanges));
+	//clog("highlightranges: " + JSON.stringify(highlightRanges));
 
 }
 
 function getHighlightRanges()
 {
-	clog("gethighlightranges: " + JSON.stringify(highlightRangeList));
-	clog("annot list: " + JSON.stringify(annotList));
+	//clog("gethighlightranges: " + JSON.stringify(highlightRangeList));
+	//clog("annot list: " + JSON.stringify(annotList));
 
 	highlightRanges = [];
 	highlightIndexes = [];
@@ -2599,10 +2646,10 @@ function getHighlightRanges()
 		}
 	}
 
-	clog("annot list: " + JSON.stringify(annotList));
-	clog("annot list2: " + JSON.stringify(annotList2));
-	clog("highlightranges: " + JSON.stringify(highlightRanges));
-	clog("highlightindexes: " + JSON.stringify(highlightIndexes));
+	//clog("annot list: " + JSON.stringify(annotList));
+	//clog("annot list2: " + JSON.stringify(annotList2));
+	//clog("highlightranges: " + JSON.stringify(highlightRanges));
+	//clog("highlightindexes: " + JSON.stringify(highlightIndexes));
 }
 
 function fillSlot(htmlID)
@@ -2634,7 +2681,7 @@ function fillSlot(htmlID)
 
 				//set the row in the data table
 				for (var i=0; i<gridData.length; i++) {
-					clog("elementID: " + gridData[i]["elementID"] + ", " + elementID);
+					//clog("elementID: " + gridData[i]["elementID"] + ", " + elementID);
 					if (gridData[i]["elementID"] == elementID) {
 						$('#dataElementTable').jqxDataTable('selectRow', i);
 						gridData[i]["start"] = start;
@@ -2745,7 +2792,7 @@ function setHTMLElements()
     	if (elementType != 'text' && elementType != 'textarea')
     		htmlID = valueHTMLID;
 
-    	clog("htmlID: " + jq(htmlID));
+    	//clog("htmlID: " + jq(htmlID));
     	var element = $(jq(htmlID));
 
 		clog(element + "," + element.prop('tagName') + "," + element.attr('type'));
@@ -2826,47 +2873,36 @@ function updateCRFSelect()
 
 function frameInstanceValidated(frameInstanceID)
 {
-	openDialogLoad();
+	//openDialogLoad();
 	
 
+	/*
     var frameInstanceValidatedAjax = jsRoutes.controllers.Application.frameInstanceValidated();
 	$.ajax({
 		type: 'GET',
 		url: frameInstanceValidatedAjax.url,
 		cache: false
 	}).done(function(data) {
+	*/
 		
-		//var text = $('#crfSelect option[value="' + frameInstanceID + '"]').text();
-		//$('#crfSelect option[value="' + frameInstanceID + '"]').text(text + ' : ' + username);
-		
-		var crfSelect = document.getElementById('crfSelect');
-		var index = -1;	
-		for (var i = 0; i < frameArray.length; i++) {
-			clog("frameArray: " + frameArray[i]["frameInstanceID"] + ", " + frameArray[i]["validatedByUserName"]);
+	var crfSelect = document.getElementById('crfSelect');
+	var index = -1;	
+	for (var i = 0; i < frameArray.length; i++) {
+		//clog("frameArray: " + frameArray[i]["frameInstanceID"] + ", " + frameArray[i]["validatedByUserName"]);
 
-		    if (frameArray[i]["frameInstanceID"] == frameInstanceID) {
-		        index = i;
-		        break;
-		    }
-		}
-		
-		if (index >= 0 && frameArray[index]["validatedByUserName"] != username) {
-			frameArray[index]["validatedByUserName"] = username;
-			clog(frameArray[index]["frameInstanceID"] + ", " + frameArray[index]["validatedByUserName"]);
-			updateCRFSelect();
-		}
-		
-		crfSelectDisabled = true;
-		$('#crfSelect').val(frameInstanceID).trigger("change");
-		
-		//$('#crfSelect').selectedIndex = index;
-		
-		
-		closeDialogLoad();
-		
-    }).fail(function(){}
-    	
-    )
+	    if (frameArray[i]["frameInstanceID"] == frameInstanceID) {
+	        index = i;
+	        break;
+	    }
+	}
+	
+	if (index >= 0 && frameArray[index]["validatedByUserName"] != username) {
+		frameArray[index]["validatedByUserName"] = username;
+		clog(frameArray[index]["frameInstanceID"] + ", " + frameArray[index]["validatedByUserName"]);
+		updateCRFSelect();
+	}
+	
+	crfSelectDisabled = true;
 }
 
 

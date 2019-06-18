@@ -14,7 +14,7 @@ libraryDependencies ++= Seq(
   javaJdbc,
   cache,
   javaWs,
-  "mysql" % "mysql-connector-java" % "5.1.34",
+  "mysql" % "mysql-connector-java" % "8.0.16",
   "com.google.code.gson" % "gson" % "2.3.1"
 )
 

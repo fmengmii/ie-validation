@@ -1013,8 +1013,7 @@ public class DataAccess {
 				stmt.execute("insert into " + schema + "annotation (id, document_namespace, document_table, document_id, annotation_type, start, "
 					+ rq + "end" + rq + ", value, features, provenance) "
     				+ "values "
-    				+ "(" + annotID + ",'" + docNamespace + "','" + docTable + "'," + docID + ",'" + annotType + "'," + start + "," + end + ",'"
-    				+ value + "', '" + features + "', 'validation-tool')");
+    				+ "(" + annotID + ",'" + docNamespace + "','" + docTable + "'," + docID + ",'" + annotType + "'," + start + "," + end + ",'"    				+ value + "', '" + features + "', 'validation-tool')");
 
 				System.out.println("insert into " + schema + "annotation (id, document_namespace, document_table, document_id, annotation_type, start, "
     					+ rq + "end" + rq + ", value, features, provenance) "
@@ -2252,27 +2251,91 @@ public class DataAccess {
 		return lastIndex;
 	}
 
-	public boolean updateValidationStatus(int frameInstanceID)
+	public boolean updateValidationStatus(int frameInstanceID, String userName)
 	{
 		try {
 			Connection conn = DB.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("update document_status set status = 1 where document_id = ? and status = 0");
-			PreparedStatement pstmt2 = conn.prepareStatement("update annotation set provenance = 'validation-tool' where document_id = ? and provenance = 'msa-ie'");
+			PreparedStatement pstmt = conn.prepareStatement("update " + schema + "document_status set status = 1, user_id = ? where document_namespace = ? and document_table = ? and document_id = ? and status = 0");
+			PreparedStatement pstmt2 = conn.prepareStatement("update " + schema + "annotation set provenance = 'validation-tool' where document_id = ? and provenance = '##auto'");
+			PreparedStatement pstmt3 = conn.prepareStatement("select count(*) from " + schema + "frame_instance_data_history where frame_instance_id = ?");
+			PreparedStatement pstmt4 = conn.prepareStatement("update " + schema + "frame_instance_status set status = 1, user_id = ? where frame_instance_id = ? and status = 0");
+			PreparedStatement pstmt5 = conn.prepareStatement("select user_id from " + schema + "user where user_name = ?");
+			PreparedStatement pstmt6 = conn.prepareStatement("insert into " + schema + "frame_instance_status (frame_instance_id, status, user_id) values (?,-2,?)");
+			PreparedStatement pstmt7 = conn.prepareStatement("insert into " + schema + "document_status (document_namespace, document_table, document_id, status, user_id) values (?,?,?,-2,?)");
+			PreparedStatement pstmt8 = conn.prepareStatement("select count(*) from " + schema + "frame_instance_status where frame_instance_id = ?");
+			
 			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery("select document_id from "
-					+ schema + "frame_instance_document where frame_instance_id = " + frameInstanceID);
+			
+			int userID = -1;
+			ResultSet rs = stmt.executeQuery("select user_id from " + schema + "user where user_name = '" + userName + "'");
+			if (rs.next()) {
+				userID = rs.getInt(1);
+			}
+			
+			int frameInstanceCount = 0;
+			pstmt8.setInt(1, frameInstanceID);
+			rs = pstmt8.executeQuery();
+			if (rs.next()) {
+				frameInstanceCount = rs.getInt(1);
+			}
+			
 
+			int historyCount = 0;
+			pstmt3.setInt(1, frameInstanceID);
+			rs = pstmt3.executeQuery();
+			if (rs.next()) {
+				historyCount = rs.getInt(1);
+			}
+			
+			if (historyCount > 0) {
+				if (frameInstanceCount == 0) {
+					pstmt6.setInt(1, frameInstanceID);
+					pstmt6.setInt(2, userID);
+					pstmt6.execute();
+				}
+				else {
+					pstmt4.setInt(1, userID);
+					pstmt4.setInt(2, frameInstanceID);
+					pstmt4.execute();
+				}
+			
+				rs = stmt.executeQuery("select document_namespace, document_table, document_id from "
+						+ schema + "frame_instance_document where frame_instance_id = " + frameInstanceID);
+	
+	
+				while (rs.next()) {
+					String docNamespace = rs.getString(1);
+					String docTable = rs.getString(2);
+					long docID = rs.getLong(3);
 
-			while (rs.next()) {
-				long docID = rs.getLong(1);
-				pstmt.setLong(1, docID);
-				pstmt.execute();
-
-				pstmt2.setLong(1, docID);
-				pstmt2.execute();
+					if (frameInstanceCount == 0) {
+						pstmt7.setString(1, docNamespace);
+						pstmt7.setString(2, docTable);
+						pstmt7.setLong(3, docID);
+						pstmt7.setInt(4, userID);
+						pstmt7.execute();
+					}
+					else {
+						pstmt.setInt(1, userID);
+						pstmt.setString(2, docNamespace);
+						pstmt.setString(3, docTable);
+						pstmt.setLong(4, docID);
+						pstmt.execute();
+					}
+	
+					pstmt2.setLong(1, docID);
+					pstmt2.execute();
+				}
 			}
 
 			pstmt.close();
+			pstmt2.close();
+			pstmt3.close();
+			pstmt4.close();
+			pstmt5.close();
+			pstmt6.close();
+			pstmt7.close();
+			pstmt8.close();
 			stmt.close();
 			conn.close();
 
@@ -2466,8 +2529,21 @@ public class DataAccess {
 	{
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
+		
+		int frameInstanceID = -1;
+		ResultSet rs = stmt.executeQuery("select distinct frame_instance_id from " + schema + "frame_instance_data_history");
+		if (rs.next()) {
+			frameInstanceID = rs.getInt(1);
+		}
+		
+		//update validation status
+		if (frameInstanceID >= 0) {
+			updateValidationStatus(frameInstanceID, userName);
+		}
+		
 		stmt.execute("delete from " + schema + "annotation_history where user_name = '" + userName + "'");
 		stmt.execute("delete from " + schema + "frame_instance_data_history where user_name = '" + userName + "'");
+		
 		conn.close();
 	}
 	
