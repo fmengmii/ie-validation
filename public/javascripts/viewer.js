@@ -776,6 +776,12 @@ function rowSelect(row)
 	if (selectRange != null && selectFlag) {
 		start = selectRange.start;
 		end = selectRange.end;
+		
+		if (start > end) {
+			var start2 = start;
+			start = end;
+			end = start2;
+		}
 
 		if (tokenSelectFlag) {
 			//use token-based highlighting
