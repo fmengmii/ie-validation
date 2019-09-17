@@ -2255,19 +2255,21 @@ public class DataAccess {
 	{
 		try {
 			Connection conn = DB.getConnection();
+			String rq = getReservedQuote(conn);
 			PreparedStatement pstmt = conn.prepareStatement("update " + schema + "document_status set status = 1, user_id = ? where document_namespace = ? and document_table = ? and document_id = ? and status = 0");
 			PreparedStatement pstmt2 = conn.prepareStatement("update " + schema + "annotation set provenance = 'validation-tool' where document_id = ? and provenance = '##auto'");
 			PreparedStatement pstmt3 = conn.prepareStatement("select count(*) from " + schema + "frame_instance_data_history where frame_instance_id = ?");
 			PreparedStatement pstmt4 = conn.prepareStatement("update " + schema + "frame_instance_status set status = 1, user_id = ? where frame_instance_id = ? and status = 0");
-			PreparedStatement pstmt5 = conn.prepareStatement("select user_id from " + schema + "user where user_name = ?");
-			PreparedStatement pstmt6 = conn.prepareStatement("insert into " + schema + "frame_instance_status (frame_instance_id, status, user_id) values (?,-2,?)");
+			PreparedStatement pstmt5 = conn.prepareStatement("select user_id from " + schema + rq + "user" + rq +" where user_name = ?");
+			PreparedStatement pstmt6 = conn.prepareStatement("insert into " + schema + "frame_instance_status (frame_instance_id, status, user_id) values (?,?,?)");
 			PreparedStatement pstmt7 = conn.prepareStatement("insert into " + schema + "document_status (document_namespace, document_table, document_id, status, user_id) values (?,?,?,-2,?)");
 			PreparedStatement pstmt8 = conn.prepareStatement("select count(*) from " + schema + "frame_instance_status where frame_instance_id = ?");
+			PreparedStatement pstmt9 = conn.prepareStatement("select count(*) from " + schema + "document_status where document_id = ?");
 			
 			Statement stmt = conn.createStatement();
 			
 			int userID = -1;
-			ResultSet rs = stmt.executeQuery("select user_id from " + schema + "user where user_name = '" + userName + "'");
+			ResultSet rs = stmt.executeQuery("select user_id from " + schema + rq + "user" + rq + " where user_name = '" + userName + "'");
 			if (rs.next()) {
 				userID = rs.getInt(1);
 			}
@@ -2279,6 +2281,7 @@ public class DataAccess {
 				frameInstanceCount = rs.getInt(1);
 			}
 			
+			
 
 			int historyCount = 0;
 			pstmt3.setInt(1, frameInstanceID);
@@ -2288,27 +2291,26 @@ public class DataAccess {
 			}
 			
 			if (historyCount > 0) {
-				if (frameInstanceCount == 0) {
-					pstmt6.setInt(1, frameInstanceID);
-					pstmt6.setInt(2, userID);
-					pstmt6.execute();
-				}
-				else {
-					pstmt4.setInt(1, userID);
-					pstmt4.setInt(2, frameInstanceID);
-					pstmt4.execute();
-				}
+				
 			
 				rs = stmt.executeQuery("select document_namespace, document_table, document_id from "
 						+ schema + "frame_instance_document where frame_instance_id = " + frameInstanceID);
 	
 	
+				boolean docExists = false;
 				while (rs.next()) {
 					String docNamespace = rs.getString(1);
 					String docTable = rs.getString(2);
 					long docID = rs.getLong(3);
+					
+					int docCount = 0;
+					pstmt9.setLong(1, docID);
+					ResultSet rs2 = pstmt9.executeQuery();
+					if (rs2.next()) {
+						docCount = rs2.getInt(1);
+					}
 
-					if (frameInstanceCount == 0) {
+					if (docCount == 0) {
 						pstmt7.setString(1, docNamespace);
 						pstmt7.setString(2, docTable);
 						pstmt7.setLong(3, docID);
@@ -2321,10 +2323,27 @@ public class DataAccess {
 						pstmt.setString(3, docTable);
 						pstmt.setLong(4, docID);
 						pstmt.execute();
+						docExists = true;
 					}
 	
 					pstmt2.setLong(1, docID);
 					pstmt2.execute();
+				}
+				
+				int frameInstanceStatus = -2;
+				if (docExists)
+					frameInstanceStatus = 1;
+				
+				if (frameInstanceCount == 0) {
+					pstmt6.setInt(1, frameInstanceID);
+					pstmt6.setInt(2, frameInstanceStatus);
+					pstmt6.setInt(3, userID);
+					pstmt6.execute();
+				}
+				else {
+					pstmt4.setInt(1, userID);
+					pstmt4.setInt(2, frameInstanceID);
+					pstmt4.execute();
 				}
 			}
 

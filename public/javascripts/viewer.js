@@ -39,7 +39,7 @@ var annotList;
 var highlightMenuStart;
 var loadDialogCount = 0;
 var highlightRangeMap = {};
-var docSelectIndex = -1;
+var docSelectIndex = 0;
 var tokenSelectFlag = false;
 var entityIDStr = null;
 var colNames = null;
