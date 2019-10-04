@@ -1864,9 +1864,15 @@ public class DataAccess {
 		
 		//preload
 		List<String> preloadAnnotList = new ArrayList<String>();
-		rs = stmt.executeQuery("select distinct annotation_type from " + schema + "project_preload where project_id = " + projID);
+		List<String> preloadValList = new ArrayList<String>();
+		rs = stmt.executeQuery("select distinct value from " + schema + "project_preload where project_id = " + projID + " and type = 1");
 		while (rs.next()) {
 			preloadAnnotList.add(rs.getString(1));
+		}
+		
+		rs = stmt.executeQuery("select distinct value from " + schema + "project_preload where project_id = " + projID + " and type = 2");
+		while (rs.next()) {
+			preloadValList.add(rs.getString(1));
 		}
 
 		
@@ -1891,6 +1897,17 @@ public class DataAccess {
 		strBlder2.insert(0, "(");
 		strBlder2.append(")");
 		System.out.println("getDocumentAnnotation: strBlder2=" + strBlder2.toString());
+		
+		StringBuilder strBlder3 = new StringBuilder();
+		for (String value : preloadValList) {
+			if (strBlder3.length() > 0)
+				strBlder3.append(",");
+			strBlder3.append("'" + value + "'");
+		}
+
+		strBlder3.insert(0, "(");
+		strBlder3.append(")");
+		System.out.println("getDocumentAnnotation: strBlder3=" + strBlder3.toString());
 		
 		
 		
@@ -1968,12 +1985,50 @@ public class DataAccess {
 		
 		
 		//preload
-		if (strBlder2.length() > 2) {
+		if (preloadAnnotList.size() > 0) {
 			rs = stmt.executeQuery("select start, " + rq + "end" + rq + ", annotation_type from "
 					+ schema + "annotation where document_namespace = '" + docNamespace + "' and "
 					+ "document_table = '" + docTable + "' and document_id = " + docID
 					+ " and score > " + annotThreshold + " and annotation_type in "
 					+ strBlder2.toString() + " order by start");
+	
+			while (rs.next()) {
+				long start = rs.getLong(1);
+				long end = rs.getLong(2);
+				String annotType = rs.getString(3);
+				
+				if (annotMap.get(Long.toString(start)) != null)
+					continue;
+				
+				
+				Map<String, Object> annot = new HashMap<String, Object>();
+				annot.put("start", start);
+				annot.put("end", end);
+				annot.put("annotType", annotType);
+				annot.put("color", "lightgray");
+	
+				boolean inserted = false;
+				for (int i=0; i<annotList.size(); i++) {
+					Map<String, Object> annot2 = annotList.get(i);
+					
+					if (start < ((Long) annot2.get("start"))) {
+						annotList.add(i, annot);
+						inserted = true;
+						break;
+					}
+				}
+				
+				if (!inserted)
+					annotList.add(annot);
+			}
+		}
+		
+		if (preloadValList.size() > 0) {
+			rs = stmt.executeQuery("select start, " + rq + "end" + rq + ", annotation_type from "
+					+ schema + "annotation where document_namespace = '" + docNamespace + "' and "
+					+ "document_table = '" + docTable + "' and document_id = " + docID
+					+ " and score > " + annotThreshold + " and value in "
+					+ strBlder3.toString() + " order by start");
 	
 			while (rs.next()) {
 				long start = rs.getLong(1);
