@@ -2024,6 +2024,12 @@ public class DataAccess {
 		}
 		
 		if (preloadValList.size() > 0) {
+			System.out.println("select start, " + rq + "end" + rq + ", annotation_type from "
+					+ schema + "annotation where document_namespace = '" + docNamespace + "' and "
+					+ "document_table = '" + docTable + "' and document_id = " + docID
+					+ " and score > " + annotThreshold + " and value in "
+					+ strBlder3.toString() + " order by start");
+			
 			rs = stmt.executeQuery("select start, " + rq + "end" + rq + ", annotation_type from "
 					+ schema + "annotation where document_namespace = '" + docNamespace + "' and "
 					+ "document_table = '" + docTable + "' and document_id = " + docID
