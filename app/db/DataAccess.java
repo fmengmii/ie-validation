@@ -2024,17 +2024,24 @@ public class DataAccess {
 		}
 		
 		if (preloadValList.size() > 0) {
+			
+			String valueStr = "value";
+			String dbType = conn.getMetaData().getDatabaseProductName();
+			if (dbType.equals("Microsoft SQL Server")) {
+				valueStr = "cast (value as varchar(max))";
+			}
 			System.out.println("select start, " + rq + "end" + rq + ", annotation_type from "
 					+ schema + "annotation where document_namespace = '" + docNamespace + "' and "
 					+ "document_table = '" + docTable + "' and document_id = " + docID
-					+ " and score > " + annotThreshold + " and value in "
+					+ " and score > " + annotThreshold + " and " + valueStr + " in "
 					+ strBlder3.toString() + " order by start");
 			
 			rs = stmt.executeQuery("select start, " + rq + "end" + rq + ", annotation_type from "
 					+ schema + "annotation where document_namespace = '" + docNamespace + "' and "
 					+ "document_table = '" + docTable + "' and document_id = " + docID
-					+ " and score > " + annotThreshold + " and value in "
+					+ " and score > " + annotThreshold + " and " + valueStr + " in "
 					+ strBlder3.toString() + " order by start");
+			
 	
 			while (rs.next()) {
 				long start = rs.getLong(1);
