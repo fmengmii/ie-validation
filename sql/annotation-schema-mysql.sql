@@ -457,7 +457,8 @@ CREATE TABLE `value` (
 DROP TABLE IF EXISTS `project_preload`;
 CREATE TABLE `project_preload` (
   `project_id` int(11) DEFAULT NULL,
-  `annotation_type` varchar(500) DEFAULT NULL
+  `value` varchar(500) DEFAULT NULL,
+  `type` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 

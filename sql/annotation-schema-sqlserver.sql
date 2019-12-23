@@ -438,7 +438,8 @@ CREATE TABLE SCHEMA."value" (
 DROP TABLE IF EXISTS SCHEMA."project_preload";
 CREATE TABLE SCHEMA."project_preload" (
   "project_id" int DEFAULT NULL,
-  "annotation_type" varchar(500) DEFAULT NULL
+  "value" varchar(500) DEFAULT NULl,
+  "type" int(11) DEFAULT NULL
 );
 
 
