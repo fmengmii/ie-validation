@@ -439,7 +439,7 @@ DROP TABLE IF EXISTS SCHEMA."project_preload";
 CREATE TABLE SCHEMA."project_preload" (
   "project_id" int DEFAULT NULL,
   "value" varchar(500) DEFAULT NULl,
-  "type" int(11) DEFAULT NULL
+  "type" int DEFAULT NULL
 );
 
 
