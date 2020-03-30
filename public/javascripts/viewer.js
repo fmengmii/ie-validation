@@ -109,13 +109,15 @@ $(document).ready(function () {
 	   //docIndex = event.args.item.index;
 	   //docHistory[event.args.item.value] = true;
 	   var item = event.args.item;
+	   
+	   clog("selected doc: " + item.index + " docSelectIndex: " + docSelectIndex);
+
 
 	   if (docSelectIndex == item.index)
 		   return;
 
 	   docSelectIndex = item.index;
 
-	   clog("selected doc: " + item.index);
 	   getDocument(item.value, item.index, true, null, function () {
 		   //clog("HERERERE!");
 	 	   getHighlightRanges();
@@ -191,6 +193,7 @@ $(document).ready(function () {
     	   //var sectionData = JSON.parse("{\"sectionID\":1}");
     	   //clog(sectionData);
     	   var sectionName = sectionData["sectionName"];
+    	   var sectionDisplayName = sectionData["sectionDisplayName"];
     	   //clog(sectionName);
 
     	   var index = sectionName.indexOf("|");
@@ -199,24 +202,28 @@ $(document).ready(function () {
     	   //var sectionHTML = sectionName;
     	   var repeat = sectionData["repeat"];
     	   var repeatIndex = sectionData["repeatIndex"];
+    	   
+    	   clog("sectionName: " + sectionName + " sectionDisplayName: " + sectionDisplayName + " repeat: " + repeat);
+    	   
     	   if (repeat > 0 || repeat == -1) {
     	       repeatIndex++;
 	    	   if (repeatIndex == 1) {
 	    		   //sectionName = sectionNameShort +  "<br><input type='button' id='" + sectionNameShort + "' value='+' onclick='addSection(this.id)'/>";
 
 	    		   // modify by wyu for repeat number
-	    		   sectionName = sectionNameShort + "_" + repeatIndex
+	    		   sectionName = sectionDisplayName + "_" + repeatIndex
 	    		        + "<br><input type='button' id='" + sectionNameShort + "' value='+' onclick='addSection(this.id)'/>";
 	    	   }
 	    	   else{
 	    		   //sectionName = sectionNameShort + "<br><input type='button' id='" + sectionNameShort + "_" + repeatIndex + "' value='-' onclick='removeSection(this.id)'/>";
 
 	    		   // modify by wyu for repeat number
-	    		   sectionName = sectionNameShort  + "_" + repeatIndex
+	    		   sectionName = sectionDisplayName  + "_" + repeatIndex
 	    		        + "<br><input type='button' id='" + sectionNameShort + "_" + repeatIndex + "' value='-' onclick='removeSection(this.id)'/>";
 	    	   }
     	   } else{
-    		     sectionName = sectionNameShort;
+    		     //sectionName = sectionNameShort;
+    		   sectionName = sectionDisplayName;
            }
            return sectionName;
        },
@@ -273,7 +280,23 @@ $(document).ready(function () {
 	   var cursorPosition = $('#docPanel').prop("selectionStart");
 	   clog("click: " + cursorPosition);
 	   
-	   docPanelClick(cursorPosition);
+	   docPanelClick(cursorPosition, false);
+	   
+	   $("#docFeatures input:radio").attr("checked", false);
+		$('[name=docfeature]').each(function() {
+			var keyValue = JSON.parse($(this).val());
+			$(this).next().html(keyValue["key"] + ": " + keyValue["value"]);
+		});
+		
+		docFeatureValue = null;
+
+   });
+   
+   $('#docPanel').dblclick(function(event) {
+	   var cursorPosition = $('#docPanel').prop("selectionStart");
+	   clog("double click: " + cursorPosition);
+	   
+	   docPanelClick(cursorPosition, true);
 	   
 	   $("#docFeatures input:radio").attr("checked", false);
 		$('[name=docfeature]').each(function() {
@@ -1338,7 +1361,7 @@ function loadProject(projName)
 
 function frameInstanceSelected(frameInstanceID, clearDoc, frameInstanceIndex)
 {
-	
+	clog("frameInstanceSelected: " + frameInstanceID + ", " + clearDoc + ", " + frameInstanceIndex + ", " + crfSelectDisabled);
 	if (crfSelectDisabled) {
 		crfSelectDisabled = false;
 		return;
@@ -1374,7 +1397,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 	openDialogLoad();
 	
 	//offset = $("#dataElementTable").jqxDataTable('scrollOffset');
-	//clog("scroll offset: " + offset.top + ", " + offset.left);
+	clog("loadFrameInstance, frameInstanceID: " + frameInstanceID + " clearDoc: " + clearDoc);
 	
     $("#validatedButtonDiv").hide();
     
@@ -1566,7 +1589,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		            	$('#docListBox').jqxListBox('selectIndex', 0);
 		            }
 		            
-		            crfSelectDisable = true;
+		            crfSelectDisabled = true;
 		            //frameInstanceValidated(frameInstanceID);
 			        prevFrameInstanceIndex = currFrameInstanceIndex;
 
@@ -2652,7 +2675,7 @@ function getHighlightRanges()
 		}
 	}
 
-	//clog("annot list: " + JSON.stringify(annotList));
+	clog("annot list: " + JSON.stringify(annotList));
 	//clog("annot list2: " + JSON.stringify(annotList2));
 	//clog("highlightranges: " + JSON.stringify(highlightRanges));
 	//clog("highlightindexes: " + JSON.stringify(highlightIndexes));
@@ -2913,20 +2936,36 @@ function frameInstanceValidated(frameInstanceID)
 
 
 
-function docPanelClick(cursorPosition)
+function docPanelClick(cursorPosition, dblClick)
 {
 	var highlightElementID;
 	var valueHTMLID;
+	var annotClickedList = [];
 
 	for (var elementID in highlightRangeMap) {
-		clog("elementID: " + elementID);
-		var annotList = highlightRangeMap[elementID];
-		clog(JSON.stringify(annotList));
+		//clog("elementID: " + elementID);
+		var annotListLocal = highlightRangeMap[elementID];
+		//clog(JSON.stringify(annotList));
 
-		annotList.forEach(function (annot) {
-			clog("start: " + annot['start'] + " end: " + annot['end']);
+		annotListLocal.forEach(function (annot) {
+			//clog("start: " + annot['start'] + " end: " + annot['end']);
 			if (annot['start'] <= cursorPosition && annot['end'] >= cursorPosition) {
 				highlightElementID = elementID;
+				//annotClickedList.push(annot);
+				//elementStart = annot['start'];
+				//elementEnd = annot['end'];
+				//annotDisplay = annot['annotDisplay'];
+			}
+		});
+		
+		annotList.forEach(function (annot) {
+			//clog("start: " + annot['start'] + " end: " + annot['end']);
+			if (annot['start'] <= cursorPosition && annot['end'] >= cursorPosition) {
+				//highlightElementID = elementID;
+				annotClickedList.push(annot);
+				//elementStart = annot['start'];
+				//elementEnd = annot['end'];
+				//annotDisplay = annot['annotDisplay'];
 			}
 		});
 	}
@@ -2956,6 +2995,22 @@ function docPanelClick(cursorPosition)
 				$('#dataElementTable').jqxDataTable('selectRow', index);
 				break;
 			}
+		}
+		
+		if (dblClick) {
+			selectRange.start = annotClickedList[0]['start'];
+			selectRange.end = annotClickedList[0]['end'];
+			selectFlag = true;
+			
+			annotClickedList.forEach(function (annot) {
+				annot["color"] = "lightsalmon";
+			}
+			);
+			
+			getHighlightRanges();
+			highlightText();
+			
+			clog("annot list docpanelclick: " + JSON.stringify(annotList));
 		}
 		
 		loadFrameInstanceNoRT();

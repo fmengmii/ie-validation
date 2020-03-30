@@ -77,6 +77,7 @@ DROP TABLE IF EXISTS `crf_section`;
 CREATE TABLE `crf_section` (
   `section_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(500) DEFAULT NULL,
+  `display_name` varchar(500) DEFAULT NULL,
   `crf_id` int(11) NOT NULL,
   `repeat` int(11) DEFAULT NULL,
   PRIMARY KEY (`section_id`)

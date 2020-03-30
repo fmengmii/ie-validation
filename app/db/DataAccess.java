@@ -1915,6 +1915,9 @@ public class DataAccess {
 		List<Map<String, Object>> annotList = new ArrayList<Map<String, Object>>();
 		Map<String, Boolean> annotMap = new HashMap<String, Boolean>();
 		
+		PreparedStatement pstmt = conn.prepareStatement("select a.display_name from " + schema + "element a, " + schema + "slot b, " + schema + "value c, " + schema + "element_value d "
+			+ "where b.annotation_type = ? and b.slot_id = c.slot_id and c.value_id = d.value_id and d.element_id = a.element_id");
+		
 		//rs = stmt.executeQuery("select distinct start, " + rq + "end" + rq + ", annotation_type from " + schema + "annotation where document_namespace = '" + docNamespace + "' and "
 		rs = stmt.executeQuery("select start, " + rq + "end" + rq + ", annotation_type from "
 				+ schema + "annotation where document_namespace = '" + docNamespace + "' and "
@@ -1929,10 +1932,17 @@ public class DataAccess {
 			
 			String color = "lightskyblue";
 			
+			pstmt.setString(1, annotType);
+			ResultSet rs2 = pstmt.executeQuery();
+			String annotDisplay = "";
+			if (rs2.next())
+				annotDisplay = rs2.getString(1);
+			
 			Map<String, Object> annot = new HashMap<String, Object>();
 			annot.put("start", start);
 			annot.put("end", end);
 			annot.put("annotType", annotType);
+			annot.put("annotDisplay", annotDisplay);
 			annot.put("color", color);
 
 			annotList.add(annot);

@@ -360,17 +360,18 @@ public class CRFReader
 	{
 		rq = getReservedQuote();
 		int crfID = insertCRF(crfName, generateID(crfName));
-		PreparedStatement pstmt = conn.prepareStatement("insert into " + schema + "crf_section (name, crf_id, " + rq + "repeat" + rq + ") values (?,?,?)");
-		pstmt.setInt(2, crfID);
+		PreparedStatement pstmt = conn.prepareStatement("insert into " + schema + "crf_section (name, display_name, crf_id, " + rq + "repeat" + rq + ") values (?,?,?)");
+		pstmt.setInt(3, crfID);
 
 		for (Map<String, Object> sectionMap : sectionList) {
 			
 			pstmt.setString(1, (String) sectionMap.get("name"));
+			pstmt.setString(2, (String) sectionMap.get("display"));
 			Integer repeat = (Integer) sectionMap.get("repeat");
 			if (repeat == null)
 				repeat = 0;
 			
-			pstmt.setInt(3, repeat);
+			pstmt.setInt(4, repeat);
 			
 			pstmt.execute();
 		}
@@ -592,13 +593,14 @@ public class CRFReader
 		if (sectionList.size() == 0) {
 			System.out.println("CRFReader.readCRFFromDB: sectionList size=0");
 			//sectionList = new ArrayList<Map<String, Object>>();
-			ResultSet rs = stmt.executeQuery("select section_id, name, " + rq + "repeat" + rq + " from " + schema + "crf_section where crf_id = " + crfID + " order by section_id");
+			ResultSet rs = stmt.executeQuery("select section_id, name, display_name, " + rq + "repeat" + rq + " from " + schema + "crf_section where crf_id = " + crfID + " order by section_id");
 			while (rs.next()) {
 				Map<String, Object> sectionMap = new HashMap<String, Object>();
 				int sectionID = rs.getInt(1);
 				sectionMap.put("sectionID", rs.getInt(1));
 				sectionMap.put("name", rs.getString(2));
-				sectionMap.put("repeat", rs.getInt(3));
+				sectionMap.put("display", rs.getString(3));
+				sectionMap.put("repeat", rs.getInt(4));
 
 				/* ***** add by wyu on Feb 10 for adding repeat seq num ********* */
 				sectionMap.put("repeatNumber", 0);
@@ -628,10 +630,11 @@ public class CRFReader
 			
 			int sectionID = ((Number) sectionMap.get("sectionID")).intValue();
 			String sectionName = (String) sectionMap.get("name");
+			String sectionDisplayName = (String) sectionMap.get("display");
 			int repeat = ((Number) sectionMap.get("repeat")).intValue();
 			int repeatNum = ((Number) sectionMap.get("repeatNumber")).intValue();
 			
-			System.out.println("CRFReader.readCRFFromDB: sectionID: " + sectionID + " sectionName: " + sectionName + " repeatNumber: " + repeatNum);
+			System.out.println("CRFReader.readCRFFromDB: sectionID: " + sectionID + " sectionName: " + sectionName + " sectionDisplayName: " + sectionDisplayName + " repeat: " + repeat + " repeatNumber: " + repeatNum);
 
 			ResultSet rs = stmt.executeQuery("select a.element_id, a.display_name, a.html_id, c.element_type_name, a.repeat "
 				+ "from " + schema + "element a, " + schema + "crf_section b, " + schema + "element_type c "
@@ -665,7 +668,7 @@ public class CRFReader
 				System.out.println("section name: " + sectionNameIndex);
 				
 				for (Map<String, Object> element : sectionDataList) {
-					element.put("section", "{\"sectionID\":\"" + sectionIndex + "\",\"sectionName\":\"" + sectionNameIndex + "\",\"repeat\":" + repeat + ",\"repeatIndex\":" + i + "}");
+					element.put("section", "{\"sectionID\":\"" + sectionIndex + "\",\"sectionName\":\"" + sectionNameIndex + "\",\"sectionDisplayName\":\"" + sectionDisplayName + "\",\"repeat\":" + repeat + ",\"repeatIndex\":" + i + "}");
 
 					/*
 					Map<String, Object> dataListElement = new HashMap<String, Object>();

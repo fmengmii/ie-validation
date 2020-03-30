@@ -71,6 +71,7 @@ DROP TABLE IF EXISTS SCHEMA."crf_section";
 CREATE TABLE SCHEMA."crf_section" (
   "section_id" int NOT NULL IDENTITY(1,1),
   "name" varchar(500) DEFAULT NULL,
+  "display_name" varchar(500) DEFAULT NULL,
   "crf_id" int NOT NULL,
   "repeat" int DEFAULT NULL,
   PRIMARY KEY ("section_id")
