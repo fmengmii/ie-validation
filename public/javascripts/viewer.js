@@ -2993,6 +2993,7 @@ function docPanelClick(cursorPosition, dblClick)
 			//clog(rowData['elementHTMLID']);
 			if (rowData['elementHTMLID'] == name || rowData['elementHTMLID'] == highlightElementID) {
 				$('#dataElementTable').jqxDataTable('selectRow', index);
+				$("#dataElementTable").jqxDataTable('ensureRowVisible', index);
 				break;
 			}
 		}
@@ -3157,4 +3158,9 @@ function hideSuccessBox() {
 function hideAlertBox() {
     $("#errorWindow").hide();
     $("#alert-box").hide();
+}
+
+function stopEvent(event) {
+	clog(event);
+	event.stopPropagation();
 }
