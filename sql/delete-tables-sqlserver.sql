@@ -1,3 +1,10 @@
+-- users
+delete from SCHEMA.user;
+DBCC CHECKIDENT ("SCHEMA.user", RESEED, 0)
+
+delete from SCHEMA.user_project;
+
+
 -- crfs only
 
 delete from SCHEMA.crf;

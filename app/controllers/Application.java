@@ -125,7 +125,7 @@ public class Application extends Controller
                 //return index();
                 loggedIn = true;
 				session("userName", un);
-				da.clearUndoHistory(un);
+				da.clearUndoHistory(un, -1);
             } else {
 
                 //return ok(login.render(false));
@@ -564,7 +564,7 @@ public class Application extends Controller
 	    	
     		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		if (oldFrameInstanceID != frameInstanceID) {
-    			da.clearUndoHistory(un);
+    			da.clearUndoHistory(un, oldFrameInstanceID);
     			session("undoNum", "0");
     		}
     		

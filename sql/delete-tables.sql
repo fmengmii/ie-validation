@@ -1,3 +1,12 @@
+# users
+delete from SCHEMA.`user`;
+alter table SCHEMA.`user` AUTO_INCREMENT = 1;
+
+delete from SCHEMA.user_project;
+
+
+
+# crf and frames
 delete from SCHEMA.crf;
 alter table SCHEMA.crf AUTO_INCREMENT = 1;
 
@@ -51,6 +60,8 @@ delete from SCHEMA.frame_instance_lock;
 
 # data only
 delete from SCHEMA.frame_instance_data;
+
+delete from SCHEMA.frame_instance_data_history;
 
 delete from SCHEMA.frame_instance_document_history;
 

@@ -2329,7 +2329,7 @@ public class DataAccess {
 		return lastIndex;
 	}
 
-	public boolean updateValidationStatus(int frameInstanceID, String userName)
+	public boolean updateValidationStatus(int frameInstanceID, String userName, boolean validated)
 	{
 		try {
 			Connection conn = DB.getConnection();
@@ -2337,12 +2337,13 @@ public class DataAccess {
 			PreparedStatement pstmt = conn.prepareStatement("update " + schema + "document_status set status = 1, user_id = ? where document_namespace = ? and document_table = ? and document_id = ? and status = 0");
 			PreparedStatement pstmt2 = conn.prepareStatement("update " + schema + "annotation set provenance = 'validation-tool' where document_id = ? and provenance = '##auto'");
 			PreparedStatement pstmt3 = conn.prepareStatement("select count(*) from " + schema + "frame_instance_data_history where frame_instance_id = ?");
-			PreparedStatement pstmt4 = conn.prepareStatement("update " + schema + "frame_instance_status set status = 1, user_id = ? where frame_instance_id = ? and status = 0");
+			PreparedStatement pstmt4 = conn.prepareStatement("update " + schema + "frame_instance_status set status = ?, user_id = ? where frame_instance_id = ? and status = 0");
 			PreparedStatement pstmt5 = conn.prepareStatement("select user_id from " + schema + rq + "user" + rq +" where user_name = ?");
 			PreparedStatement pstmt6 = conn.prepareStatement("insert into " + schema + "frame_instance_status (frame_instance_id, status, user_id) values (?,?,?)");
 			PreparedStatement pstmt7 = conn.prepareStatement("insert into " + schema + "document_status (document_namespace, document_table, document_id, status, user_id) values (?,?,?,-2,?)");
 			PreparedStatement pstmt8 = conn.prepareStatement("select count(*) from " + schema + "frame_instance_status where frame_instance_id = ?");
 			PreparedStatement pstmt9 = conn.prepareStatement("select count(*) from " + schema + "document_status where document_id = ?");
+			PreparedStatement pstmt10 = conn.prepareStatement("select status from " + schema + "frame_instance_status where frame_instance_id = ?");
 			
 			Statement stmt = conn.createStatement();
 			
@@ -2368,14 +2369,17 @@ public class DataAccess {
 				historyCount = rs.getInt(1);
 			}
 			
-			if (historyCount > 0) {
+			//if (historyCount > 0) {
 				
 			
 				rs = stmt.executeQuery("select document_namespace, document_table, document_id from "
 						+ schema + "frame_instance_document where frame_instance_id = " + frameInstanceID);
 	
 	
+				//only update status of document if the frame instance was actually validated by the user
+				//this means the user performed some action (as indicated by the undo/redo log)
 				boolean docExists = false;
+
 				while (rs.next()) {
 					String docNamespace = rs.getString(1);
 					String docTable = rs.getString(2);
@@ -2387,30 +2391,48 @@ public class DataAccess {
 					if (rs2.next()) {
 						docCount = rs2.getInt(1);
 					}
-
-					if (docCount == 0) {
-						pstmt7.setString(1, docNamespace);
-						pstmt7.setString(2, docTable);
-						pstmt7.setLong(3, docID);
-						pstmt7.setInt(4, userID);
-						pstmt7.execute();
-					}
-					else {
-						pstmt.setInt(1, userID);
-						pstmt.setString(2, docNamespace);
-						pstmt.setString(3, docTable);
-						pstmt.setLong(4, docID);
-						pstmt.execute();
+					
+					if (docCount > 0)
 						docExists = true;
+
+
+					if (validated) {
+						if (docCount == 0) {
+							pstmt7.setString(1, docNamespace);
+							pstmt7.setString(2, docTable);
+							pstmt7.setLong(3, docID);
+							pstmt7.setInt(4, userID);
+							pstmt7.execute();
+						}
+						else {
+							pstmt.setInt(1, userID);
+							pstmt.setString(2, docNamespace);
+							pstmt.setString(3, docTable);
+							pstmt.setLong(4, docID);
+							pstmt.execute();
+						}
+		
+						pstmt2.setLong(1, docID);
+						pstmt2.execute();
 					}
-	
-					pstmt2.setLong(1, docID);
-					pstmt2.execute();
 				}
+				
+				int currFrameInstanceStatus = -3;
+				pstmt10.setInt(1, frameInstanceID);
+				rs = pstmt10.executeQuery();
+				if (rs.next())
+					currFrameInstanceStatus = rs.getInt(1);
 				
 				int frameInstanceStatus = -2;
 				if (docExists)
 					frameInstanceStatus = 1;
+				
+				if (!validated) {
+					if (frameInstanceCount > 0)
+						frameInstanceStatus = currFrameInstanceStatus;
+					else
+						frameInstanceStatus = -3;
+				}
 				
 				if (frameInstanceCount == 0) {
 					pstmt6.setInt(1, frameInstanceID);
@@ -2419,11 +2441,12 @@ public class DataAccess {
 					pstmt6.execute();
 				}
 				else {
-					pstmt4.setInt(1, userID);
-					pstmt4.setInt(2, frameInstanceID);
+					pstmt4.setInt(1, frameInstanceStatus);
+					pstmt4.setInt(2, userID);
+					pstmt4.setInt(3, frameInstanceID);
 					pstmt4.execute();
 				}
-			}
+			//}
 
 			pstmt.close();
 			pstmt2.close();
@@ -2622,20 +2645,26 @@ public class DataAccess {
 		}
 	}
 	
-	public void clearUndoHistory(String userName) throws SQLException
+	public void clearUndoHistory(String userName, int frameInstanceID) throws SQLException
 	{
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 		
-		int frameInstanceID = -1;
-		ResultSet rs = stmt.executeQuery("select distinct frame_instance_id from " + schema + "frame_instance_data_history");
-		if (rs.next()) {
-			frameInstanceID = rs.getInt(1);
-		}
-		
-		//update validation status
 		if (frameInstanceID >= 0) {
-			updateValidationStatus(frameInstanceID, userName);
+			int count = 0;
+			ResultSet rs = stmt.executeQuery("select count(*) from " + schema + "frame_instance_data_history where frame_instance_id = " + frameInstanceID);
+			if (rs.next()) {
+				count = rs.getInt(1);
+			}
+			
+			System.out.println("clearundo: frameInstanceID: " + frameInstanceID + " count: " + count);
+			
+			//update validation status
+			if (count > 0) {
+				updateValidationStatus(frameInstanceID, userName, true);
+			}
+			else
+				updateValidationStatus(frameInstanceID, userName, false);
 		}
 		
 		stmt.execute("delete from " + schema + "annotation_history where user_name = '" + userName + "'");
