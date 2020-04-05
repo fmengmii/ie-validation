@@ -1841,6 +1841,8 @@ function addElement(id)
 			}
 			*/
 			
+			loadFrameInstanceNoRT();
+			
 			closeDialogLoad();
 		})
 	}
