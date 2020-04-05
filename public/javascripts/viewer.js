@@ -1773,11 +1773,79 @@ function addElement(id)
 	
 	var index = id.lastIndexOf("_");
 	id = id.substring(0, index);
+	
+	var origID = id;
+	
 	var gridIndex = elementHTMLIDMap[id];
-	clog("add element id: " + id + " index: " + gridIndex);
 	clog(JSON.stringify(elementHTMLIDMap));
-	gridData.splice(gridIndex, 0, gridData[gridIndex]);
+	
+	index = id.lastIndexOf("_");
+	id = id.substring(0, index);
+	
+	clog("add element id: " + id + " index: " + gridIndex);
+
+	
+	var i;
+	for (i=gridIndex; i<gridData.length; i++) {
+		var htmlID = gridData[i]["elementHTMLID"];
+		index = htmlID.lastIndexOf("_");
+
+		if (htmlID.substring(0, index) != id)
+			break;
+		
+		var repeatNum = parseInt(htmlID.substring(index+1));
+	}
+	
+	clog("i: " + i + "htmlID: " + htmlID);
+	
+	id = id + "_" + (repeatNum + 1);
+	
+	var newRow = {};
+	for (var j in gridData[i-1])
+	   newRow[j] = gridData[i-1][j];
+	
+	gridData.splice(i-1, 0, newRow);
+	gridData[i]["value"] = "<input type='text' id='" + id + "'  name='"+ id + "' /><input type='button' id='" + id + "_remove' value='-' onclick='removeElement(this.id)'/>"
+	gridData[i]["elementHTMLID"] = id;
+	
+	gridData2.splice(i-1, 0, newRow);
+	gridData2[i]["value"] = "<input type='text' id='" + id + "'  name='"+ id + "' /><input type='button' id='" + id + "_remove' value='-' onclick='removeElement(this.id)'/>"
+	gridData2[i]["elementHTMLID"] = id;
+	
+	clog("value: " + gridData[i]["value"]);
+
+	//gridData[i-1]["value"] = gridData[i-1]["value"].concat("<input type='button' id='" + origID + "_remove' value='-' onclick='removeElement(this.id)'/>");
+	//clog("value: " + gridData[i-1]["value"]);
+
+	
 	$("#dataElementTable").jqxDataTable('updateBoundData');
+	
+	
+	if (docFeatureValue == null) {
+		index = id.lastIndexOf("_");
+		id = id.substring(0, index);
+
+		clog("add element: " + id);
+		openDialogLoad();
+		var addElementAjax = jsRoutes.controllers.Application.addElement(origID);
+		$.ajax({
+			type: 'GET',
+			url: addElementAjax.url,
+			cache: false
+		}).done(function(data) {
+			/*
+			clog(data);
+			if (data.length > 0) {
+				//loadCRFData(JSON.parse(data));
+				loadFrameInstance(currFrameInstanceID, false);
+			}
+			*/
+			
+			closeDialogLoad();
+		})
+	}
+
+	selectFlag = false;
 }
 
 function removeElement(id)
@@ -1894,7 +1962,7 @@ function clearElement()
 		clog("clear: " +  elementHTMLID);
 		clog("clear: " +  elementType);
 
-		//openDialogLoad();
+		openDialogLoad();
 		var clearElementAjax = jsRoutes.controllers.Application.clearElement(elementID, elementHTMLID);
 		$.ajax({
 			type: 'GET',
@@ -1939,7 +2007,7 @@ function clearElement()
 					$(this).next().html(keyValue["key"] + ": " + keyValue["value"]);
 				});
 
-				//closeDialogLoad();
+				closeDialogLoad();
 			})
 		})
 	}
