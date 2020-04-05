@@ -1085,7 +1085,7 @@ function rowSelect(row)
 				
 
 
-		//openDialogLoad();
+		openDialogLoad();
 
         var addAnnotationAjax = jsRoutes.controllers.Application.addAnnotation();
 
