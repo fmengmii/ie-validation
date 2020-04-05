@@ -743,7 +743,7 @@ public class Application extends Controller
 
     public Result addElement(String htmlID)
     {
-    	System.out.println("htmlID: " + htmlID);
+    	System.out.println("add element htmlID: " + htmlID);
 
     	String crfStr = "";
     	int frameInstanceID = Integer.parseInt(session("frameInstanceID"));

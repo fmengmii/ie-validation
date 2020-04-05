@@ -758,7 +758,7 @@ function toLogIn() {
 
 function rowSelect(row)
 {
-	openDialogLoad();
+	//openDialogLoad();
 	
 	
 	var index = row.index;
@@ -1085,7 +1085,7 @@ function rowSelect(row)
 				
 
 
-		openDialogLoad();
+		//openDialogLoad();
 
         var addAnnotationAjax = jsRoutes.controllers.Application.addAnnotation();
 
@@ -1145,10 +1145,9 @@ function rowSelect(row)
 							}
 							
 							selectFlag = false;
-							closeDialogLoad();
+							////closeDialogLoad();
 						});
 
-						//closeDialogLoad();
 
 					}).fail(function () {
 				});
@@ -1166,7 +1165,7 @@ function rowSelect(row)
 
 	}
 
-	closeDialogLoad();
+	////closeDialogLoad();
 }
 
 function highlightText()
@@ -1323,7 +1322,7 @@ function loadProject(projName)
 		
 		updateCRFSelect();
 
-		$('#crfSelect').select2();
+		$('#crfSelect').select2();	
 
 
 
@@ -1743,7 +1742,9 @@ function removeSection(sectionName)
 function addElement(id)
 {
 	clog("add Element: docFeatureValue:" + docFeatureValue + " select flag: " + selectFlag);
+	
 
+	/*
 	//if (selectFlag && docFeatureValue == null) {
 	if (docFeatureValue == null) {
 		index = id.lastIndexOf("_");
@@ -1768,6 +1769,15 @@ function addElement(id)
 	}
 
 	selectFlag = false;
+	*/
+	
+	var index = id.lastIndexOf("_");
+	id = id.substring(0, index);
+	var gridIndex = elementHTMLIDMap[id];
+	clog("add element id: " + id + " index: " + gridIndex);
+	clog(JSON.stringify(elementHTMLIDMap));
+	gridData.splice(gridIndex, 0, gridData[gridIndex]);
+	$("#dataElementTable").jqxDataTable('updateBoundData');
 }
 
 function removeElement(id)
@@ -1884,7 +1894,7 @@ function clearElement()
 		clog("clear: " +  elementHTMLID);
 		clog("clear: " +  elementType);
 
-		openDialogLoad();
+		//openDialogLoad();
 		var clearElementAjax = jsRoutes.controllers.Application.clearElement(elementID, elementHTMLID);
 		$.ajax({
 			type: 'GET',
@@ -1929,7 +1939,7 @@ function clearElement()
 					$(this).next().html(keyValue["key"] + ": " + keyValue["value"]);
 				});
 
-				closeDialogLoad();
+				//closeDialogLoad();
 			})
 		})
 	}
