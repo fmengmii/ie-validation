@@ -758,7 +758,7 @@ function toLogIn() {
 
 function rowSelect(row)
 {
-	//openDialogLoad();
+	openDialogLoad();
 	
 	
 	var index = row.index;
@@ -1145,7 +1145,7 @@ function rowSelect(row)
 							}
 							
 							selectFlag = false;
-							////closeDialogLoad();
+							closeDialogLoad();
 						});
 
 
@@ -1165,7 +1165,7 @@ function rowSelect(row)
 
 	}
 
-	////closeDialogLoad();
+	closeDialogLoad();
 }
 
 function highlightText()
@@ -1894,7 +1894,7 @@ function clearElement()
 		clog("clear: " +  elementHTMLID);
 		clog("clear: " +  elementType);
 
-		//openDialogLoad();
+		openDialogLoad();
 		var clearElementAjax = jsRoutes.controllers.Application.clearElement(elementID, elementHTMLID);
 		$.ajax({
 			type: 'GET',
@@ -1939,7 +1939,7 @@ function clearElement()
 					$(this).next().html(keyValue["key"] + ": " + keyValue["value"]);
 				});
 
-				//closeDialogLoad();
+				closeDialogLoad();
 			})
 		})
 	}
