@@ -1551,6 +1551,11 @@ public class DataAccess {
 				+ "from " + schema + "frame_instance_data a, " + schema + "annotation b "
 				+ "where a.frame_instance_id = " + frameInstanceID + " and a.element_id = " + elementID + " and a.section_slot_number = " + sectionSlotNum + " and a.element_slot_number = " + elementSlotNum
 				+ " and b.id = a.annotation_id");
+		
+		System.out.println("select a.document_namespace, a.document_table, a.document_id, a.annotation_id, b.provenance "
+				+ "from " + schema + "frame_instance_data a, " + schema + "annotation b "
+				+ "where a.frame_instance_id = " + frameInstanceID + " and a.element_id = " + elementID + " and a.section_slot_number = " + sectionSlotNum + " and a.element_slot_number = " + elementSlotNum
+				+ " and b.id = a.annotation_id");
 
 		while (rs.next()) {
 			String docNamespace = rs.getString(1);
