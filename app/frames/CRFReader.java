@@ -674,7 +674,7 @@ public class CRFReader
 			System.out.println("CRFReader.readCRFFromDB: sectionID: " + sectionID + " sectionName: " + sectionName + " sectionDisplayName: " + sectionDisplayName + " repeat: " + repeat + " repeatNumber: " + repeatNum);
 
 			pstmtSectionInfo.setInt(1, crfID);
-			pstmtSectionInfo.setInt(2, ((int) sectionMap.get("sectionID")));
+			pstmtSectionInfo.setInt(2, ((Double) sectionMap.get("sectionID")).intValue());
 			
 			ResultSet rs = pstmtSectionInfo.executeQuery();
 			
