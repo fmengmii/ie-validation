@@ -1864,6 +1864,8 @@ function removeElement(id)
 			var elementID = selection[0]["elementID"];
 			index = id.lastIndexOf("_");
 			id = id.substring(0, index);
+			index = id.lastIndexOf("_");
+			var repeatNum = parseInt(id.substring(index+1));
 
 			clog("remove element: " + id);
 			var gridIndex = elementHTMLIDMap[id];
@@ -1871,9 +1873,20 @@ function removeElement(id)
 			gridData.splice(gridIndex, 1);
 			gridData2.splice(gridIndex, 1);
 			
-			refreshElementHTMLIDMap();
 			var index;
+			for (index = gridIndex; index<gridData.length; index++) {
+				var elementHTMLID = gridData[index]["elementHTMLID"];
+				var index2 = elementHTMLID.lastIndexOf("_");
+				elementHTMLID = elementHTMLID.substring(0, index2+1) + repeatNum;
+				gridData[index]["elementHTMLID"] = elementHTMLID;
+				gridData2[index]["elementHTMLID"] = elementHTMLID;
+				repeatNum++;
+			}
+			
+			refreshElementHTMLIDMap();
 			for (index=0; index<frameInstanceData.length; index++) {
+				clog("frameinstancedata[" + index + "]: " + frameInstanceData[index]["elementHTMLID"]);
+				
 				if (frameInstanceData[index]["elementHTMLID"] == id) {
 					frameInstanceData.splice(index, 1);
 					break;
