@@ -618,6 +618,26 @@ public class CRFReader
 		pstmtReadValues = conn.prepareStatement("select a.display_name, a.html_id "
 			+ "from " + schema + "value a, " + schema + "element_value b where a.value_id = b.value_id and b.element_id = ?");
 		
+		ResultSet rs = stmt.executeQuery("select a.display_name, a.html_id, b.element_id "
+				+ "from " + schema + "value a, " + schema + "element_value b where a.value_id = b.value_id");
+		
+		Map<Integer, List<Map<String, String>>> valueMap = new HashMap<Integer, List<Map<String, String>>>();
+		
+		while (rs.next()) {
+			int elementID = rs.getInt(3);
+			List<Map<String, String>> values = valueMap.get(elementID);
+			if (values == null) {
+				values = new ArrayList<Map<String, String>>();
+				valueMap.put(elementID, values);
+			}
+			
+			Map<String, String> oneValueMap = new HashMap<String, String>();
+			oneValueMap.put("display", rs.getString(1));
+			oneValueMap.put("htmlID", rs.getString(2));
+			values.add(oneValueMap);
+		}
+		
+		
 		PreparedStatement pstmtSectionInfo = conn.prepareStatement("select a.element_id, a.display_name, a.html_id, c.element_type_name, a.repeat "
 				+ "from " + schema + "element a, " + schema + "crf_section b, " + schema + "element_type c "
 				+ "where a.section_id = b.section_id and b.crf_id = ? and "
@@ -630,7 +650,7 @@ public class CRFReader
 		if (sectionList.size() == 0) {
 			System.out.println("CRFReader.readCRFFromDB: sectionList size=0");
 			//sectionList = new ArrayList<Map<String, Object>>();
-			ResultSet rs = stmt.executeQuery("select section_id, name, display_name, " + rq + "repeat" + rq + " from " + schema + "crf_section where crf_id = " + crfID + " order by section_id");
+			rs = stmt.executeQuery("select section_id, name, display_name, " + rq + "repeat" + rq + " from " + schema + "crf_section where crf_id = " + crfID + " order by section_id");
 			while (rs.next()) {
 				Map<String, Object> sectionMap = new HashMap<String, Object>();
 				int sectionID = rs.getInt(1);
@@ -676,7 +696,7 @@ public class CRFReader
 			pstmtSectionInfo.setInt(1, crfID);
 			pstmtSectionInfo.setInt(2, sectionID);
 			
-			ResultSet rs = pstmtSectionInfo.executeQuery();
+			rs = pstmtSectionInfo.executeQuery();
 			
 			/*
 			ResultSet rs = stmt.executeQuery("select a.element_id, a.display_name, a.html_id, c.element_type_name, a.repeat "
@@ -749,7 +769,9 @@ public class CRFReader
 						String elementIDStr = Integer.toString(elementID) + "_" + repeatStr;
 						String htmlID = (String) element.get("htmlID") + "_" + repeatStr;
 						
-						List<Map<String, String>> values = readValues(elementID);
+						//List<Map<String, String>> values = readValues(elementID);
+						List<Map<String, String>> values = valueMap.get(elementID);
+						
 						dataListElement.put("html", getHTMLString(elementType, htmlID, values, elementRepeat, j, repeatStr));
 						
 						dataListElement.put("elementID", elementIDStr);
