@@ -719,6 +719,7 @@ public class DataAccess {
 			Statement stmt = conn.createStatement();
 			String rq = getReservedQuote(conn);
 			
+			System.out.println("add annotation 1");
 			
 			//UNDO/REDO
 			//String queryStr = "delete from " + schema + "annotation_history where (document_namespace, document_table, document_id, id, provenance, user_name) in "
@@ -735,6 +736,8 @@ public class DataAccess {
 					+ "(select b.annotation_id from " + schema + "frame_instance_data_history b where b.undo_num >= " + undoNum + " and b.user_name = '" + userName + "' "
 					+ "and document_namespace = b.document_namespace and document_table = b.document_table and id = b.annotation_id and provenance = b.provenance and user_name = b.user_name)");
 					*/
+			
+			System.out.println("add annotation 2");
 			
 
 			//separate slot number from html ID
@@ -763,6 +766,11 @@ public class DataAccess {
 			ResultSet rs = stmt.executeQuery("select a.element_id, b.slot_id, d.element_type_name from " + schema + "element_value a, " + schema + "value b, "
 					+ schema + "element c, " + schema + "element_type d "
 					+ "where b.html_id = '" + htmlID + "' and b.value_id = a.value_id and a.element_id = c.element_id and c.element_type = d.element_type_id");
+			
+			
+			System.out.println("add annotation 3");
+			
+			
 			if (rs.next()) {
 				elementID = rs.getInt(1);
 				slotID = rs.getInt(2);
@@ -806,6 +814,8 @@ public class DataAccess {
 
 
 			rs = stmt.executeQuery(query);
+			
+			System.out.println("add annotation 4");
 
 			if (rs.next()) {
 				frameDocNamespace = rs.getString(1);
@@ -936,6 +946,9 @@ public class DataAccess {
 					+ "and document_table = '" + docTable + "' and document_id = " + docID);
 			System.out.println("\nselect max(id) from " + schema + "annotation where document_namespace = '" + docNamespace + "' "
 					+ "and document_table = '" + docTable + "' and document_id = " + docID + "\n");
+			
+			System.out.println("add annotation 5");
+			
 			if (rs.next())
 				annotID = rs.getInt(1) + 1;
 
@@ -956,6 +969,9 @@ public class DataAccess {
 			if (rs.next()) {
 				annotType = rs.getString(1);
 			}
+			
+			
+			System.out.println("add annotation 6");
 
 
 			/*
@@ -1049,6 +1065,9 @@ public class DataAccess {
 					+ value + "', '" + features + "', 'validation-tool')");
 			
 			
+			System.out.println("add annotation 7");
+			
+			
 			//UNDO/REDO
 			stmt.execute("insert into " + schema + "annotation_history (id, document_namespace, document_table, document_id, annotation_type, start, "
 					+ rq + "end" + rq + ", value, features, provenance, undo_num, undo_action, user_name) "
@@ -1069,6 +1088,8 @@ public class DataAccess {
 					+ "values (" + frameInstanceID + "," + slotID + ",'" + value + "'," + sectionSlotNum + "," + elementSlotNum + ",'" + docNamespace + "', '" + docTable
 					+ "', " + docID + "," + annotID + ",'validation-tool'," + elementID + ")");
 			
+			System.out.println("add annotation 8");
+			
 			
 			//UNDO/REDO
 			stmt.execute("insert into " + schema + "frame_instance_data_history (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, action, undo_num, user_name) "
@@ -1076,6 +1097,9 @@ public class DataAccess {
 					+ " from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and element_id = " + elementID + " and section_slot_number = "
 					+ sectionSlotNum + " and element_slot_number = " + elementSlotNum);
 			
+			
+			
+			System.out.println("add annotation 9");
 			
 
 			ret = getFrameData(frameInstanceID);
