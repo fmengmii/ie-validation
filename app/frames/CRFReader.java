@@ -640,7 +640,7 @@ public class CRFReader
 		
 		//repeat number
 		Map<String, Integer> repeatMap = new HashMap<String, Integer>();
-		rs = stmt.executeQuery("select repeat_num, element_id, sectionSlotNum from " + schema + "frame_instance_element_repeat where frame_instance_id = " + frameInstanceID);
+		rs = stmt.executeQuery("select repeat_num, element_id, section_slot_num from " + schema + "frame_instance_element_repeat where frame_instance_id = " + frameInstanceID);
 		while (rs.next()) {
 			int elementID = rs.getInt(2);
 			int sectionSlotNum = rs.getInt(3);
