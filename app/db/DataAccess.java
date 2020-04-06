@@ -2733,6 +2733,8 @@ public class DataAccess {
 		stmt.execute("delete from " + schema + "annotation_history where user_name = '" + userName + "'");
 		stmt.execute("delete from " + schema + "frame_instance_data_history where user_name = '" + userName + "'");
 		
+		System.out.println("clearundo finished!");
+		
 		conn.close();
 	}
 	

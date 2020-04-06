@@ -21,6 +21,7 @@ public class CRFReader
 	private Map<Integer, String> slotCondMap;
 	private String schema = "validator.";
 	private String rq;
+	private PreparedStatement pstmtReadValues;
 
 	public CRFReader(String schema)
 	{
@@ -614,6 +615,17 @@ public class CRFReader
 		
 		Statement stmt = conn.createStatement();
 		Statement stmtRepeatNum = conn.createStatement();
+		pstmtReadValues = conn.prepareStatement("select a.display_name, a.html_id "
+			+ "from " + schema + "value a, " + schema + "element_value b where a.value_id = b.value_id and b.element_id = ?");
+		
+		PreparedStatement pstmtSectionInfo = conn.prepareStatement("select a.element_id, a.display_name, a.html_id, c.element_type_name, a.repeat "
+				+ "from " + schema + "element a, " + schema + "crf_section b, " + schema + "element_type c "
+				+ "where a.section_id = b.section_id and b.crf_id = ? and "
+				+ "b.section_id = ? and "
+				+ "c.element_type_id = a.element_type "
+				+ "order by element_id");
+		
+		
 		System.out.println("readCRFFromDB: coming sectionList size=" + sectionList.size());
 		if (sectionList.size() == 0) {
 			System.out.println("CRFReader.readCRFFromDB: sectionList size=0");
@@ -661,12 +673,21 @@ public class CRFReader
 			
 			System.out.println("CRFReader.readCRFFromDB: sectionID: " + sectionID + " sectionName: " + sectionName + " sectionDisplayName: " + sectionDisplayName + " repeat: " + repeat + " repeatNumber: " + repeatNum);
 
+			pstmtSectionInfo.setInt(1, crfID);
+			pstmtSectionInfo.setInt(2, ((int) sectionMap.get("sectionID")));
+			
+			ResultSet rs = pstmtSectionInfo.executeQuery();
+			
+			/*
 			ResultSet rs = stmt.executeQuery("select a.element_id, a.display_name, a.html_id, c.element_type_name, a.repeat "
 				+ "from " + schema + "element a, " + schema + "crf_section b, " + schema + "element_type c "
 				+ "where a.section_id = b.section_id and b.crf_id = " + crfID + " and "
 				+ "b.section_id = " + sectionMap.get("sectionID") + " and "
 				+ "c.element_type_id = a.element_type "
 				+ "order by element_id");
+				*/
+			
+			System.out.println("readcrffromdb 1");
 			
 			List<Map<String, Object>> sectionDataList = new ArrayList<Map<String, Object>>();
 			while (rs.next()) {
@@ -753,8 +774,8 @@ public class CRFReader
 	{
 		List<Map<String, String>> values = new ArrayList<Map<String, String>>();
 		Statement stmt = conn.createStatement();
-		ResultSet rs = stmt.executeQuery("select a.display_name, a.html_id "
-			+ "from " + schema + "value a, " + schema + "element_value b where a.value_id = b.value_id and b.element_id = " + elementID);
+		pstmtReadValues.setInt(1, elementID);
+		ResultSet rs = pstmtReadValues.executeQuery();
 		while (rs.next()) {
 			Map<String, String> valueMap = new HashMap<String, String>();
 			valueMap.put("display", rs.getString(1));
