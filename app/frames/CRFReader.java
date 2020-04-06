@@ -638,6 +638,16 @@ public class CRFReader
 		}
 		
 		
+		//repeat number
+		Map<String, Integer> repeatMap = new HashMap<String, Integer>();
+		rs = stmt.executeQuery("select repeat_num, element_id, sectionSlotNum from " + schema + "frame_instance_element_repeat where frame_instance_id = " + frameInstanceID);
+		while (rs.next()) {
+			int elementID = rs.getInt(2);
+			int sectionSlotNum = rs.getInt(3);
+			repeatMap.put(elementID + "|" + sectionSlotNum, rs.getInt(1));
+		}
+		
+		
 		PreparedStatement pstmtSectionInfo = conn.prepareStatement("select a.element_id, a.display_name, a.html_id, c.element_type_name, a.repeat "
 				+ "from " + schema + "element a, " + schema + "crf_section b, " + schema + "element_type c "
 				+ "where a.section_id = b.section_id and b.crf_id = ? and "
@@ -748,7 +758,8 @@ public class CRFReader
 					//int elementRepeatNum = (Integer) element.get("repeatNum");
 					
 					//get element repeat number
-					int elementRepeatNum = getElementRepeatNumber(frameInstanceID, elementID, i);
+					//int elementRepeatNum = getElementRepeatNumber(frameInstanceID, elementID, i);
+					int elementRepeatNum = repeatMap.get(elementID + "|" + i);
 					
 					
 					//element level repeat
