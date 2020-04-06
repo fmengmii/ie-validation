@@ -824,6 +824,8 @@ public class DataAccess {
 				frameAnnotID = rs.getInt(4);
 				provenance = rs.getString(5);
 			}
+			
+			System.out.println("add annotation 11");
 
 			//if slot with same section and element slot numbers already has a value, this is an update
 
