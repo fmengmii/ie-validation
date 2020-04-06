@@ -843,6 +843,9 @@ public class DataAccess {
 					//checkboxes must delete based on slotID
 					rs = stmt.executeQuery("select document_namespace, document_table, document_id, annotation_id from " + schema + "frame_instance_data where frame_instance_id = "
 							+ frameInstanceID + " and slot_id = " + slotID + " and section_slot_number = " + sectionSlotNum + " and element_slot_number = " + elementSlotNum);
+					
+					System.out.println("add annotation 12");
+					
 					while (rs.next()) {
 						String docNamespace2 = rs.getString(1);
 						String docTable2 = rs.getString(2);
@@ -867,10 +870,17 @@ public class DataAccess {
 
 					stmt.execute("delete from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and slot_id = " + slotID
 							+ " and section_slot_number = " + sectionSlotNum + " and element_slot_number = " + elementSlotNum);
+					
+					System.out.println("add annotation 13");
+					
 				} else {
 					//delete based on elementID
 					rs = stmt.executeQuery("select document_namespace, document_table, document_id, annotation_id from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID
 							+ " and element_id = " + elementID + " and section_slot_number = " + sectionSlotNum + " and element_slot_number = " + elementSlotNum);
+					
+					System.out.println("add annotation 14");
+					
+					
 					while (rs.next()) {
 						String docNamespace2 = rs.getString(1);
 						String docTable2 = rs.getString(2);
@@ -895,6 +905,9 @@ public class DataAccess {
 
 					stmt.execute("delete from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and element_id = " + elementID
 							+ " and section_slot_number = " + sectionSlotNum + " and element_slot_number = " + elementSlotNum);
+					
+					System.out.println("add annotation 15");
+					
 				}
 
 				for (Map<String, String> annotMap : annotInfoList) {
@@ -907,6 +920,10 @@ public class DataAccess {
 					
 					stmt.execute("delete from " + schema + "annotation where document_namespace = '" + annotMap.get("docNamespace") + "' and document_table = '" + annotMap.get("docTable") + "' "
 							+ "and document_id = " + annotMap.get("docID") + " and id = " + annotMap.get("annotID"));
+					
+					
+					System.out.println("add annotation 16");
+					
 				}
 			}
 
