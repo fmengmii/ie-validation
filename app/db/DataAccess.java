@@ -1520,7 +1520,7 @@ public class DataAccess {
 		Statement stmt = conn.createStatement();
 		String rq = getReservedQuote(conn);
 		
-		System.out.println("clear element 1");
+		//System.out.println("clear element 1");
 		//UNDO/REDO
 		stmt.execute("delete from " + schema + "annotation_history where exists "
 			+ "(select b.annotation_id from " + schema + "frame_instance_data_history b where b.undo_num >= " + undoNum + " and b.user_name = '" + userName + "' "
@@ -1567,7 +1567,7 @@ public class DataAccess {
 			String provenance = rs.getString(5);
 			
 			
-			System.out.println("clear element 2");
+			//System.out.println("clear element 2");
 			
 			//UNDO/REDO
 			pstmt3.setString(1, docNamespace);
@@ -1577,7 +1577,7 @@ public class DataAccess {
 			pstmt3.setString(5, provenance);
 			pstmt3.execute();
 			
-			System.out.println("clear element 3");
+			//System.out.println("clear element 3");
 			
 			
 
@@ -1598,7 +1598,7 @@ public class DataAccess {
 				pstmt2.setString(5, provenance);
 				pstmt2.execute();
 				
-				System.out.println("clear element 4");
+				//System.out.println("clear element 4");
 			//}
 		}
 
@@ -1612,7 +1612,7 @@ public class DataAccess {
 			+ " from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and section_slot_number = "
 				+ sectionSlotNum + " and element_slot_number = " + elementSlotNum + " and element_id = " + elementID);
 		
-		System.out.println("clear element 5");
+		//System.out.println("clear element 5");
 		
 		
 		stmt.execute("delete from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and section_slot_number = "

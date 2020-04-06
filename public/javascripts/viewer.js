@@ -1776,6 +1776,8 @@ function addElement(id)
 	
 	var origID = id;
 	
+	clog("add element id: " + id);
+	
 	var gridIndex = elementHTMLIDMap[id];
 	clog(JSON.stringify(elementHTMLIDMap));
 	
@@ -1811,6 +1813,9 @@ function addElement(id)
 	gridData2.splice(i-1, 0, newRow);
 	gridData2[i]["value"] = "<input type='text' id='" + id + "'  name='"+ id + "' /><input type='button' id='" + id + "_remove' value='-' onclick='removeElement(this.id)'/>"
 	gridData2[i]["elementHTMLID"] = id;
+	
+	//elementHTMLIDMap[id] = i;
+	refreshElementHTMLIDMap();
 	
 	clog("value: " + gridData[i]["value"]);
 
@@ -1903,6 +1908,8 @@ function removeElement(id)
 						var keyValue = JSON.parse($(this).val());
 						$(this).next().html(keyValue["key"] + ": " + keyValue["value"]);
 					});
+					
+					refreshElementHTMLIDMap();
 
 					closeDialogLoad();
 				})
@@ -1911,6 +1918,16 @@ function removeElement(id)
 	}
 
 	selectFlag = false;
+}
+
+function refreshElementHTMLIDMap()
+{
+	elementHTMLIDMap = {};
+	var i;
+	for (i=0; i<gridData.length; i++) {
+		var row = gridData[i];
+		elementHTMLIDMap[row["elementHTMLID"]] = i;
+	}
 }
 
 function loadCRFData(elementList)
