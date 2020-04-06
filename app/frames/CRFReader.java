@@ -169,7 +169,8 @@ public class CRFReader
 		stmt.close();
 		conn.close();
 	
-		return readCRFDB(crfID, sectionList, frameInstanceID);
+		//return readCRFDB(crfID, sectionList, frameInstanceID);
+		return "{}";
 	}
 	
 	private void getConnection()

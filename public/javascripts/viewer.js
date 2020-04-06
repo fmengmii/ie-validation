@@ -1866,6 +1866,23 @@ function removeElement(id)
 			id = id.substring(0, index);
 
 			clog("remove element: " + id);
+			var gridIndex = elementHTMLIDMap[id];
+			
+			gridData.splice(gridIndex, 1);
+			gridData2.splice(gridIndex, 1);
+			
+			refreshElementHTMLIDMap();
+			var index;
+			for (index=0; index<frameInstanceData.length; index++) {
+				if (frameInstanceData[index]["elementHTMLID"] == id) {
+					frameInstanceData.splice(index, 1);
+					break;
+				}
+			}
+			
+			$("#dataElementTable").jqxDataTable('updateBoundData');
+			
+			
 			openDialogLoad();
 			var removeElementAjax = jsRoutes.controllers.Application.removeElement(elementID, id);
 			$.ajax({
@@ -1880,7 +1897,9 @@ function removeElement(id)
 					clog("highlightrangemap: " + JSON.stringify(highlightRangeMap));
 					
 					//loadCRFData(JSON.parse(data));
-					loadFrameInstance(currFrameInstanceID, false);
+					//loadFrameInstance(currFrameInstanceID, false);
+					
+					loadFrameInstanceNoRT();
 				}
 
 				//reload document annotations
@@ -1908,8 +1927,6 @@ function removeElement(id)
 						var keyValue = JSON.parse($(this).val());
 						$(this).next().html(keyValue["key"] + ": " + keyValue["value"]);
 					});
-					
-					refreshElementHTMLIDMap();
 
 					closeDialogLoad();
 				})
@@ -1923,10 +1940,12 @@ function removeElement(id)
 function refreshElementHTMLIDMap()
 {
 	elementHTMLIDMap = {};
+	elementIDMap = {};
 	var i;
 	for (i=0; i<gridData.length; i++) {
 		var row = gridData[i];
 		elementHTMLIDMap[row["elementHTMLID"]] = i;
+		elementIDMap[row["elementID"]] = i;
 	}
 }
 
