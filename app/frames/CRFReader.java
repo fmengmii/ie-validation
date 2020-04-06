@@ -759,7 +759,9 @@ public class CRFReader
 					
 					//get element repeat number
 					//int elementRepeatNum = getElementRepeatNumber(frameInstanceID, elementID, i);
-					int elementRepeatNum = repeatMap.get(elementID + "|" + i);
+					Integer elementRepeatNum = repeatMap.get(elementID + "|" + i);
+					if (elementRepeatNum == null)
+						elementRepeatNum = 0;
 					
 					
 					//element level repeat
