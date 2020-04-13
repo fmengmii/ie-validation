@@ -125,7 +125,7 @@ public class Application extends Controller
                 //return index();
                 loggedIn = true;
 				session("userName", un);
-				da.clearUndoHistory(un, -1);
+				da.clearUndoHistory(un, -1, 0);
             } else {
 
                 //return ok(login.render(false));
@@ -546,11 +546,13 @@ public class Application extends Controller
     	return ok(resultStr);
     }
 
-    public Result loadFrameInstance(int frameInstanceID)
+    public Result loadFrameInstance(int frameInstanceID, int userActions)
     {
     	String frameInstanceStr = "";
     	int oldFrameInstanceID = Integer.parseInt(session("frameInstanceID"));    	
     	session("frameInstanceID", Integer.toString(frameInstanceID));
+    	
+    	System.out.println("userActions: " + userActions);
 
     	try {
     		gson = new Gson();
@@ -564,7 +566,7 @@ public class Application extends Controller
 	    	
     		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		if (oldFrameInstanceID != frameInstanceID) {
-    			da.clearUndoHistory(un, oldFrameInstanceID);
+    			da.clearUndoHistory(un, oldFrameInstanceID, userActions);
     			session("undoNum", "0");
     		}
     		

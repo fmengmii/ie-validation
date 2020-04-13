@@ -2478,6 +2478,15 @@ public class DataAccess {
 						pstmt2.setLong(1, docID);
 						pstmt2.execute();
 					}
+					/*
+					else {
+						pstmt.setInt(1, userID);
+						pstmt.setString(2, docNamespace);
+						pstmt.setString(3, docTable);
+						pstmt.setLong(4, docID);
+						pstmt.execute();
+					}
+					*/
 				}
 				
 				int currFrameInstanceStatus = -3;
@@ -2708,7 +2717,7 @@ public class DataAccess {
 		}
 	}
 	
-	public void clearUndoHistory(String userName, int frameInstanceID) throws SQLException
+	public void clearUndoHistory(String userName, int frameInstanceID, int userActions) throws SQLException
 	{
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
@@ -2723,15 +2732,19 @@ public class DataAccess {
 			System.out.println("clearundo: frameInstanceID: " + frameInstanceID + " count: " + count);
 			
 			//update validation status
-			if (count > 0) {
+			if (count > 0 || userActions > 0) {
 				updateValidationStatus(frameInstanceID, userName, true);
 			}
 			else
 				updateValidationStatus(frameInstanceID, userName, false);
 		}
 		
+		stmt.execute("insert into " + schema + "frame_instance_data_history2 "
+				+ "select * from " + schema + "frame_instance_data_history where user_name = '" + userName + "'");
+			
 		stmt.execute("delete from " + schema + "annotation_history where user_name = '" + userName + "'");
 		stmt.execute("delete from " + schema + "frame_instance_data_history where user_name = '" + userName + "'");
+		
 		
 		System.out.println("clearundo finished!");
 		

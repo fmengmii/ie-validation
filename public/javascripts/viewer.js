@@ -57,6 +57,9 @@ var wordBasedHighlighting = false;
 var history = new Object();
 var processID = 1;
 
+var userActions = 0;
+
+
 $(document).ready(function () {
 //$(function() {
 	//init widgets (dialog window, split pane, etc)
@@ -865,6 +868,8 @@ function rowSelect(row)
 		    clog("elementhtmlid: " + elementHTMLID + " highlightrangemap: " + JSON.stringify(highlightRangeMap));
 		    clog("highlightmap: " + JSON.stringify(highlightMap));
 		    
+		    userActions++;
+			clog("userActions: " + userActions);
 		    
 		    var docIndex = docIndexMap["{\"docNamespace\":\"" + highlightMap["docNamespace"] + "\",\"docTable\":\"" + highlightMap["docTable"] + "\",\"docID\":" + highlightMap["docID"] + "}"];
 		    if (highlightMap["docNamespace"] != docNamespace || highlightMap["docTable"] != docTable || highlightMap["docID"] != docID) {
@@ -1085,7 +1090,7 @@ function rowSelect(row)
 				
 
 
-		openDialogLoad();
+		//openDialogLoad();
 
         var addAnnotationAjax = jsRoutes.controllers.Application.addAnnotation();
 
@@ -1162,10 +1167,14 @@ function rowSelect(row)
 				//selectFlag = false;
 			}
 		}
+		else
+			closeDialogLoad();
 
 	}
+	else
+		closeDialogLoad();
 
-	closeDialogLoad();
+	//closeDialogLoad();
 }
 
 function highlightText()
@@ -1443,7 +1452,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 			currFrameInstanceID = frameInstanceID;
 			docSelectIndex = -1;
 		
-		    var loadFrameInstanceAjax = jsRoutes.controllers.Application.loadFrameInstance(frameInstanceID);
+		    var loadFrameInstanceAjax = jsRoutes.controllers.Application.loadFrameInstance(frameInstanceID, userActions);
 		    $.ajax({
 		        type: 'GET',
 		        url: loadFrameInstanceAjax.url,
@@ -1602,6 +1611,8 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		
 		        
 		        //highlightText();
+		        
+		        userActions = 0;
 		
 		        clog("end of load frame docNamespace: " + docNamespace + ", docTable: " + docTable + ", docID: " + docID);
 		
