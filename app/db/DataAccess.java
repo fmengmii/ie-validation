@@ -1757,7 +1757,7 @@ public class DataAccess {
 			
 			
 			//UNDO/REDO
-			stmt.execute("insert into " + schema + "annotation_history (id, document_namespace, document_table, document_id, document_name, annotation_type, start, " + rq + "end" + rq + ", value, features, provenance, score, undo_num, undo_action, user_name) "
+			stmt2.execute("insert into " + schema + "annotation_history (id, document_namespace, document_table, document_id, document_name, annotation_type, start, " + rq + "end" + rq + ", value, features, provenance, score, undo_num, undo_action, user_name) "
 				+ "select id, document_namespace, document_table, document_id, document_name, annotation_type, start, " + rq + "end" + rq + ", value, features, provenance, score, " + undoNum + ", 1, '" + userName + "' from " + schema + "annotation where document_namespace = '" + docNamespace + "' and document_table = '"
 				+ docTable + "' and document_id = " + docID + " and id = " + annotID + " and provenance = '" + provenance + "'");
 			
@@ -1770,7 +1770,7 @@ public class DataAccess {
 		
 		
 		//UNDO/REDO
-		stmt.execute("insert into " + schema + "frame_instance_data_history (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, action, undo_num, user_name) "
+		stmt2.execute("insert into " + schema + "frame_instance_data_history (frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, action, undo_num, user_name) "
 			+ "select frame_instance_id, slot_id, value, section_slot_number, element_slot_number, document_namespace, document_table, document_id, annotation_id, provenance, element_id, " + 1 + ", " + undoNum + ", '" + userName + "'" 
 			+ " from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and section_slot_number = "
 			+ sectionSlotNum + " and element_slot_number = " + elementSlotNum + " and element_id = " + elementID + " and slot_id = " + slotID);
