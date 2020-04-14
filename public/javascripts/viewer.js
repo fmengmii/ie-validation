@@ -1002,10 +1002,6 @@ function rowSelect(row)
 		
 		clog("highlight add element: " + elementHTMLID);
 		
-		//add row if it is repeatable
-		//if (document.getElementById(elementHTMLID + '_add') != null || document.getElementById(elementHTMLID + '_remove') != null) {
-		//	addElement(elementHTMLID + '_add');
-		//}
 
 		if (docFeatureValue != null) {
 			start = -1;
@@ -1030,40 +1026,40 @@ function rowSelect(row)
 		
 		
 		
-	       if (wordBasedHighlighting) { // new code
-	           var regex = /^[a-z0-9]+$/i;
-	           for(var i = start; i >= 0; i--) {
-	             var temp = origText.substring(i, i+1);
-	             //the following if statement allows for things like "12:45", "check-in", and "5.21" to be counted as words
-	             if((temp == "." || temp == ":" || temp == "-") && origText.substring(i-1, i).match(regex)) {
-	               i--;
-	               continue;
-	             }
-	             if(i == 0) {
-	               start = i;
-	               break;
-	             }
-	             if(!temp.match(regex)) {
-	               i++;
-	               start = i;
-	               break;
-	             }
-	           }
-	           for(var i = end; i < origText.length; i++) {
-	             var temp = origText.substring(i, i+1);
-	             //the following if statement allows for things like "12:45", "check-in", and "5.21" to be counted as words
-	             if((temp == "." || temp == ":" || temp == "-") && origText.substring(i+1, i+2).match(regex)) {
-	               i++;
-	               continue;
-	             }
-	             if(!temp.match(regex)) {
-	               end = i;
-	               break;
-	             }
-	           }
+       if (wordBasedHighlighting) { // new code
+           var regex = /^[a-z0-9]+$/i;
+           for(var i = start; i >= 0; i--) {
+             var temp = origText.substring(i, i+1);
+             //the following if statement allows for things like "12:45", "check-in", and "5.21" to be counted as words
+             if((temp == "." || temp == ":" || temp == "-") && origText.substring(i-1, i).match(regex)) {
+               i--;
+               continue;
+             }
+             if(i == 0) {
+               start = i;
+               break;
+             }
+             if(!temp.match(regex)) {
+               i++;
+               start = i;
+               break;
+             }
+           }
+           for(var i = end; i < origText.length; i++) {
+             var temp = origText.substring(i, i+1);
+             //the following if statement allows for things like "12:45", "check-in", and "5.21" to be counted as words
+             if((temp == "." || temp == ":" || temp == "-") && origText.substring(i+1, i+2).match(regex)) {
+               i++;
+               continue;
+             }
+             if(!temp.match(regex)) {
+               end = i;
+               break;
+             }
+           }
 
-	           value = origText.substring(start, end);
-	         }
+           value = origText.substring(start, end);
+         }
 
 		
 		
@@ -1072,7 +1068,7 @@ function rowSelect(row)
 
 		if (value != rowData['elementValue']) {
 			//var elementType = rowData['elementType'];
-			//clog("elementType: " + elementType);
+			clog("elementType: " + elementType);
 
 			var htmlID = rowData['elementHTMLID'];
 			var element = $(jq(htmlID))
@@ -1081,7 +1077,7 @@ function rowSelect(row)
 			if (elementType != undefined && (elementType == 'text') || elementType == 'textarea') {
 				element.val(value);
 
-				//clog("Add: " + docNamespace + "," + docTable + "," + docID);
+				clog("Add: " + docNamespace + "," + docTable + "," + docID);
 
 				/*
 				var newRow = {};
@@ -1092,93 +1088,95 @@ function rowSelect(row)
 				
 
 
-		//openDialogLoad();
-
-        var addAnnotationAjax = jsRoutes.controllers.Application.addAnnotation();
-
-				$.ajax({
-						type: 'POST',
-						url: addAnnotationAjax.url,
-					    data:{htmlID:htmlID, value:value,start:start,end:end,docNamespace:docNamespace,docTable:docTable,docID:docID,features:annotFeatures,add:add},
-					    cache: false
-					}).done(function(data) {
-						clog("highlight: start=" + start + " end=" + end + " docFeatureValue=" + docFeatureValue);
-						clog("add annot data: " + data);
-
-						var dataObj = JSON.parse(data);
-						frameInstanceData = dataObj[0];
-						highlightRangeMap = dataObj[1];
-						
-						//add row if repeatable
-						clog("highlight add element: " + elementHTMLID);
-						if (document.getElementById(elementHTMLID + '_add') != null || document.getElementById(elementHTMLID + '_remove') != null) {
-							addElement(elementHTMLID + '_add');
-						}
-
-						//add to annotList
-
-						var getDocumentAnnotationsAjax = jsRoutes.controllers.Application.getDocumentAnnotations();
+				//openDialogLoad();
+		
+		        var addAnnotationAjax = jsRoutes.controllers.Application.addAnnotation();
+		
 						$.ajax({
-							type: 'POST',
-							url: getDocumentAnnotationsAjax.url,
-							data: {docNamespace:docNamespace,docTable:docTable,docID:docID},
-							cache: false
-						}).done(function(data) {
-							clog("clear element ranges: " + data);
-							annotList = JSON.parse(data);
-
-							//annotList.push({start:start,end:end,annotType:""});
-							//getHighlightRanges();
-							if (start >= 0) {
-								//highlightRange.start = start;
-								//highlightRange.end = end;
-						    	//highlightRanges = [[start,end]];
-								highlightRangeList = highlightRangeMap[elementHTMLID];
-								getHighlightRanges();
-								highlightText();
-							}
-
-
-							else if (docFeatureValue != null) {
-								$('#docfeature:checked').each(function() {
-									$(this).next().html("<span class='highlight' style='background-color:lightgray'>" + annotFeatures["key"] + ": " + annotFeatures["value"] + "</span>");
+								type: 'POST',
+								url: addAnnotationAjax.url,
+							    data:{htmlID:htmlID, value:value,start:start,end:end,docNamespace:docNamespace,docTable:docTable,docID:docID,features:annotFeatures,add:add},
+							    cache: false
+							}).done(function(data) {
+								clog("highlight: start=" + start + " end=" + end + " docFeatureValue=" + docFeatureValue);
+								clog("add annot data: " + data);
+		
+								var dataObj = JSON.parse(data);
+								frameInstanceData = dataObj[0];
+								highlightRangeMap = dataObj[1];
+								
+								//add row if repeatable
+								clog("highlight add element: " + elementHTMLID);
+								if (document.getElementById(elementHTMLID + '_add') != null || document.getElementById(elementHTMLID + '_remove') != null) {
+									addElement(elementHTMLID + '_add');
+								}
+		
+								//add to annotList
+		
+								var getDocumentAnnotationsAjax = jsRoutes.controllers.Application.getDocumentAnnotations();
+								$.ajax({
+									type: 'POST',
+									url: getDocumentAnnotationsAjax.url,
+									data: {docNamespace:docNamespace,docTable:docTable,docID:docID},
+									cache: false
+								}).done(function(data) {
+									clog("clear element ranges: " + data);
+									annotList = JSON.parse(data);
+		
+									//annotList.push({start:start,end:end,annotType:""});
+									//getHighlightRanges();
+									if (start >= 0) {
+										//highlightRange.start = start;
+										//highlightRange.end = end;
+								    	//highlightRanges = [[start,end]];
+										highlightRangeList = highlightRangeMap[elementHTMLID];
+										getHighlightRanges();
+										highlightText();
+									}
+		
+		
+									else if (docFeatureValue != null) {
+										$('#docfeature:checked').each(function() {
+											$(this).next().html("<span class='highlight' style='background-color:lightgray'>" + annotFeatures["key"] + ": " + annotFeatures["value"] + "</span>");
+										});
+		
+										var id = annotFeatures["key"] + "_docfeature";
+								    	$('#' + id).prop('checked', true);
+								    	$('#' + id).next().html("<span class='highlight' style='background-color:yellow'>" + annotFeatures["key"] + ": " + annotFeatures["value"] + "</span>");
+		
+										docFeatureValue = null;
+									}
+									
+									selectFlag = false;
+									clog("row select 2");
+									closeDialogLoad();
 								});
-
-								var id = annotFeatures["key"] + "_docfeature";
-						    	$('#' + id).prop('checked', true);
-						    	$('#' + id).next().html("<span class='highlight' style='background-color:yellow'>" + annotFeatures["key"] + ": " + annotFeatures["value"] + "</span>");
-
-								docFeatureValue = null;
-							}
-							
-							selectFlag = false;
-							clog("row select 2");
-							closeDialogLoad();
+		
+		
+							}).fail(function () {
 						});
 
-
-					}).fail(function () {
-				});
-
-				if (docFeatureValue == null) {
-					//highlightRange.start = start;
-					//highlightRange.end = end;
-			    	//highlightRanges = [[start,end]];
-					highlightText();
-					clog("row select 3");
-				}
+						if (docFeatureValue == null) {
+							//highlightRange.start = start;
+							//highlightRange.end = end;
+					    	//highlightRanges = [[start,end]];
+							highlightText();
+							clog("row select 3");
+						}
 
 				//selectFlag = false;
+					}
+			else
+				closeDialogLoad();
 			}
-		}
-		else
-			closeDialogLoad();
+			else
+				closeDialogLoad();
 
-	}
-	else {
-		clog("row select 1");
-		closeDialogLoad();
-	}
+		}
+		else {
+			clog("row select 1");
+			closeDialogLoad();
+		}
 
 	//closeDialogLoad();
 }
