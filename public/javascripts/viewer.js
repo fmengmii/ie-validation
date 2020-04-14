@@ -993,12 +993,14 @@ function rowSelect(row)
 
 	var annotFeatures = null;
 	
+	clog("row select 4");
+	
 	
 	
 	//something was highlighted
 	if (selectFlag && (start != end || docFeatureValue != null)) {
 		
-		//clog("highlight add element: " + elementHTMLID);
+		clog("highlight add element: " + elementHTMLID);
 		
 		//add row if it is repeatable
 		//if (document.getElementById(elementHTMLID + '_add') != null || document.getElementById(elementHTMLID + '_remove') != null) {
@@ -1150,6 +1152,7 @@ function rowSelect(row)
 							}
 							
 							selectFlag = false;
+							clog("row select 2");
 							closeDialogLoad();
 						});
 
@@ -1162,6 +1165,7 @@ function rowSelect(row)
 					//highlightRange.end = end;
 			    	//highlightRanges = [[start,end]];
 					highlightText();
+					clog("row select 3");
 				}
 
 				//selectFlag = false;
@@ -1171,8 +1175,10 @@ function rowSelect(row)
 			closeDialogLoad();
 
 	}
-	else
+	else {
+		clog("row select 1");
 		closeDialogLoad();
+	}
 
 	//closeDialogLoad();
 }
