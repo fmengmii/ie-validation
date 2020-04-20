@@ -1831,14 +1831,14 @@ public class DataAccess {
 			long docID = rs.getLong(3);
 			int annotID = rs.getInt(4);
 			String provenance = rs.getString(5);
-			docList.add("{\"docNamespace\":\"" + docNamespace + "\",\"docTable\":\"" + docTable + "\",\"docID\":" + docID + ",\"annotID\":" + annotID + ",\"provenance\":" + provenance + "}");
+			docList.add("{\"docNamespace\":\"" + docNamespace + "\",\"docTable\":\"" + docTable + "\",\"docID\":" + docID + ",\"annotID\":" + annotID + ",\"provenance\":\"" + provenance + "\"}");
 		}
 
 
 		for (String docStr : docList) {
 
 			Map<String, Object> docMap = new HashMap<String, Object>();
-			System.out.println("docStr: " + docStr);
+			//System.out.println("docStr: " + docStr);
 			docMap = gson.fromJson(docStr, docMap.getClass());
 			String docNamespace = (String) docMap.get("docNamespace");
 			String docTable = (String) docMap.get("docTable");
