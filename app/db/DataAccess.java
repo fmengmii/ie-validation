@@ -2397,10 +2397,10 @@ public class DataAccess {
 		try {
 			Connection conn = DB.getConnection();
 			String rq = getReservedQuote(conn);
-			PreparedStatement pstmt = conn.prepareStatement("update " + schema + "document_status set status = 1, user_id = ? where document_namespace = ? and document_table = ? and document_id = ? and status = 0");
+			PreparedStatement pstmt = conn.prepareStatement("update " + schema + "document_status set status = 1, user_id = ? where document_namespace = ? and document_table = ? and document_id = ?");
 			PreparedStatement pstmt2 = conn.prepareStatement("update " + schema + "annotation set provenance = 'validation-tool' where document_id = ? and provenance = '##auto'");
 			PreparedStatement pstmt3 = conn.prepareStatement("select count(*) from " + schema + "frame_instance_data_history where frame_instance_id = ?");
-			PreparedStatement pstmt4 = conn.prepareStatement("update " + schema + "frame_instance_status set status = ?, user_id = ? where frame_instance_id = ? and status = 0");
+			PreparedStatement pstmt4 = conn.prepareStatement("update " + schema + "frame_instance_status set status = ?, user_id = ? where frame_instance_id = ?");
 			PreparedStatement pstmt5 = conn.prepareStatement("select user_id from " + schema + rq + "user" + rq +" where user_name = ?");
 			PreparedStatement pstmt6 = conn.prepareStatement("insert into " + schema + "frame_instance_status (frame_instance_id, status, user_id) values (?,?,?)");
 			PreparedStatement pstmt7 = conn.prepareStatement("insert into " + schema + "document_status (document_namespace, document_table, document_id, status, user_id) values (?,?,?,-2,?)");
