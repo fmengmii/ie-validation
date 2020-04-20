@@ -2156,7 +2156,7 @@ function clearAll()
 	    getHighlightRanges();
 	    highlightText();
 	    
-	    $("#dataElementTable").jqxDataTable('refresh');
+	    loadFrameInstanceNoRT();
 	    
 		closeDialogLoad();
 	})
