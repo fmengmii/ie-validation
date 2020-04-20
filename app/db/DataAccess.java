@@ -1838,6 +1838,7 @@ public class DataAccess {
 		for (String docStr : docList) {
 
 			Map<String, Object> docMap = new HashMap<String, Object>();
+			System.out.println("docStr: " + docStr);
 			docMap = gson.fromJson(docStr, docMap.getClass());
 			String docNamespace = (String) docMap.get("docNamespace");
 			String docTable = (String) docMap.get("docTable");
