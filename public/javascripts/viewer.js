@@ -2955,6 +2955,7 @@ function setHTMLElements()
 	$('#dataElementTable input:radio').prop('checked', false);
 	$('#dataElementTable input:text').val('');
 	$('#dataElementTable textarea').val('');
+	$("#dataElementTable").jqxDataTable('refresh');
 
 	//set HTML elements
     for (var i=0; i<frameInstanceData.length; i++) {
@@ -2988,7 +2989,7 @@ function setHTMLElements()
 		}
     }
     
-    $("#dataElementTable").jqxDataTable('refresh');
+    //$("#dataElementTable").jqxDataTable('refresh');
 }
 
 function docPanelSelect(event)
