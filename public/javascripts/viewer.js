@@ -2128,6 +2128,8 @@ function clearValue(valueHTMLID)
 				$(this).next().html(keyValue["key"] + ": " + keyValue["value"]);
 			});
 			*/
+			
+			setHTMLElements();
 
 			closeDialogLoad();
 		})
@@ -2222,7 +2224,7 @@ function valueClickCallback(add)
 	if (!clickValueElement.checked && !add) {
 		//this element was clicked off (checkbox)
 		clearValue(htmlID);
-		setHTMLElements();
+		//setHTMLElements();
 		return;
 	}
 
