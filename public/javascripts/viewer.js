@@ -2987,6 +2987,8 @@ function setHTMLElements()
 			element.val(value);
 		}
     }
+    
+    $("#dataElementTable").jqxDataTable('refresh');
 }
 
 function docPanelSelect(event)
