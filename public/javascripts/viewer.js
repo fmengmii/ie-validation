@@ -2091,6 +2091,8 @@ function clearValue(valueHTMLID)
 		var dataObj = JSON.parse(data);
 		frameInstanceData = dataObj[0];
 		highlightRangeMap = dataObj[1];
+		
+		clog("clear value frame instance data: " + JSON.stringify(frameInstanceData));
 
 		//reload document annotations
 		var getDocumentAnnotationsAjax = jsRoutes.controllers.Application.getDocumentAnnotations();
