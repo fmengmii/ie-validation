@@ -2970,7 +2970,7 @@ function setHTMLElements()
     	if (elementType != 'text' && elementType != 'textarea')
     		htmlID = valueHTMLID;
 
-    	//clog("htmlID: " + jq(htmlID));
+    	clog("htmlID: " + jq(htmlID));
     	var element = $(jq(htmlID));
 
 		clog(element + "," + element.prop('tagName') + "," + element.attr('type'));
@@ -2983,6 +2983,7 @@ function setHTMLElements()
 
 			else if (elType == "checkbox" || elType == "radio") {
 				element.prop('checked', true);
+				clog("set to true");
 			}
 
 		}
