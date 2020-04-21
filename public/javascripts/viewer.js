@@ -2092,7 +2092,7 @@ function clearValue(valueHTMLID)
 		frameInstanceData = dataObj[0];
 		highlightRangeMap = dataObj[1];
 		
-		clog("clear value frame instance data: " + JSON.stringify(frameInstanceData));
+		//clog("clear value frame instance data: " + JSON.stringify(frameInstanceData));
 
 		//reload document annotations
 		var getDocumentAnnotationsAjax = jsRoutes.controllers.Application.getDocumentAnnotations();
@@ -2985,7 +2985,7 @@ function setHTMLElements()
 
 			else if (elType == "checkbox" || elType == "radio") {
 				element.prop('checked', true);
-				clog("set to true");
+				//clog("set to true");
 			}
 
 		}
