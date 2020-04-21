@@ -2129,7 +2129,7 @@ function clearValue(valueHTMLID)
 			});
 			*/
 			
-			setHTMLElements();
+			//setHTMLElements();
 
 			closeDialogLoad();
 		})
