@@ -868,8 +868,8 @@ function rowSelect(row)
 		    clog("elementhtmlid: " + elementHTMLID + " highlightrangemap: " + JSON.stringify(highlightRangeMap));
 		    clog("highlightmap: " + JSON.stringify(highlightMap));
 		    
-		    userActions++;
-			clog("userActions: " + userActions);
+		    //userActions++;
+		    //clog("userActions: " + userActions);
 		    
 		    var docIndex = docIndexMap["{\"docNamespace\":\"" + highlightMap["docNamespace"] + "\",\"docTable\":\"" + highlightMap["docTable"] + "\",\"docID\":" + highlightMap["docID"] + "}"];
 		    if (highlightMap["docNamespace"] != docNamespace || highlightMap["docTable"] != docTable || highlightMap["docID"] != docID) {
@@ -993,7 +993,7 @@ function rowSelect(row)
 
 	var annotFeatures = null;
 	
-	clog("row select 4");
+	//clog("row select 4");
 	
 	
 	
