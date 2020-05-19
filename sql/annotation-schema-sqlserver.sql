@@ -22,6 +22,15 @@ create index "idx_annot_type" on SCHEMA."annotation" ("annotation_type");
 create index "idx_annot_start" on SCHEMA."annotation" ("start");
 create index "idx_prov" on SCHEMA."annotation" ("provenance");
 create index "idx_id" on SCHEMA."annotation" ("id");
+create index "idx_docid_id" on SCHEMA."annotation" ("document_id", "id");
+create index "idx_docid_start" on SCHEMA."annotation" ("document_id", "start");
+create index "idx_docid_start_end_annottype" on SCHEMA."annotation"	("document_id", "start", "end", "annotation_type");
+create index "idx_docnamespace"	on SCHEMA."annotation" ("document_namespace");
+create index "idx_doctable" on SCHEMA."annotation" ("document_table");
+create index "idx_id" on SCHEMA."annotation" ("id");
+create index "idx_prov" on SCHEMA."annotation" ("provenance");
+
+
 
   --
   -- Table structure for table "crf"
@@ -229,6 +238,10 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
     "scroll_height" int DEFAULT NULL,
     "scroll_width" int DEFAULT NULL,
   );
+  
+  create index "idx_document_id" on SCHEMA."frame_instance_data" ("document_id");
+  
+  
 
   --
   -- Table structure for table "frame_instance_document"
@@ -248,6 +261,9 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
     "document_features" varchar(max) DEFAULT NULL,
     PRIMARY KEY ("frame_instance_id", "document_id")
   );
+  
+  create index "idx_document_id" on SCHEMA."frame_instance_document" ("document_id");
+
 
   
   DROP TABLE IF EXISTS SCHEMA."frame_instance_document_staging";
@@ -368,6 +384,9 @@ DROP TABLE IF EXISTS SCHEMA."project";
     PRIMARY KEY ("project_id","frame_instance_id")
   );
 
+  create index "idx_frameinstanceid" on SCHEMA."project_frame_instance" ("frame_instance_id");
+ 
+  
   --
   -- Table structure for table "provenance"
   --

@@ -21,8 +21,15 @@ CREATE TABLE `annotation` (
   KEY `idx_annot_type` (`annotation_type`(255)),
   KEY `idx_annot_start` (`start`),
   KEY `idx_prov` (`provenance`(100)),
-  KEY `idx_id` (`id`)
+  KEY `idx_id` (`id`),
+  KEY `idx_docid_id` (`document_id`, `id`),
+  KEY `idx_docid_start` (`document_id`, `start`),
+  KEY `idx_docid_start_end_annottype` (`document_id`, `start`, `end`, `annotation_type`),
+  KEY `idx_docnamespace` (`document_namespace`),
+  KEY `idx_doctable` (`document_table`),
+  KEY `idx_prov` (`provenance`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 
   --
@@ -242,9 +249,11 @@ CREATE TABLE `frame_instance_annotation` (
     `element_id` int(11) DEFAULT NULL,
     `v_scroll_pos` int(11) DEFAULT NULL,
     `scroll_height` int(11) DEFAULT NULL,
-    `scroll_width` int(11) DEFAULT NULL
+    `scroll_width` int(11) DEFAULT NULL,
+    KEY `idx_document_id` (`document_id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+  
 
   --
   -- Table structure for table `frame_instance_document`
@@ -261,9 +270,12 @@ CREATE TABLE `frame_instance_annotation` (
     `document_text_column` varchar(500) DEFAULT NULL,
     `document_name` varchar(500) DEFAULT NULL,
     `document_order` int(11) DEFAULT NULL,
-    `document_features` text DEFAULT NULL
+    `document_features` text DEFAULT NULL,
+    KEY `idx_document_id` (`document_id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+  
+  
 
   --
   -- Table structure for table `frame_instance_document_history`
@@ -369,9 +381,13 @@ CREATE TABLE `frame_instance_annotation` (
   CREATE TABLE `project_frame_instance` (
     `project_id` int(11) NOT NULL,
     `frame_instance_id` int(11) NOT NULL,
-    PRIMARY KEY (`project_id`,`frame_instance_id`)
+    PRIMARY KEY (`project_id`,`frame_instance_id`),
+    KEY `idx_frameinstanceid` (`frame_instance_id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+  
+    
+    
   --
   -- Table structure for table `provenance`
   --
