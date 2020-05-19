@@ -716,7 +716,9 @@ public class DataAccess {
 
 		try {
 			Connection conn = DB.getConnection();
+			Connection conn2 = DB.getConnecton("doc");
 			Statement stmt = conn.createStatement();
+			Statement stmt2 = conn2.createStatement();
 			String rq = getReservedQuote(conn);
 			
 			//System.out.println("add annotation 1");
@@ -1131,7 +1133,7 @@ public class DataAccess {
 				docTextCol = rs.getString(1);
 			}
 			
-			rs = stmt.executeQuery("select " + docTextCol + " from " + docSchema + docTable + " where document_id = " + docID);
+			rs = stmt2.executeQuery("select " + docTextCol + " from " + docSchema + docTable + " where document_id = " + docID);
 			if (rs.next()) {
 				docText = rs.getString(1).toLowerCase();
 			}
