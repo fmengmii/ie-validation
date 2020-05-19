@@ -1131,7 +1131,7 @@ public class DataAccess {
 				docTextCol = rs.getString(1);
 			}
 			
-			rs = stmt.executeQuery("select " + docTextCol + " from " + schema + docTable + " where document_id = " + docID);
+			rs = stmt.executeQuery("select " + docTextCol + " from " + docSchema + docTable + " where document_id = " + docID);
 			if (rs.next()) {
 				docText = rs.getString(1).toLowerCase();
 			}
