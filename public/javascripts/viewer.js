@@ -2160,7 +2160,7 @@ function clearAll()
 	    getHighlightRanges();
 	    highlightText();
 	    
-	    loadFrameInstanceNoRT();
+	    loadFrameInstance();
 	    
 		closeDialogLoad();
 	})

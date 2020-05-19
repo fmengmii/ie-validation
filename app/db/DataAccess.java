@@ -719,7 +719,7 @@ public class DataAccess {
 			Statement stmt = conn.createStatement();
 			String rq = getReservedQuote(conn);
 			
-			System.out.println("add annotation 1");
+			//System.out.println("add annotation 1");
 			
 			//UNDO/REDO
 			//String queryStr = "delete from " + schema + "annotation_history where (document_namespace, document_table, document_id, id, provenance, user_name) in "
@@ -737,7 +737,7 @@ public class DataAccess {
 					+ "and document_namespace = b.document_namespace and document_table = b.document_table and id = b.annotation_id and provenance = b.provenance and user_name = b.user_name)");
 					*/
 			
-			System.out.println("add annotation 2");
+			//System.out.println("add annotation 2");
 			
 
 			//separate slot number from html ID
@@ -768,7 +768,7 @@ public class DataAccess {
 					+ "where b.html_id = '" + htmlID + "' and b.value_id = a.value_id and a.element_id = c.element_id and c.element_type = d.element_type_id");
 			
 			
-			System.out.println("add annotation 3");
+			//System.out.println("add annotation 3");
 			
 			
 			if (rs.next()) {
@@ -815,7 +815,7 @@ public class DataAccess {
 
 			rs = stmt.executeQuery(query);
 			
-			System.out.println("add annotation 4");
+			//System.out.println("add annotation 4");
 
 			if (rs.next()) {
 				frameDocNamespace = rs.getString(1);
@@ -825,7 +825,7 @@ public class DataAccess {
 				provenance = rs.getString(5);
 			}
 			
-			System.out.println("add annotation 11");
+			//System.out.println("add annotation 11");
 
 			//if slot with same section and element slot numbers already has a value, this is an update
 
@@ -871,14 +871,14 @@ public class DataAccess {
 					stmt.execute("delete from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and slot_id = " + slotID
 							+ " and section_slot_number = " + sectionSlotNum + " and element_slot_number = " + elementSlotNum);
 					
-					System.out.println("add annotation 13");
+					//System.out.println("add annotation 13");
 					
 				} else {
 					//delete based on elementID
 					rs = stmt.executeQuery("select document_namespace, document_table, document_id, annotation_id from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID
 							+ " and element_id = " + elementID + " and section_slot_number = " + sectionSlotNum + " and element_slot_number = " + elementSlotNum);
 					
-					System.out.println("add annotation 14");
+					//System.out.println("add annotation 14");
 					
 					
 					while (rs.next()) {
@@ -906,7 +906,7 @@ public class DataAccess {
 					stmt.execute("delete from " + schema + "frame_instance_data where frame_instance_id = " + frameInstanceID + " and element_id = " + elementID
 							+ " and section_slot_number = " + sectionSlotNum + " and element_slot_number = " + elementSlotNum);
 					
-					System.out.println("add annotation 15");
+					//System.out.println("add annotation 15");
 					
 				}
 
@@ -922,7 +922,7 @@ public class DataAccess {
 							+ "and document_id = " + annotMap.get("docID") + " and id = " + annotMap.get("annotID"));
 					
 					
-					System.out.println("add annotation 16");
+					//System.out.println("add annotation 16");
 					
 				}
 			}
@@ -966,7 +966,7 @@ public class DataAccess {
 			System.out.println("\nselect max(id) from " + schema + "annotation where document_namespace = '" + docNamespace + "' "
 					+ "and document_table = '" + docTable + "' and document_id = " + docID + "\n");
 			
-			System.out.println("add annotation 5");
+			//System.out.println("add annotation 5");
 			
 			if (rs.next())
 				annotID = rs.getInt(1) + 1;
@@ -990,7 +990,7 @@ public class DataAccess {
 			}
 			
 			
-			System.out.println("add annotation 6");
+			//System.out.println("add annotation 6");
 
 
 			/*
@@ -1107,7 +1107,7 @@ public class DataAccess {
 					+ "values (" + frameInstanceID + "," + slotID + ",'" + value + "'," + sectionSlotNum + "," + elementSlotNum + ",'" + docNamespace + "', '" + docTable
 					+ "', " + docID + "," + annotID + ",'validation-tool'," + elementID + ")");
 			
-			System.out.println("add annotation 8");
+			//System.out.println("add annotation 8");
 			
 			
 			//UNDO/REDO
@@ -1118,7 +1118,51 @@ public class DataAccess {
 			
 			
 			
-			System.out.println("add annotation 9");
+			//System.out.println("add annotation 9");
+			
+			//auto annotate identical word/phrase within same document
+			String docText = "";
+			rs = stmt.executeQuery("select document_text_column from " + schema + "frame_instance_document "
+					+ "where document_namespace = '" + docNamespace + "' and document_table = '" + docTable
+					+ "' and document_id = " + docID);
+			
+			String docTextCol = "";
+			if (rs.next()) {
+				docTextCol = rs.getString(1);
+			}
+			
+			rs = stmt.executeQuery("select " + docTextCol + " from " + schema + docTable + " where document_id = " + docID);
+			if (rs.next()) {
+				docText = rs.getString(1).toLowerCase();
+			}
+			
+			value = value.toLowerCase();
+			int foundIndex = docText.indexOf(value);
+			List<int[]> indexList = new ArrayList<int[]>();
+			while (foundIndex >= 0) {
+				int[] indexes = new int[2];
+				indexes[0] = foundIndex;
+				indexes[1] = foundIndex + value.length();
+				
+				foundIndex = docText.indexOf(value, indexes[1]);
+			}
+			
+			for (int[] indexes : indexList) {
+				rs = stmt.executeQuery("select max(id) from " + schema + "annotation where document_namespace = '" + docNamespace + "' "
+						+ "and document_table = '" + docTable + "' and document_id = " + docID);
+				
+				if (rs.next())
+					annotID = rs.getInt(1) + 1;
+
+				stmt.execute("insert into " + schema + "annotation (id, document_namespace, document_table, document_id, annotation_type, start, "
+					+ rq + "end" + rq + ", value, features, provenance) "
+					+ "values "
+					+ "(" + annotID + ",'" + docNamespace + "','" + docTable + "'," + docID + ",'" + annotType + "'," + indexes[0] + "," + indexes[1] + ",'"
+					+ value + "', '" + features + "', 'validation-tool')");
+				
+				//add to frame_instance_data
+				
+			}
 			
 
 			ret = getFrameData(frameInstanceID);
