@@ -716,7 +716,7 @@ public class DataAccess {
 
 		try {
 			Connection conn = DB.getConnection();
-			Connection conn2 = DB.getConnecton("doc");
+			Connection conn2 = DB.getConnection("doc");
 			Statement stmt = conn.createStatement();
 			Statement stmt2 = conn2.createStatement();
 			String rq = getReservedQuote(conn);
