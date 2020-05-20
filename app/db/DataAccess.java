@@ -1124,16 +1124,18 @@ public class DataAccess {
 			
 			//auto annotate identical word/phrase within same document
 			String docText = "";
-			rs = stmt.executeQuery("select document_text_column from " + schema + "frame_instance_document "
+			rs = stmt.executeQuery("select document_key, document_text_column from " + schema + "frame_instance_document "
 					+ "where document_namespace = '" + docNamespace + "' and document_table = '" + docTable
 					+ "' and document_id = " + docID);
 			
 			String docTextCol = "";
+			String docIDCol = "";
 			if (rs.next()) {
-				docTextCol = rs.getString(1);
+				docIDCol = rs.getString(1);
+				docTextCol = rs.getString(2);
 			}
 			
-			rs = stmt2.executeQuery("select " + docTextCol + " from " + docSchema + docTable + " where document_id = " + docID);
+			rs = stmt2.executeQuery("select " + docTextCol + " from " + docSchema + docTable + " where " + docIDCol +  " = " + docID);
 			if (rs.next()) {
 				docText = rs.getString(1).toLowerCase();
 			}
