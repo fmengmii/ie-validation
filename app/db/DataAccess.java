@@ -1109,7 +1109,7 @@ public class DataAccess {
 					+ "values (" + frameInstanceID + "," + slotID + ",'" + value + "'," + sectionSlotNum + "," + elementSlotNum + ",'" + docNamespace + "', '" + docTable
 					+ "', " + docID + "," + annotID + ",'validation-tool'," + elementID + ")");
 			
-			//System.out.println("add annotation 8");
+			System.out.println("add annotation 8");
 			
 			
 			//UNDO/REDO
@@ -1128,6 +1128,8 @@ public class DataAccess {
 					+ "where document_namespace = '" + docNamespace + "' and document_table = '" + docTable
 					+ "' and document_id = " + docID);
 			
+			System.out.println("add annotation 9");
+			
 			String docTextCol = "";
 			String docIDCol = "";
 			if (rs.next()) {
@@ -1139,6 +1141,8 @@ public class DataAccess {
 			if (rs.next()) {
 				docText = rs.getString(1).toLowerCase();
 			}
+			
+			System.out.println("add annotation 10");
 			
 			value = value.toLowerCase();
 			int foundIndex = docText.indexOf(value);
