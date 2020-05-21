@@ -1188,6 +1188,7 @@ public class DataAccess {
 
 			stmt.close();
 			conn.close();
+			conn2.close();
 			
 
 		} catch (Exception e) {
