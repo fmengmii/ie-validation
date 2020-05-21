@@ -1122,6 +1122,8 @@ public class DataAccess {
 			
 			//System.out.println("add annotation 9");
 			
+			
+			/*
 			//auto annotate identical word/phrase within same document
 			String docText = "";
 			rs = stmt.executeQuery("select document_key, document_text_column from " + schema + "frame_instance_document "
@@ -1177,6 +1179,7 @@ public class DataAccess {
 				//add to frame_instance_data
 				
 			}
+			*/
 			
 
 			ret = getFrameData(frameInstanceID);
