@@ -1156,6 +1156,8 @@ public class DataAccess {
 			}
 			
 			for (int[] indexes : indexList) {
+				System.out.println("select max(id) from " + schema + "annotation where document_namespace = '" + docNamespace + "' "
+						+ "and document_table = '" + docTable + "' and document_id = " + docID);
 				rs = stmt.executeQuery("select max(id) from " + schema + "annotation where document_namespace = '" + docNamespace + "' "
 						+ "and document_table = '" + docTable + "' and document_id = " + docID);
 				
