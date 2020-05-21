@@ -1159,6 +1159,8 @@ public class DataAccess {
 				rs = stmt.executeQuery("select max(id) from " + schema + "annotation where document_namespace = '" + docNamespace + "' "
 						+ "and document_table = '" + docTable + "' and document_id = " + docID);
 				
+				System.out.println("add annotation 11");
+				
 				if (rs.next())
 					annotID = rs.getInt(1) + 1;
 
@@ -1168,12 +1170,16 @@ public class DataAccess {
 					+ "(" + annotID + ",'" + docNamespace + "','" + docTable + "'," + docID + ",'" + annotType + "'," + indexes[0] + "," + indexes[1] + ",'"
 					+ value + "', '" + features + "', 'validation-tool')");
 				
+				System.out.println("add annotation 12");
+				
 				//add to frame_instance_data
 				
 			}
 			
 
 			ret = getFrameData(frameInstanceID);
+			
+			System.out.println("add annotation 13");
 
 			stmt.close();
 			conn.close();
