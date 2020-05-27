@@ -302,14 +302,14 @@ public class DataAccess {
 		docText = docText.replaceAll("\r", "");
 		
 		//remove all leading whitespace
-		int i=0;
-		for (i=0; i<docText.length(); i++) {
-			if (!Character.isWhitespace(docText.charAt(i))) {
+		int index=0;
+		for (index=0; index<docText.length(); index++) {
+			if (!Character.isWhitespace(docText.charAt(index))) {
 				break;
 			}
 		}
 		
-		docText = docText.substring(i);
+		docText = docText.substring(index);
 		
 		
 		//put in line breaks if there are none
