@@ -301,6 +301,17 @@ public class DataAccess {
 		//docText = docText.replaceAll("\r\n", "\n");
 		docText = docText.replaceAll("\r", "");
 		
+		//remove all leading whitespace
+		int i=0;
+		for (i=0; i<docText.length(); i++) {
+			if (!Character.isWhitespace(docText.charAt(i))) {
+				break;
+			}
+		}
+		
+		docText = docText.substring(i);
+		
+		
 		//put in line breaks if there are none
 		int count = 1000;
 		StringBuilder strBlder = new StringBuilder(docText);
