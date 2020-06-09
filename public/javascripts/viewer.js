@@ -45,6 +45,7 @@ var entityIDStr = null;
 var colNames = null;
 var colTypes = null;
 var colValues = null;
+var currEntity = '';
 
 
 var crfSelectDisabled = false;
@@ -102,8 +103,18 @@ $(document).ready(function () {
        cancelButton: $('#clearAllCancelButton'),
        isModal: true
    });
-
+   
    $('#dialogClearAll').jqxWindow('close');
+   
+   $('#dialogNextEntity').jqxWindow({
+	   width: 200,
+       height: 100,
+       resizable: false,
+       okButton: $('#nextEntityOKButton'),
+       isModal: true
+   });
+
+   $('#dialogNextEntity').jqxWindow('close');
 
    var docListBoxSource = [];
    $("#docListBox").jqxListBox({ selectedIndex: 0, source: docListBoxSource, width: '95%', height: '90%'});
@@ -464,6 +475,8 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		var featuresHTML = "";
 		docFeatures = JSON.parse(docData["docFeatures"]);
 		for (var key in docFeatures) {
+			if (key == 'entity')
+				continue;
 			var value = docFeatures[key];
 			featuresHTML = featuresHTML.concat("<input id='" + key + "_docfeature' name='docfeature' type='radio' value='{\"key\":\"" + key + "\",\"value\":\"" + value + "\"}' onclick='docFeatureClicked(this.value, this.id)'><label class='unselectable'>" + key + ": " + value + "</label><br>");
 		}
@@ -484,6 +497,11 @@ function getDocument(docInfoStr, index, clear, options, callback)
             //$('#docListBox font').css("background-color", "#32CD32");
         //}
 		//$("#validatedButtonDiv").show();
+		
+		if (docFeatures['entity'] != currEntity) {
+			currEntity = docFeatures['entity'];
+			openNextEntityDialog();
+		}
 
 	}).fail(function() {
 	});
@@ -1899,13 +1917,10 @@ function removeElement(id)
 			}
 			
 			refreshElementHTMLIDMap();
+			
+			frameInstanceData.splice(index, frameInstanceData.length-1);
 			for (index=0; index<frameInstanceData.length; index++) {
 				clog("frameinstancedata[" + index + "]: " + frameInstanceData[index]["elementHTMLID"]);
-				
-				if (frameInstanceData[index]["elementHTMLID"] == id) {
-					frameInstanceData.splice(index, 1);
-					break;
-				}
 			}
 			
 			$("#dataElementTable").jqxDataTable('updateBoundData');
@@ -2166,6 +2181,10 @@ function clearAll()
 	})
 
 
+}
+
+function nextEntity()
+{
 }
 
 function valueClick(event)
@@ -2639,6 +2658,11 @@ function onInput(input) {
 function openClearAllDialog()
 {
 	$('#dialogClearAll').jqxWindow('open');
+}
+
+function openNextEntityDialog()
+{
+	$('#dialogNextEntity').jqxWindow('open');
 }
 
 function inHighlight(pos)
