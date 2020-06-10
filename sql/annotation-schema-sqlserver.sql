@@ -522,4 +522,25 @@ CREATE TABLE SCHEMA."frame_instance_data_history" (
   "user_name" varchar(100) DEFAULT NULL
 );
 
+DROP TABLE IF EXISTS SCHEMA."frame_instance_data_history2";
+CREATE TABLE SCHEMA."frame_instance_data_history2" (
+  "frame_instance_id" int NOT NULL,
+  "slot_id" int NOT NULL,
+  "value" varchar(max),
+  "section_slot_number" int DEFAULT '0',
+  "element_slot_number" int DEFAULT '0',
+  "document_namespace" varchar(500) DEFAULT NULL,
+  "document_table" varchar(500) DEFAULT NULL,
+  "document_id" bigint DEFAULT NULL,
+  "annotation_id" int DEFAULT NULL,
+  "provenance" varchar(500) DEFAULT NULL,
+  "element_id" int DEFAULT NULL,
+  "v_scroll_pos" int DEFAULT NULL,
+  "scroll_height" int DEFAULT NULL,
+  "scroll_width" int DEFAULT NULL,
+  "action" int DEFAULT NULL,
+  "undo_num" int DEFAULT NULL,
+  "user_name" varchar(100) DEFAULT NULL
+);
+
 

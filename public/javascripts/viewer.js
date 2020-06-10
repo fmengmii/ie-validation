@@ -1907,21 +1907,44 @@ function removeElement(id)
 			gridData2.splice(gridIndex, 1);
 			
 			var index;
+			var repeatNum2 = repeatNum;
 			for (index = gridIndex; index<gridData.length; index++) {
 				var elementHTMLID = gridData[index]["elementHTMLID"];
 				var index2 = elementHTMLID.lastIndexOf("_");
-				elementHTMLID = elementHTMLID.substring(0, index2+1) + repeatNum;
+				elementHTMLID = elementHTMLID.substring(0, index2+1) + repeatNum2;
 				gridData[index]["elementHTMLID"] = elementHTMLID;
+				gridData[index]["value"] = "<input type='text' id='" + elementHTMLID + "'  name='"+ elementHTMLID + "' /><input type='button' id='" + elementHTMLID + "_remove' value='-' onclick='removeElement(this.id)'/>"
 				gridData2[index]["elementHTMLID"] = elementHTMLID;
-				repeatNum++;
+				gridData2[index]["value"] = "<input type='text' id='" + elementHTMLID + "'  name='"+ elementHTMLID + "' /><input type='button' id='" + elementHTMLID + "_remove' value='-' onclick='removeElement(this.id)'/>"
+				repeatNum2++;
 			}
 			
 			refreshElementHTMLIDMap();
 			
-			frameInstanceData.splice(index, frameInstanceData.length-1);
+			
 			for (index=0; index<frameInstanceData.length; index++) {
-				clog("frameinstancedata[" + index + "]: " + frameInstanceData[index]["elementHTMLID"]);
+				//frameInstanceData[index]["elementHTMLID"] = gridData[index]["elementHTMLID"];
+				var elementHTMLID = frameInstanceData[index]["elementHTMLID"];
+				var index2 = elementHTMLID.lastIndexOf("_");
+				repeatNum2 = parseInt(frameInstanceData[index]["elementHTMLID"].substring(index2+1));
+				
+				//clog("repeatNum: " + repeatNum + " repeatNum2: " + repeatNum2);
+				
+				if (repeatNum2 == repeatNum) {
+					frameInstanceData.splice(index, 1);
+				}			
+				else if (repeatNum2 > repeatNum) {
+					elementHTMLID = elementHTMLID.substring(0, index2+1) + (repeatNum2-1);
+					frameInstanceData[index]["elementHTMLID"] = elementHTMLID;
+					//clog("frameinstancedata[" + index + "]: " + frameInstanceData[index]["elementHTMLID"] + ", " + frameInstanceData[index]["value"]);
+				}
 			}
+			
+			/*
+			for (index=0; index<gridData.length; index++) {
+				clog("gridData: " + index + ": " + gridData[index]["elementHTMLID"]);
+			}
+			*/
 			
 			$("#dataElementTable").jqxDataTable('updateBoundData');
 			

@@ -543,3 +543,24 @@ CREATE TABLE `frame_instance_data_history` (
   `user_name` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `frame_instance_data_history2`;
+CREATE TABLE `frame_instance_data_history2` (
+  `frame_instance_id` int(11) NOT NULL,
+  `slot_id` int(11) NOT NULL,
+  `value` text,
+  `section_slot_number` int(11) DEFAULT '0',
+  `element_slot_number` int(11) DEFAULT '0',
+  `document_namespace` varchar(500) DEFAULT NULL,
+  `document_table` varchar(500) DEFAULT NULL,
+  `document_id` bigint(20) DEFAULT NULL,
+  `annotation_id` int(11) DEFAULT NULL,
+  `provenance` varchar(500) DEFAULT NULL,
+  `element_id` int(11) DEFAULT NULL,
+  `v_scroll_pos` int(11) DEFAULT NULL,
+  `scroll_height` int(11) DEFAULT NULL,
+  `scroll_width` int(11) DEFAULT NULL,
+  `action` int(11) DEFAULT NULL,
+  `undo_num` int(11) DEFAULT NULL,
+  `user_name` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
