@@ -237,7 +237,7 @@ public class DataAccess {
 		return crfList;
 	}
 
-	public Map<String, String> getDocument(String docNamespace, String docTable, long docID) throws SQLException {
+	public Map<String, String> getDocument(String docNamespace, String docTable, long docID, String docEntityColumn) throws SQLException {
 		// new code
 		clearHistory(); // clears whenever you load a new document
 		String docText = "";
@@ -278,10 +278,15 @@ public class DataAccess {
 		Logger.info("getDocument: frameInstanceStatus=" + docMap.get("frameInstanceStatus"));
 		*/
 
-		System.out.println("select " + docTextColumn + " from " + docSchema + docTable + " where " + docKey + " = " + docID);
+		String docMetaQuery = "select " + docTextColumn;
+		if (docEntityColumn.length() > 0)
+			docMetaQuery += ", " + docEntityColumn;
+		docMetaQuery += " from " + docSchema + docTable + " where " + docKey + " = " + docID;
+			
+		System.out.println(docMetaQuery);
 
 		//rs = stmt.executeQuery("select " + docTextColumn + " from " + schema + docTable + " where " + docKey + " = " + docID);
-		rs = stmt.executeQuery("select " + docTextColumn + " from " + docSchema + docTable + " where " + docKey + " = " + docID);
+		rs = stmt.executeQuery(docMetaQuery);
 
 		if (rs.next()) {
 			docText = rs.getString(1);
@@ -295,6 +300,23 @@ public class DataAccess {
 					
 			//docText = docText.substring(0, 5000);
 			//docText = "The patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\nThe patient has lung cancer.\n";
+			
+			if (docEntityColumn.length() > 0) {
+				String docEntity = rs.getString(2);
+				int index = docFeaturesStr.lastIndexOf("}");
+				StringBuilder strBlder = new StringBuilder("\"entity\":\"" + docEntity + "\"");
+				if (index >= 0) {
+					strBlder.insert(0, docFeaturesStr.substring(0, index) + ",");
+				}
+				else {
+					strBlder.insert(0, "{");
+				}
+				
+				strBlder.append("}");
+
+				
+				docFeaturesStr = strBlder.toString();
+			}
 		}
 
 		//docText = docText.replaceAll("\\n", "\\\\n");
@@ -477,7 +499,7 @@ public class DataAccess {
 		return crfStr;
 	}
 
-	public String loadFrameInstance(String username, int frameInstanceID, int projID, boolean loadStatus) throws SQLException {
+	public String loadFrameInstance(String username, int frameInstanceID, int projID, boolean loadStatus, String docEntityColumn) throws SQLException {
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 		String rq = getReservedQuote(conn);
@@ -599,7 +621,7 @@ public class DataAccess {
 		*/
 
 		//String text = getDocument(docNamespace, docTable, docID);
-		Map<String, String> docMap = getDocument(docNamespace, docTable, docID);
+		Map<String, String> docMap = getDocument(docNamespace, docTable, docID, docEntityColumn);
 
 		//String frameListJSON = gson.toJson(frameList);
 		String docJSON = gson.toJson(docMap);

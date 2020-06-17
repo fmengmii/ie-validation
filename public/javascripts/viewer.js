@@ -1900,8 +1900,9 @@ function removeElement(id)
 			index = id.lastIndexOf("_");
 			var repeatNum = parseInt(id.substring(index+1));
 
-			clog("remove element: " + id);
 			var gridIndex = elementHTMLIDMap[id];
+			clog("remove element: " + id + " gridIndex: " + gridIndex);
+
 			
 			gridData.splice(gridIndex, 1);
 			gridData2.splice(gridIndex, 1);
@@ -1930,21 +1931,26 @@ function removeElement(id)
 				
 				//clog("repeatNum: " + repeatNum + " repeatNum2: " + repeatNum2);
 				
+				
+				
 				if (repeatNum2 == repeatNum) {
 					frameInstanceData.splice(index, 1);
+					index--;
 				}			
 				else if (repeatNum2 > repeatNum) {
 					elementHTMLID = elementHTMLID.substring(0, index2+1) + (repeatNum2-1);
 					frameInstanceData[index]["elementHTMLID"] = elementHTMLID;
 					//clog("frameinstancedata[" + index + "]: " + frameInstanceData[index]["elementHTMLID"] + ", " + frameInstanceData[index]["value"]);
 				}
+				
+				clog("frameinstancedata[" + index + "]: " + frameInstanceData[index]["elementHTMLID"] + ", " + frameInstanceData[index]["value"]);
 			}
 			
-			/*
+			
 			for (index=0; index<gridData.length; index++) {
 				clog("gridData: " + index + ": " + gridData[index]["elementHTMLID"]);
 			}
-			*/
+			
 			
 			$("#dataElementTable").jqxDataTable('updateBoundData');
 			

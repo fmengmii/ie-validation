@@ -105,6 +105,11 @@ public class Application extends Controller
     	
     	session("undoNum", "0");
     	
+    	String docEntityColumn = Play.application().configuration().getString("docEntityColumn");
+    	if (docEntityColumn == null)
+    		docEntityColumn = "";
+    	session("docEntityColumn", docEntityColumn);
+    	
         try {
 
             DynamicForm df = Form.form().bindFromRequest();
@@ -328,7 +333,7 @@ public class Application extends Controller
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
 	    	DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
-	    	Map<String, String> docMap = da.getDocument(docNamespace, docTable, Long.parseLong(docID));
+	    	Map<String, String> docMap = da.getDocument(docNamespace, docTable, Long.parseLong(docID), session("docEntityColumn"));
 
 	    	int crfID =  Integer.parseInt(session("crfID"));
 	    	int projID = Integer.parseInt(session("projID"));
@@ -571,7 +576,7 @@ public class Application extends Controller
     		}
     		
     		int projID = Integer.parseInt(session("projID"));
-    		frameInstanceStr = da.loadFrameInstance(un, frameInstanceID, projID, loadStatus); // was changed
+    		frameInstanceStr = da.loadFrameInstance(un, frameInstanceID, projID, loadStatus, session("docEntityColumn")); // was changed
     		long docID = da.getCurrDocID();
     		session("docID", Long.toString(docID));
 
