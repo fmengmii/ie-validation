@@ -405,7 +405,7 @@ function getDocument(docInfoStr, index, clear, options, callback)
     // new code
     clearHistory();
 
-	//clog("getDocument: " + docInfoStr);
+	clog("getDocument: " + docInfoStr);
 	docHistory[docInfoStr] = true;
 	//var docInfo = JSON.parse(docInfoStr);
 	addDocumentHistory(docInfoStr);
