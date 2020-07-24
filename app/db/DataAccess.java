@@ -404,7 +404,7 @@ public class DataAccess {
 	}
 	 */
 
-	public String loadProject(String username, int projID) throws SQLException {
+	public String loadProject(String username, int projID, boolean orderTable) throws SQLException {
 		Connection conn = DB.getConnection();
 		String rq = getReservedQuote(conn);
 		Statement stmt = conn.createStatement();
@@ -422,11 +422,21 @@ public class DataAccess {
 		
 		System.out.println("username: " + username + " lastFrameInstanceID load: " + lastFrameInstanceID);
 		
-		rs = stmt.executeQuery("select a.frame_instance_id, b.name, d.user_name "
-			+ "from " + schema + "project_frame_instance a "
-			+ "join " + schema + "frame_instance b on a.frame_instance_id = b.frame_instance_id and project_id = " + projID
-			+ " left join " + schema + "frame_instance_status c on b.frame_instance_id = c.frame_instance_id "
-			+ "left join " + schema + rq + "user" + rq + " d on c.user_id = d.user_id order by frame_instance_id");
+		if (orderTable) {
+			rs = stmt.executeQuery("select a.frame_instance_id, b.name, d.user_name, a.order_num "
+				+ "from " + schema + "frame_instance_order a "
+				+ "join " + schema + "frame_instance b on a.frame_instance_id = b.frame_instance_id and a.project_id = " + projID
+				+ " left join " + schema + "frame_instance_status c on b.frame_instance_id = c.frame_instance_id "
+				+ "left join " + schema + rq + "user" + rq + " d on c.user_id = d.user_id "
+				+ "order by a.order_num");
+		}
+		else {
+			rs = stmt.executeQuery("select a.frame_instance_id, b.name, d.user_name "
+				+ "from " + schema + "project_frame_instance a "
+				+ "join " + schema + "frame_instance b on a.frame_instance_id = b.frame_instance_id and project_id = " + projID
+				+ " left join " + schema + "frame_instance_status c on b.frame_instance_id = c.frame_instance_id "
+				+ "left join " + schema + rq + "user" + rq + " d on c.user_id = d.user_id order by frame_instance_id");
+		}
 
 		int index = 1;
 		while (rs.next()) {
@@ -434,6 +444,12 @@ public class DataAccess {
 			
 			String name = rs.getString(2);
 			String userName = rs.getString(3);
+			
+			int orderNum = -1;
+			if (orderTable) {
+				orderNum = rs.getInt(4);
+				name = orderNum + "-" + name;
+			}
 			
 			if (userName == null)
 				userName = "";

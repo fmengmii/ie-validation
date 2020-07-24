@@ -98,6 +98,9 @@ public class Application extends Controller
     	String docSchema = Play.application().configuration().getString("docSchema") + ".";
     	session("docSchemaName", docSchema);
     	
+    	String orderTable = Play.application().configuration().getString("orderTable");
+    	session("orderTable", orderTable);
+    	
     	String loadStatus = Play.application().configuration().getString("loadStatus");
     	if (loadStatus == null)
     		loadStatus = "false";
@@ -511,7 +514,11 @@ public class Application extends Controller
 	    	String un = session("userName");
 	    	
     		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
-    		frameList = da.loadProject(un, projID); // was changed
+    		boolean orderTable = false;
+    		if (session("orderTable") != null)
+    			orderTable = true;
+    		
+    		frameList = da.loadProject(un, projID, orderTable); // was changed
 
 			// **** add by wyu for repeat number ****
 			String queryPatternString = "\\{\"lastFrameInstanceID\":(\\d+),\"lastFrameInstanceIndex\":(\\d+)\\}$";

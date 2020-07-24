@@ -544,3 +544,10 @@ CREATE TABLE SCHEMA."frame_instance_data_history2" (
 );
 
 
+DROP TABLE IF EXISTS SCHEMA."frame_instance_order";
+CREATE TABLE SCHEMA."frame_instance_order" (
+  "project_id" int NOT NULL,
+  "order_num" int NOT NULL,
+  "frame_instance_id" int DEFAULT NULL,
+  PRIMARY KEY ("order_num","project_id")
+)

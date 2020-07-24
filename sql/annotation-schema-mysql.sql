@@ -564,3 +564,12 @@ CREATE TABLE `frame_instance_data_history2` (
   `user_name` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+DROP TABLE IF EXISTS `frame_instance_order`;
+CREATE TABLE `frame_instance_order` (
+  `project_id` int(11) NOT NULL,
+  `order_num` int(11) NOT NULL,
+  `frame_instance_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`order_num`,`project_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
