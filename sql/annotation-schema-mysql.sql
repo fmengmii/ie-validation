@@ -3,7 +3,7 @@
 -- Table structure for table `annotation`
 --
 
-DROP TABLE IF EXISTS `annotation`;
+
 
 CREATE TABLE `annotation` (
   `id` int(11) NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE `annotation` (
   -- Table structure for table `crf`
   --
 
-  DROP TABLE IF EXISTS `crf`;
+ 
 
   CREATE TABLE `crf` (
     `crf_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -52,7 +52,7 @@ CREATE TABLE `annotation` (
   -- Table structure for table `crf_element`
   --
 
-  DROP TABLE IF EXISTS `crf_element`;
+
 
   CREATE TABLE `crf_element` (
     `crf_id` int(11) NOT NULL,
@@ -65,7 +65,6 @@ CREATE TABLE `annotation` (
   -- Table structure for table `crf_project`
   --
 
-DROP TABLE IF EXISTS `crf_project`;
 
 CREATE TABLE `crf_project` (
   `crf_project_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -79,7 +78,7 @@ CREATE TABLE `crf_project` (
 -- Table structure for table `crf_section`
 --
 
-DROP TABLE IF EXISTS `crf_section`;
+
 
 CREATE TABLE `crf_section` (
   `section_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -95,7 +94,7 @@ CREATE TABLE `crf_section` (
 -- Table structure for table `data_type`
 --
 
-DROP TABLE IF EXISTS `data_type`;
+
 
 CREATE TABLE `data_type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -114,7 +113,7 @@ INSERT INTO data_type (name) VALUES ('categorical');
 -- Table structure for table `document_status`
 --
 
-DROP TABLE IF EXISTS `document_status`;
+
 
 CREATE TABLE `document_status` (
   `document_namespace` varchar(500) NOT NULL,
@@ -131,7 +130,7 @@ CREATE TABLE `document_status` (
 -- Table structure for table `element`
 --
 
-DROP TABLE IF EXISTS `element`;
+
 
 CREATE TABLE `element` (
   `element_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -150,7 +149,7 @@ CREATE TABLE `element` (
 --
 -- Table structure for table `element_type`
 --
-DROP TABLE IF EXISTS `element_type`;
+
 
 CREATE TABLE `element_type` (
   `element_type_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -171,7 +170,7 @@ INSERT INTO element_type (element_type_name) VALUES ('textarea');
 -- Table structure for table `element_value`
 --
 
-DROP TABLE IF EXISTS `element_value`;
+
 
 CREATE TABLE `element_value` (
   `element_id` int(11) NOT NULL,
@@ -184,7 +183,7 @@ CREATE TABLE `element_value` (
 -- Table structure for table `frame`
 --
 
-DROP TABLE IF EXISTS `frame`;
+
 
 CREATE TABLE `frame` (
   `frame_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -197,7 +196,7 @@ CREATE TABLE `frame` (
 -- Table structure for table `frame_instance`
 --
 
-DROP TABLE IF EXISTS `frame_instance`;
+
 
 CREATE TABLE `frame_instance` (
   `frame_instance_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -211,7 +210,7 @@ CREATE TABLE `frame_instance` (
 -- Table structure for table `frame_instance_annotation`
 --
 
-DROP TABLE IF EXISTS `frame_instance_annotation`;
+
 
 CREATE TABLE `frame_instance_annotation` (
   `id` int(11) NOT NULL,
@@ -233,7 +232,7 @@ CREATE TABLE `frame_instance_annotation` (
   -- Table structure for table `frame_instance_data`
   --
 
-  DROP TABLE IF EXISTS `frame_instance_data`;
+
 
   CREATE TABLE `frame_instance_data` (
     `frame_instance_id` int(11) NOT NULL,
@@ -259,7 +258,7 @@ CREATE TABLE `frame_instance_annotation` (
   -- Table structure for table `frame_instance_document`
   --
 
-  DROP TABLE IF EXISTS `frame_instance_document`;
+
 
   CREATE TABLE `frame_instance_document` (
     `frame_instance_id` int(11) DEFAULT NULL,
@@ -281,7 +280,7 @@ CREATE TABLE `frame_instance_annotation` (
   -- Table structure for table `frame_instance_document_history`
   --
 
-  DROP TABLE IF EXISTS `frame_instance_document_history`;
+
 
   CREATE TABLE `frame_instance_document_history` (
     `frame_instance_id` int(11) DEFAULT NULL,
@@ -295,7 +294,6 @@ CREATE TABLE `frame_instance_annotation` (
   -- Table structure for table `frame_instance_element_repeat`
   --
 
-  DROP TABLE IF EXISTS `frame_instance_element_repeat`;
 
   CREATE TABLE `frame_instance_element_repeat` (
     `frame_instance_id` int(11) NOT NULL,
@@ -308,7 +306,7 @@ CREATE TABLE `frame_instance_annotation` (
   --
   -- Table structure for table `frame_instance_section_repeat`
   --
-  DROP TABLE IF EXISTS `frame_instance_section_repeat`;
+
 
   CREATE TABLE `frame_instance_section_repeat` (
     `frame_instance_id` int(11) NOT NULL,
@@ -321,7 +319,7 @@ CREATE TABLE `frame_instance_annotation` (
   -- Table structure for table `frame_instance_status`
   --
 
-  DROP TABLE IF EXISTS `frame_instance_status`;
+
 
   CREATE TABLE `frame_instance_status` (
     `frame_instance_id` bigint(20) NOT NULL,
@@ -335,7 +333,7 @@ CREATE TABLE `frame_instance_annotation` (
   -- Table structure for table `frame_slot`
   --
 
-  DROP TABLE IF EXISTS `frame_slot`;
+
 
   CREATE TABLE `frame_slot` (
     `frame_id` int(11) NOT NULL,
@@ -347,7 +345,7 @@ CREATE TABLE `frame_instance_annotation` (
   --
   -- Table structure for table `history`
   --
-  DROP TABLE IF EXISTS `history`;
+
 
   CREATE TABLE `history` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -362,7 +360,7 @@ CREATE TABLE `frame_instance_annotation` (
   -- Table structure for table `project`
   --
 
-  DROP TABLE IF EXISTS `project`;
+
 
   CREATE TABLE `project` (
     `project_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -376,7 +374,7 @@ CREATE TABLE `frame_instance_annotation` (
   -- Table structure for table `project_frame_instance`
   --
 
-  DROP TABLE IF EXISTS `project_frame_instance`;
+
 
   CREATE TABLE `project_frame_instance` (
     `project_id` int(11) NOT NULL,
@@ -391,7 +389,7 @@ CREATE TABLE `frame_instance_annotation` (
   --
   -- Table structure for table `provenance`
   --
-DROP TABLE IF EXISTS `provenance`;
+
 
 CREATE TABLE `provenance` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -405,7 +403,7 @@ CREATE TABLE `provenance` (
 -- Table structure for table `slot`
 --
 
-DROP TABLE IF EXISTS `slot`;
+
 
 CREATE TABLE `slot` (
   `slot_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -420,7 +418,7 @@ CREATE TABLE `slot` (
 -- Table structure for table `tablename_lookup`
 --
 
-DROP TABLE IF EXISTS `tablename_lookup`;
+
 
 CREATE TABLE `tablename_lookup` (
   `annotation_type` varchar(500) DEFAULT NULL,
@@ -432,7 +430,7 @@ CREATE TABLE `tablename_lookup` (
 --
 -- Table structure for table `user`
 --
-DROP TABLE IF EXISTS `user`;
+
 
 CREATE TABLE `user` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -448,7 +446,7 @@ CREATE TABLE `user` (
 -- Table structure for table `validated_document`
 --
 
-DROP TABLE IF EXISTS `validated_document`;
+
 
 CREATE TABLE `validated_document` (
   `document_id` bigint(20) NOT NULL,
@@ -460,7 +458,7 @@ CREATE TABLE `validated_document` (
 -- Table structure for table `value`
 --
 
-DROP TABLE IF EXISTS `value`;
+
 
 CREATE TABLE `value` (
   `value_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -471,7 +469,7 @@ CREATE TABLE `value` (
 ) ENGINE=InnoDB AUTO_INCREMENT=250 DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `project_preload`;
+
 CREATE TABLE `project_preload` (
   `project_id` int(11) DEFAULT NULL,
   `value` varchar(500) DEFAULT NULL,
@@ -479,7 +477,6 @@ CREATE TABLE `project_preload` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-DROP TABLE IF EXISTS `frame_instance_lock`;
 CREATE TABLE `frame_instance_lock` (
   `frame_instance_id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
@@ -489,7 +486,7 @@ CREATE TABLE `frame_instance_lock` (
 
 
 
-DROP TABLE IF EXISTS `user_project`;
+
 CREATE TABLE `user_project` (
   `user_id` int(11) DEFAULT NULL,
   `project_id` int(11) DEFAULT NULL,
@@ -497,7 +494,7 @@ CREATE TABLE `user_project` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-DROP TABLE IF EXISTS `annotation_history`;
+
 CREATE TABLE `annotation_history` (
   `id` int(11) NOT NULL,
   `document_namespace` varchar(500) NOT NULL,
@@ -522,7 +519,7 @@ CREATE TABLE `annotation_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `frame_instance_data_history`;
+
 CREATE TABLE `frame_instance_data_history` (
   `frame_instance_id` int(11) NOT NULL,
   `slot_id` int(11) NOT NULL,
@@ -543,7 +540,7 @@ CREATE TABLE `frame_instance_data_history` (
   `user_name` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `frame_instance_data_history2`;
+
 CREATE TABLE `frame_instance_data_history2` (
   `frame_instance_id` int(11) NOT NULL,
   `slot_id` int(11) NOT NULL,
@@ -565,7 +562,7 @@ CREATE TABLE `frame_instance_data_history2` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `frame_instance_order`;
+
 CREATE TABLE `frame_instance_order` (
   `project_id` int(11) NOT NULL,
   `order_num` int(11) NOT NULL,
