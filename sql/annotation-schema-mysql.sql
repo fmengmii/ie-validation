@@ -27,7 +27,6 @@ CREATE TABLE `annotation` (
   KEY `idx_docid_start_end_annottype` (`document_id`, `start`, `end`, `annotation_type`),
   KEY `idx_docnamespace` (`document_namespace`),
   KEY `idx_doctable` (`document_table`),
-  KEY `idx_prov` (`provenance`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

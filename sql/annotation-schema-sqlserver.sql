@@ -26,7 +26,6 @@ create index "idx_docid_start" on SCHEMA."annotation" ("document_id", "start");
 create index "idx_docid_start_end_annottype" on SCHEMA."annotation"	("document_id", "start", "end", "annotation_type");
 create index "idx_docnamespace"	on SCHEMA."annotation" ("document_namespace");
 create index "idx_doctable" on SCHEMA."annotation" ("document_table");
-create index "idx_prov" on SCHEMA."annotation" ("provenance");
 
 
 
