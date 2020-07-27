@@ -305,7 +305,7 @@ public class DataAccess {
 				String docEntity = rs.getString(2);
 				int index = docFeaturesStr.lastIndexOf("}");
 				StringBuilder strBlder = new StringBuilder("\"entity\":\"" + docEntity + "\"");
-				if (index >= 0) {
+				if (index >= 0 && docFeaturesStr.length() > 2) {
 					strBlder.insert(0, docFeaturesStr.substring(0, index) + ",");
 				}
 				else {
