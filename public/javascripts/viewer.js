@@ -473,6 +473,7 @@ function getDocument(docInfoStr, index, clear, options, callback)
 
 		//set the document features
 		var featuresHTML = "";
+		clog("docFeatures: " + docData["docFeatures"]);
 		docFeatures = JSON.parse(docData["docFeatures"]);
 		for (var key in docFeatures) {
 			if (key == 'entity')
