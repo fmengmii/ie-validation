@@ -509,7 +509,7 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		
 		if (docFeatures['entity'] != currEntity) {
 			currEntity = docFeatures['entity'];
-			openNextEntityDialog();
+			//openNextEntityDialog();
 		}
 
 	}).fail(function() {
