@@ -74,3 +74,23 @@ delete from SCHEMA.annotation;
 delete from SCHEMA.frame_instance_status;
 
 delete from SCHEMA.document_status;
+
+
+
+-- specific project
+delete from SCHEMA.frame_instance where frame_instance_id in
+(select a.frame_instance_id from SCHEMA.project_frame_instance a, SCHEMA.project b where b.name = ? and a.project_id = b.project_id);
+
+delete from SCHEMA.frame_instance_document where frame_instance_id in
+(select a.frame_instance_id from SCHEMA.project_frame_instance a, SCHEMA.project b where b.name = ? and a.project_id = b.project_id);
+
+delete from SCHEMA.project_frame_instance where project_id in
+(select a.project_id from SCHEMA.project a where a.name = ?);
+
+delete from SCHEMA.crf_project where project_id in (select a.project_id from SCHEMA.project a where a.name = ?);
+
+delete from SCHEMA.project_preload where project_id in (select a.project_id from SCHEMA.project a where a.name = ?);
+
+delete from SCHEMA.project where name = ?;
+
+
