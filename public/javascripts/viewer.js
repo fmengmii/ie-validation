@@ -261,6 +261,14 @@ $(document).ready(function () {
    $('#dataElementTable').on('rowClick', function (event) {
 	   clog("rowClick: " + event.args.index + " meta: " + event.args.originalEvent.metaKey + " ctrl: " + event.ctrlKey);
 	   rowSelect(event.args);
+	   //collapseFormElements();
+   });
+   
+   $('#dataElementTable').on('rowDoubleClick', function (event) {
+	   clog("rowDoubleClick: " + event.args.originalEvent + " meta: " + event.args.originalEvent.metaKey + " ctrl: " + event.ctrlKey);
+	   //rowSelect(event.args);
+	   var el = event.args.originalEvent.target;
+	   //expandFormElement(el);
    });
 
    $('#dataElementTable').on('columnResized', function (event) {
@@ -1169,6 +1177,7 @@ function rowSelect(row)
 									selectFlag = false;
 									clog("row select 2");
 									closeDialogLoad();
+									
 								});
 		
 		
@@ -1198,6 +1207,8 @@ function rowSelect(row)
 		}
 
 	//closeDialogLoad();
+	
+	//collapseAll();
 }
 
 function highlightText()
@@ -1345,7 +1356,7 @@ function loadProject(projName)
 		url: loadProjectAjax.url,
 		cache: false
 	}).done(function(data) {
-		//clog(data);
+		clog(data);
 
 		var result = JSON.parse(data);
 		frameArray = result[0];
@@ -2228,6 +2239,9 @@ function valueClick(event)
 
 	valueClickCount2++;
 	valueClickCallback(add);
+	
+	//collapse form element
+	//collapseFormElement(event.target);
 }
 
 function valueClickCallback(add)
@@ -3008,12 +3022,13 @@ function closeFrameInstanceLock()
 
 function setHTMLElements()
 {
+	
 	//clear checkboxes and radios and textboxes and text areas
 	$('#dataElementTable input:checkbox').prop('checked', false);
 	$('#dataElementTable input:radio').prop('checked', false);
 	$('#dataElementTable input:text').val('');
 	$('#dataElementTable textarea').val('');
-	$("#dataElementTable").jqxDataTable('refresh');
+	//$("#dataElementTable").jqxDataTable('refresh');
 
 	//set HTML elements
     for (var i=0; i<frameInstanceData.length; i++) {
@@ -3047,6 +3062,7 @@ function setHTMLElements()
 			element.val(value);
 		}
     }
+    
     
     //$("#dataElementTable").jqxDataTable('refresh');
 }
@@ -3371,4 +3387,78 @@ function hideAlertBox() {
 function stopEvent(event) {
 	clog(event);
 	event.stopPropagation();
+}
+
+
+function collapseFormElement(element)
+{
+	
+	/*
+	$('#dataElementTable input:radio').each(function (i, el) {
+		if (el != null) {
+			el.parentElement.style.display = 'none';
+			//el.parentElement.parentElement.style.display = 'none';
+		}
+	});
+	*/
+	
+	var parent = element.parentElement.parentElement;
+	$(parent).find('input:radio').each(function (i, el) {
+		if (el != null && el != element) {
+			el.parentElement.style.display = 'none';
+			//el.parentElement.parentElement.style.display = 'none';
+		}
+	});
+	
+	
+	/*
+	for (var i=0; i<frameInstanceData.length; i++) {
+    	var elementHTMLID = frameInstanceData[i]["elementHTMLID"];
+    	var valueHTMLID = frameInstanceData[i]["valueHTMLID"];
+    	var value = frameInstanceData[i]["value"];
+    	var elementType = frameInstanceData[i]["elementType"];
+
+    	var htmlID = elementHTMLID;
+    	if (elementType != 'text' && elementType != 'textarea')
+    		htmlID = valueHTMLID;
+
+    	clog("htmlID: " + jq(htmlID));
+    	var element = $(jq(htmlID));
+    	clog("element: " + element.style);
+    	if (element != null && elementType == 'radio') {
+    		//element.prop('parentElement').parentElement.style.display = 'block';
+    		element.prop('parentElement').style.display = 'block';
+    	}
+    }
+    */
+}
+
+
+function expandFormElement(element)
+{
+	var expand = false;
+	var selected;
+	$(element).find('span').each(function (i, el) {
+		if (el.style.display == 'none') {
+			expand = true;
+		}
+		else
+			selected = el;
+		//el.style.display = 'block';
+	}
+	);
+	
+	if (expand) {
+	
+		$(element).find('span').each(function (i, el) {
+			el.style.display = 'block';
+		}
+		);
+	}
+	else {
+		$(element).find('span').each(function (i, el) {
+			el.style.display = 'block';
+		}
+		);
+	}
 }
