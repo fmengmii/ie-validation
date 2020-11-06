@@ -514,9 +514,9 @@ public class Application extends Controller
 	    	String un = session("userName");
 	    	
     		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
-    		boolean orderTable = false;
-    		if (session("orderTable") != null)
-    			orderTable = true;
+    		boolean orderTable = Boolean.parseBoolean(session("orderTable"));
+    		
+    		System.out.println("orderTable: " + orderTable);
     		
     		frameList = da.loadProject(un, projID, orderTable); // was changed
 

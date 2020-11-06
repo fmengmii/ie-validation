@@ -431,9 +431,15 @@ public class DataAccess {
 				+ "order by a.order_num");
 		}
 		else {
+			System.out.println("select a.frame_instance_id, b.name, d.user_name "
+				+ "from " + schema + "project_frame_instance a "
+				+ "join " + schema + "frame_instance b on a.frame_instance_id = b.frame_instance_id and a.project_id = " + projID
+				+ " left join " + schema + "frame_instance_status c on b.frame_instance_id = c.frame_instance_id "
+				+ "left join " + schema + rq + "user" + rq + " d on c.user_id = d.user_id order by frame_instance_id");
+			
 			rs = stmt.executeQuery("select a.frame_instance_id, b.name, d.user_name "
 				+ "from " + schema + "project_frame_instance a "
-				+ "join " + schema + "frame_instance b on a.frame_instance_id = b.frame_instance_id and project_id = " + projID
+				+ "join " + schema + "frame_instance b on a.frame_instance_id = b.frame_instance_id and a.project_id = " + projID
 				+ " left join " + schema + "frame_instance_status c on b.frame_instance_id = c.frame_instance_id "
 				+ "left join " + schema + rq + "user" + rq + " d on c.user_id = d.user_id order by frame_instance_id");
 		}
@@ -1279,6 +1285,8 @@ public class DataAccess {
 			String features = rs.getString(13);
 			String valueHTMLID = rs.getString(14);
 			String elementType = rs.getString(15);
+			
+			System.out.println("frameInstanceID: " + frameInstanceID + " start: " + start + " end: " + end);
 
 			Map<String, Object> frameMap = new HashMap<String, Object>();
 			frameMap.put("frameInstanceID", frameInstanceID);

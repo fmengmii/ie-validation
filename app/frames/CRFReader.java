@@ -368,8 +368,8 @@ public class CRFReader
 			//if (repeatNum > 0)
 			valueHTMLID = valueHTMLID + "_"	+ repeatStr;
 						
-			strBlder.append("<input type='" + elementType + "' name='" + htmlID + "' id='" + valueHTMLID + "' value='" + display + "' onclick='valueClick(event)' "
-				+ "onmouseover='valueMouseover(this)'>" + display + "</input><br>\n");
+			strBlder.append("<span><input type='" + elementType + "' name='" + htmlID + "' id='" + valueHTMLID + "' value='" + display + "' onclick='valueClick(event)' "
+				+ "onmouseover='valueMouseover(this)'>" + display + "</input><br></span>\n");
 		}
 		
 		return strBlder.toString();
