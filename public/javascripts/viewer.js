@@ -268,7 +268,7 @@ $(document).ready(function () {
 	   clog("rowDoubleClick: " + event.args.originalEvent + " meta: " + event.args.originalEvent.metaKey + " ctrl: " + event.ctrlKey);
 	   //rowSelect(event.args);
 	   var el = event.args.originalEvent.target;
-	   //expandFormElement(el);
+	   expandFormElement(el);
    });
 
    $('#dataElementTable').on('columnResized', function (event) {
@@ -2241,7 +2241,7 @@ function valueClick(event)
 	valueClickCallback(add);
 	
 	//collapse form element
-	//collapseFormElement(event.target);
+	collapseFormElement(event.target);
 }
 
 function valueClickCallback(add)
@@ -3438,26 +3438,36 @@ function expandFormElement(element)
 {
 	var expand = false;
 	var selected;
-	$(element).find('span').each(function (i, el) {
-		if (el.style.display == 'none') {
+	$(element.parentElement).find('input:radio').each(function (i, el) {
+		clog('radio: ' + i + ', ' + el.parentElement.style.display + ', ' + el.checked);
+		if (el.parentElement.style.display == 'none') {
 			expand = true;
 		}
-		else
+		else if (el.checked) {
 			selected = el;
 		//el.style.display = 'block';
+		}
+				
 	}
 	);
 	
+	clog('expand: ' + expand);
+	
 	if (expand) {
 	
-		$(element).find('span').each(function (i, el) {
+		$(element.parentElement).find('span').each(function (i, el) {
+			clog('expand: ' + i + ', ' + el.style.display);
 			el.style.display = 'block';
+
 		}
 		);
 	}
 	else {
-		$(element).find('span').each(function (i, el) {
-			el.style.display = 'block';
+		$(element.parentElement).find('input:radio').each(function (i, el) {
+			clog('collapse: ' + i + ', ' + el.parentElement.style.display + ', ' + selected);
+			if (el != selected) {
+				el.parentElement.style.display = 'none';
+			}
 		}
 		);
 	}
