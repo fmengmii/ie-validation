@@ -1,7 +1,18 @@
 var elementIDMap = {};
 var elementHTMLIDMap = {};
+
+//make gridData an array to accommodate search table
 var gridData = new Array();
+gridData[0] = new Array();
+gridData[1] = new Array();
+
 var gridData2 = new Array();
+gridData2[0] = new Array();
+gridData2[1] = new Array();
+
+var gridIndex = 0;
+
+
 var frameInstanceData;
 var highlightStart;
 var highlightEnd;
@@ -79,6 +90,8 @@ $(document).ready(function () {
    //$('#crfPanel').jqxPanel({ width: '100%', height: '100%', autoUpdate: true, sizeMode: 'fixed'});
    //$('#docPanel').jqxPanel({ width: '90%', height: '90%', autoUpdate: true, sizeMode : 'fixed'});
    
+   
+   $('#crfTabs').jqxTabs({ width: '100%', height: '100%' });
    
 
 
@@ -191,8 +204,8 @@ $(document).ready(function () {
 	   width: '95%',
 	   theme: 'energyblue',
        source: dataAdapter,
-       selectionmode: 'singlerow',
-       enablehover: true,
+       selectionMode: 'singlerow',
+       enableHover: true,
        columnsResize: true,
        columns: [
          { text: 'Section', dataField: 'section', hidden: true },
@@ -274,6 +287,70 @@ $(document).ready(function () {
    $('#dataElementTable').on('columnResized', function (event) {
 	   loadFrameInstanceNoRT();
    });
+   
+   
+   
+   //search table
+   
+   searchDataAdapter = new $.jqx.dataAdapter(gridSource, {
+       loadComplete: function (data) { },
+       loadError: function (xhr, status, error) { }
+   });
+   
+   $('#searchTable').jqxDataTable(
+		   {
+			   height: '95%',
+			   width: '95%',
+			   theme: 'energyblue',
+		       source: searchDataAdapter,
+		       selectionMode: 'singlerow',
+		       enableHover: true,
+		       columnsResize: true,
+		       columns: [
+		         { text: 'Section', dataField: 'section', hidden: true },
+		         { text: 'Element', dataField: 'element', width: 400 },
+		         { text: 'Value', dataField: 'value', width: 400 }
+		       ],
+		       rendered: function() {
+		    	   if (currTableOffset != undefined) {
+		    		   //clog("table rendered scroll offset: " + currTableOffset.top + ", " + currTableOffset.left);
+		    		   $("#searchTable").jqxDataTable('scrollOffset', currTableOffset.top, currTableOffset.left);
+		    	   }
+		    	   else
+		    		   currTableOffset = $("#searchTable").jqxDataTable('scrollOffset');
+		       }
+   });
+
+   $('#searchTable').on('rowSelect', function (event) {
+	   clog("rowselect event: " + docNamespace + "," + docTable + "," + docID);
+	   //clog(event.args.index + " meta: " + event.args.originalEvent + " ctrl: " + event.args.ctrlKey);
+	   //rowSelect(event.args.row);
+	   //rowSelect(event.args);
+   });
+
+   $('#searchTable').on('rowClick', function (event) {
+	   clog("rowClick: " + event.args.index + " meta: " + event.args.originalEvent.metaKey + " ctrl: " + event.ctrlKey);
+	   rowSelect(event.args);
+	   //collapseFormElements();
+   });
+   
+   $('#searchTable').on('rowDoubleClick', function (event) {
+	   clog("rowDoubleClick: " + event.args.originalEvent + " meta: " + event.args.originalEvent.metaKey + " ctrl: " + event.ctrlKey);
+	   //rowSelect(event.args);
+	   var el = event.args.originalEvent.target;
+	   expandFormElement(el);
+   });
+
+   $('#searchTable').on('columnResized', function (event) {
+	   loadFrameInstanceNoRT();
+   });
+   
+   
+   
+   
+   
+   
+   
 
    $('#highlightMenu').jqxMenu({ width: '300px', height: '140px', autoOpenPopup: false, mode: 'popup'});
 
@@ -329,6 +406,10 @@ $(document).ready(function () {
 		docFeatureValue = null;
 
    });
+   
+   
+   $('#searchInput').jqxInput({ placeHolder: "Search", height: 25, width: 200, minLength: 1 });
+   
    
    $(document).click(function(event) {
 	   if (event.target.tagName == "TEXTAREA")
@@ -576,9 +657,9 @@ function onRightClick(event) {
         clog("elementType: " + elementType);
 
         var elementIndex = elementIDMap[elementID];
-        gridData2[elementIndex]["start"] = 0;
-    		gridData2[elementIndex]["end"] = -1;
-    		gridData2[elementIndex]["elementValue"] = "";
+        gridData2[gridIndex][elementIndex]["start"] = 0;
+		gridData2[gridIndex][elementIndex]["end"] = -1;
+		gridData2[gridIndex][elementIndex]["elementValue"] = "";
 
         clearElementOnDoubleRightClick(elementID, htmlID, elementType);
         // clog(gridData2);
@@ -793,7 +874,7 @@ function rowSelect(row)
 	
 	var index = row.index;
 	currRowIndex = row.index;
-	var rowData = gridData2[index];
+	var rowData = gridData2[gridIndex][index];
 	var rowValue = rowData["elementValue"];
 	var elementType = rowData['elementType'];
 	var elementHTMLID = rowData["elementHTMLID"];
@@ -1520,6 +1601,8 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		
 		
 		        frameInstanceData = dataObj[3];
+		        
+		        
 		        for (var i=0; i<frameInstanceData.length; i++) {
 		            //var value = frameInstanceData[i]["value"];
 		            var elementID = frameInstanceData[i]["elementID"];
@@ -1539,33 +1622,21 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		            //gridData[elementIndex]["start"] = start;
 		            //gridData[elementIndex]["end"] = end;
 		            //gridData[elementIndex]["elementValue"] = value;
-		            gridData[elementIndex]["docNamespace"] = docNamespaceLocal;
-		            gridData[elementIndex]["docTable"] = docTableLocal;
-		            gridData[elementIndex]["docID"] = docIDLocal;
+		            gridData[gridIndex][elementIndex]["docNamespace"] = docNamespaceLocal;
+		            gridData[gridIndex][elementIndex]["docTable"] = docTableLocal;
+		            gridData[gridIndex][elementIndex]["docID"] = docIDLocal;
 		            //gridData[elementIndex]["vScrollPos"] = vScrollPos;
 		            //gridData[elementIndex]["scrollHeight"] = scrollHeight;
 		            //gridData[elementIndex]["scrollWidth"] = scrollWidth;
-		            gridData[elementIndex]["annotFeatures"] = annotFeatures;
+		            gridData[gridIndex][elementIndex]["annotFeatures"] = annotFeatures;
 		
 		
-		            /*
-		             var element = $("#" + htmlID);
-		             clog(element.prop('tagName') + "," + element.attr('type'));
-		             if (element.prop('tagName').toLowerCase() == "input") {
-		             var elType = element.attr('type').toLowerCase();
-		             if (elType == "text") {
-		             element.val(value);
-		             }
-		             else if (elType == "checkbox" || elType == "radio") {
-		             element.prop('selected', true);
-		             }
-		             }
-		             */
+		            
 		        }
 		
 		
 		        //reload grid data into table
-		        gridSource.localData = gridData;
+		        gridSource.localData = gridData[gridIndex];
 		        dataAdapter = new $.jqx.dataAdapter(gridSource, {
 		            loadComplete: function (data) {
 		            	$("#dataElementTable").jqxDataTable('refresh');
@@ -1573,6 +1644,8 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		            loadError: function (xhr, status, error) { }
 		        });
 		        $("#dataElementTable").jqxDataTable({ source: dataAdapter });
+		        
+		        
 		        
 		        if (currRowIndex != undefined) {
 		        	var rows = $("#dataElementTable").jqxDataTable('getRows');
@@ -1823,18 +1896,18 @@ function addElement(id)
 	
 	clog("add element id: " + id);
 	
-	var gridIndex = elementHTMLIDMap[id];
+	var gridElementIndex = elementHTMLIDMap[id];
 	clog(JSON.stringify(elementHTMLIDMap));
 	
 	index = id.lastIndexOf("_");
 	id = id.substring(0, index);
 	
-	clog("add element id: " + id + " index: " + gridIndex);
+	clog("add element id: " + id + " index: " + gridElementIndex);
 
 	
 	var i;
-	for (i=gridIndex; i<gridData.length; i++) {
-		var htmlID = gridData[i]["elementHTMLID"];
+	for (i=gridElementIndex; i<gridData[gridIndex].length; i++) {
+		var htmlID = gridData[gridIndex][i]["elementHTMLID"];
 		index = htmlID.lastIndexOf("_");
 
 		if (htmlID.substring(0, index) != id)
@@ -1848,21 +1921,21 @@ function addElement(id)
 	id = id + "_" + (repeatNum + 1);
 	
 	var newRow = {};
-	for (var j in gridData[i-1])
-	   newRow[j] = gridData[i-1][j];
+	for (var j in gridData[gridIndex][i-1])
+	   newRow[j] = gridData[gridIndex][i-1][j];
 	
-	gridData.splice(i-1, 0, newRow);
-	gridData[i]["value"] = "<input type='text' id='" + id + "'  name='"+ id + "' /><input type='button' id='" + id + "_remove' value='-' onclick='removeElement(this.id)'/>"
-	gridData[i]["elementHTMLID"] = id;
+	gridData[gridIndex].splice(i-1, 0, newRow);
+	gridData[gridIndex][i]["value"] = "<input type='text' id='" + id + "'  name='"+ id + "' /><input type='button' id='" + id + "_remove' value='-' onclick='removeElement(this.id)'/>"
+	gridData[gridIndex][i]["elementHTMLID"] = id;
 	
-	gridData2.splice(i-1, 0, newRow);
-	gridData2[i]["value"] = "<input type='text' id='" + id + "'  name='"+ id + "' /><input type='button' id='" + id + "_remove' value='-' onclick='removeElement(this.id)'/>"
-	gridData2[i]["elementHTMLID"] = id;
+	gridData2[gridIndex].splice(i-1, 0, newRow);
+	gridData2[gridIndex][i]["value"] = "<input type='text' id='" + id + "'  name='"+ id + "' /><input type='button' id='" + id + "_remove' value='-' onclick='removeElement(this.id)'/>"
+	gridData2[gridIndex][i]["elementHTMLID"] = id;
 	
 	//elementHTMLIDMap[id] = i;
 	refreshElementHTMLIDMap();
 	
-	clog("value: " + gridData[i]["value"]);
+	clog("value: " + gridData[gridIndex][i]["value"]);
 
 	//gridData[i-1]["value"] = gridData[i-1]["value"].concat("<input type='button' id='" + origID + "_remove' value='-' onclick='removeElement(this.id)'/>");
 	//clog("value: " + gridData[i-1]["value"]);
@@ -1912,23 +1985,23 @@ function removeElement(id)
 			index = id.lastIndexOf("_");
 			var repeatNum = parseInt(id.substring(index+1));
 
-			var gridIndex = elementHTMLIDMap[id];
-			clog("remove element: " + id + " gridIndex: " + gridIndex);
+			var gridElementIndex = elementHTMLIDMap[id];
+			clog("remove element: " + id + " gridIndex: " + gridElementIndex);
 
 			
-			gridData.splice(gridIndex, 1);
-			gridData2.splice(gridIndex, 1);
+			gridData[gridIndex].splice(gridElementIndex, 1);
+			gridData2[gridIndex].splice(gridElementIndex, 1);
 			
 			var index;
 			var repeatNum2 = repeatNum;
-			for (index = gridIndex; index<gridData.length; index++) {
-				var elementHTMLID = gridData[index]["elementHTMLID"];
+			for (index = gridElementIndex; index<gridData[gridIndex].length; index++) {
+				var elementHTMLID = gridData[gridIndex][index]["elementHTMLID"];
 				var index2 = elementHTMLID.lastIndexOf("_");
 				elementHTMLID = elementHTMLID.substring(0, index2+1) + repeatNum2;
-				gridData[index]["elementHTMLID"] = elementHTMLID;
-				gridData[index]["value"] = "<input type='text' id='" + elementHTMLID + "'  name='"+ elementHTMLID + "' /><input type='button' id='" + elementHTMLID + "_remove' value='-' onclick='removeElement(this.id)'/>"
-				gridData2[index]["elementHTMLID"] = elementHTMLID;
-				gridData2[index]["value"] = "<input type='text' id='" + elementHTMLID + "'  name='"+ elementHTMLID + "' /><input type='button' id='" + elementHTMLID + "_remove' value='-' onclick='removeElement(this.id)'/>"
+				gridData[gridIndex][index]["elementHTMLID"] = elementHTMLID;
+				gridData[gridIndex][index]["value"] = "<input type='text' id='" + elementHTMLID + "'  name='"+ elementHTMLID + "' /><input type='button' id='" + elementHTMLID + "_remove' value='-' onclick='removeElement(this.id)'/>"
+				gridData2[gridIndex][index]["elementHTMLID"] = elementHTMLID;
+				gridData2[gridIndex][index]["value"] = "<input type='text' id='" + elementHTMLID + "'  name='"+ elementHTMLID + "' /><input type='button' id='" + elementHTMLID + "_remove' value='-' onclick='removeElement(this.id)'/>"
 				repeatNum2++;
 			}
 			
@@ -1959,8 +2032,8 @@ function removeElement(id)
 			}
 			
 			
-			for (index=0; index<gridData.length; index++) {
-				clog("gridData: " + index + ": " + gridData[index]["elementHTMLID"]);
+			for (index=0; index<gridData[gridIndex].length; index++) {
+				clog("gridData: " + index + ": " + gridData[gridIndex][index]["elementHTMLID"]);
 			}
 			
 			
@@ -2026,8 +2099,8 @@ function refreshElementHTMLIDMap()
 	elementHTMLIDMap = {};
 	elementIDMap = {};
 	var i;
-	for (i=0; i<gridData.length; i++) {
-		var row = gridData[i];
+	for (i=0; i<gridData[gridIndex].length; i++) {
+		var row = gridData[gridIndex][i];
 		elementHTMLIDMap[row["elementHTMLID"]] = i;
 		elementIDMap[row["elementID"]] = i;
 	}
@@ -2037,7 +2110,9 @@ function loadCRFData(elementList)
 {
 	//var elementList = JSON.parse(data);
 
-	gridData = new Array();
+	//gridData = new Array();
+	gridData[0] = new Array();
+	gridData[1] = new Array();
 
 	var i;
 	for (i=0; i<elementList.length; i++) {
@@ -2053,12 +2128,12 @@ function loadCRFData(elementList)
 		elementIDMap[row["elementID"]] = i;
 		elementHTMLIDMap[row["elementHTMLID"]] = i;
 
-		gridData[i] = row;
-		gridData2[i] = row;
+		gridData[gridIndex][i] = row;
+		gridData2[gridIndex][i] = row;
 		//clog(row["elementID"] + ", " + row["element"] + ", " + row["elementHTMLID"]);
 	}
 
-	gridSource.localData = gridData;
+	gridSource.localData = gridData[gridIndex];
 	dataAdapter = new $.jqx.dataAdapter(gridSource, {
 	       loadComplete: function (data) { },
 	       loadError: function (xhr, status, error) { }
@@ -2076,9 +2151,9 @@ function clearElement()
 		var elementType = selection[0]["elementType"];
 		var start = selection[0]["start"];
 		var elementIndex = elementIDMap[elementID];
-		gridData2[elementIndex]["start"] = 0;
-		gridData2[elementIndex]["end"] = -1;
-		gridData2[elementIndex]["elementValue"] = "";
+		gridData2[gridIndex][elementIndex]["start"] = 0;
+		gridData2[gridIndex][elementIndex]["end"] = -1;
+		gridData2[gridIndex][elementIndex]["elementValue"] = "";
 
 		clog("clear: " +  elementID);
 		clog("clear: " +  elementHTMLID);
@@ -2367,7 +2442,7 @@ function valueClickCallback(add)
 			var elementIndex = elementHTMLIDMap[htmlID];
 
 			if (elementIndex != undefined) {
-				var rowData = gridData2[elementIndex];
+				var rowData = gridData2[gridIndex][elementIndex];
 
 				clog("elementIndex: " + elementIndex + " htmlID: " + htmlID);
 				clog("rowData: " + start + "," + end);
@@ -2428,7 +2503,7 @@ function valueMouseover(valueElement)
 	if (selection == undefined || selection[0] == undefined || selection[0]["elementHTMLID"] != valueElement.parentElement.id)
 		return;
 
-	var rowData = gridData2[elementIndex];
+	var rowData = gridData2[gridIndex][elementIndex];
 
 	var rowStart = highlightMap["start"];
 	var rowEnd = highlightMap["end"];
@@ -2927,15 +3002,15 @@ function fillSlot(htmlID)
 
 
 				//set the row in the data table
-				for (var i=0; i<gridData.length; i++) {
+				for (var i=0; i<gridData[gridIndex].length; i++) {
 					//clog("elementID: " + gridData[i]["elementID"] + ", " + elementID);
-					if (gridData[i]["elementID"] == elementID) {
+					if (gridData[gridIndex][i]["elementID"] == elementID) {
 						$('#dataElementTable').jqxDataTable('selectRow', i);
-						gridData[i]["start"] = start;
-						gridData[i]["end"] = end;
-						gridData[i]["docNamespace"] = docNamespace;
-						gridData[i]["docTable"] = docTable;
-						gridData[i]["docID"] = docID;
+						gridData[gridIndex][i]["start"] = start;
+						gridData[gridIndex][i]["end"] = end;
+						gridData[gridIndex][i]["docNamespace"] = docNamespace;
+						gridData[gridIndex][i]["docTable"] = docTable;
+						gridData[gridIndex][i]["docID"] = docID;
 						break;
 					}
 				}
@@ -2952,8 +3027,8 @@ function fillSlot(htmlID)
 
 function clearFromMenu()
 {
-	for (var i=0; i<gridData.length; i++) {
-		if (gridData[i]["start"] == highlightMenuStart) {
+	for (var i=0; i<gridData[gridIndex].length; i++) {
+		if (gridData[gridIndex][i]["start"] == highlightMenuStart) {
 			$('#dataElementTable').jqxDataTable('selectRow', i);
 			clearElement();
 
@@ -2961,7 +3036,7 @@ function clearFromMenu()
 
 			//remove from frameInstanceData
 			for (var j=0; j<frameInstanceData.length; j++) {
-				if (frameInstanceData[j]["htmlID"] == gridData[i]["valueHTMLID"]) {
+				if (frameInstanceData[j]["htmlID"] == gridData[gridIndex][i]["valueHTMLID"]) {
 					frameInstanceData.splice(j, 1);
 					break;
 				}
@@ -3212,8 +3287,8 @@ function docPanelClick(cursorPosition, dblClick)
 		clog('highlightelementid: ' + highlightElementID + " name: " + name + " valuehtmlid: " + valueHTMLID);
 		
 		
-		for (index=0; index<gridData2.length; index++) {
-			var rowData = gridData2[index];
+		for (index=0; index<gridData2[gridIndex].length; index++) {
+			var rowData = gridData2[gridIndex][index];
 			//clog(rowData['elementHTMLID']);
 			if (rowData['elementHTMLID'] == name || rowData['elementHTMLID'] == highlightElementID) {
 				$('#dataElementTable').jqxDataTable('selectRow', index);
@@ -3456,7 +3531,7 @@ function expandFormElement(element)
 	if (expand) {
 	
 		$(element.parentElement).find('span').each(function (i, el) {
-			clog('expand: ' + i + ', ' + el.style.display);
+			//clog('expand: ' + i + ', ' + el.style.display);
 			el.style.display = 'block';
 
 		}
@@ -3464,11 +3539,29 @@ function expandFormElement(element)
 	}
 	else {
 		$(element.parentElement).find('input:radio').each(function (i, el) {
-			clog('collapse: ' + i + ', ' + el.parentElement.style.display + ', ' + selected);
+			//clog('collapse: ' + i + ', ' + el.parentElement.style.display + ', ' + selected);
 			if (el != selected) {
 				el.parentElement.style.display = 'none';
 			}
 		}
 		);
 	}
+}
+
+function search()
+{
+	clog("search!");
+	
+	var searchTerm = $('#searchInput').val();
+	
+	openDialogLoad();
+	var searchAjax = jsRoutes.controllers.Application.search(searchTerm);
+	$.ajax({
+		type: 'GET',
+		url: search.url,
+		cache: false
+	}).done(function(data) {
+		clog("search result: " + data);
+		var dataObj = JSON.parse(data);
+	});
 }

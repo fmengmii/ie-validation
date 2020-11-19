@@ -40,6 +40,7 @@ GET     /undo                                               controllers.Applicat
 GET     /validated                                          controllers.Application.frameInstanceValidated()
 #frame instance lock
 GET     /frameinstancelock/:frameInstanceID                 controllers.Application.frameInstanceLocked(frameInstanceID: Int)
+GET		/search												controllers.Application.search(searchTerm: String)
 
 # Annotation viewer
 GET /annotation												controllers.Application.annotIndex()

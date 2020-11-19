@@ -1064,4 +1064,21 @@ public class Application extends Controller
 		
 		return ok(ret);
     }
+	
+	public Result search(String searchTerm)
+	{
+		String ret = "";
+		try {
+			List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
+			int frameInstanceID = Integer.parseInt(session("frameInstanceID"));
+			DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
+			ret = da.getSearchAnnotations(frameInstanceID, searchTerm);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return ok(ret);
+	}
 }

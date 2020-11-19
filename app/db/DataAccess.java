@@ -520,6 +520,22 @@ public class DataAccess {
 
 		return crfStr;
 	}
+	
+	public String loadCRFSearch(int projID, int frameInstanceID) throws SQLException {
+		Connection conn = DB.getConnection();
+		Statement stmt = conn.createStatement();
+		crfID = -1;
+		//schema = (String) Cache.get("schemaName");
+
+		System.out.println("projID: " + projID + " crfID: " + crfID);
+
+		List<Map<String, Object>> sectionList2 = new ArrayList<Map<String, Object>>();
+		String crfStr = crfReader.readCRFDB(crfID, sectionList2, frameInstanceID);
+
+		conn.close();
+
+		return crfStr;
+	}
 
 	public String loadFrameInstance(String username, int frameInstanceID, int projID, boolean loadStatus, String docEntityColumn) throws SQLException {
 		Connection conn = DB.getConnection();
@@ -1252,6 +1268,112 @@ public class DataAccess {
 
 		return "[" + ret + "]";
 	}
+	
+	
+	public String getSearchAnnotations(int frameInstanceID, String searchTerm) throws SQLException
+	{
+		List<Map<String, Object>> frameList = new ArrayList<Map<String, Object>>();
+		Map<String, List<Map<String, Object>>> highlightRangeMap = new HashMap<String, List<Map<String, Object>>>();
+
+		Connection conn = DB.getConnection();
+		Statement stmt = conn.createStatement();
+		String rq = getReservedQuote(conn);
+		
+		ResultSet rs = stmt.executeQuery("select a.id, a.start, a." + rq + "end" + rq + ", a.document_namespace, a.document_table, a.document_id, a.features, a.value, a.annotation_type "
+			+ "from " + schema + "annotation a where a.value = '" + searchTerm + "' and a.document_id in "
+			+ "(select b.document_id from " + schema + "frame_instance_document b where b.frame_instance_id = " + frameInstanceID + ")");
+		
+		int elementSlotNum = 0;
+		while (rs.next()) {
+			
+			String value = rs.getString(8);
+			String docNamespace = rs.getString(4);
+			String docTable = rs.getString(5);
+			String docID = rs.getString(6);
+			Long annotID = rs.getLong(1);
+			Long start = rs.getLong(2);
+			Long end = rs.getLong(3);
+			String annotType = rs.getString(9);
+			String features = rs.getString(7);
+			
+			
+		
+			Map<String, Object> frameMap = new HashMap<String, Object>();
+			frameMap.put("frameInstanceID", frameInstanceID);
+			frameMap.put("value", value);
+			frameMap.put("section_slot_number", 0);
+			frameMap.put("element_slot_number", elementSlotNum);
+	
+			//if (slotNum > 1) {
+			String elementIDStr = "-1_0_" + elementSlotNum;
+			String elementHTMLID = "found_0_" + elementSlotNum;
+			String valueHTMLID = "found_0_" + elementSlotNum;
+			//}
+	
+			frameMap.put("elementID", elementIDStr);
+			frameMap.put("elementHTMLID", elementHTMLID);
+			frameMap.put("valueHTMLID", valueHTMLID);
+			//frameMap.put("start", start);
+			//frameMap.put("end", end);
+			frameMap.put("docNamespace", docNamespace);
+			frameMap.put("docTable", docTable);
+			frameMap.put("docID", docID);
+			frameMap.put("features", features);
+			frameMap.put("elementType", "text");
+	
+			frameList.add(frameMap);
+	
+			Map<String, Object> rangeMap = new HashMap<String, Object>();
+			rangeMap.put("annotID", annotID);
+			rangeMap.put("start", start);
+			rangeMap.put("end", end);
+			rangeMap.put("annotType", annotType);
+			rangeMap.put("docNamespace", docNamespace);
+			rangeMap.put("docTable", docTable);
+			rangeMap.put("docID", docID);
+	
+			String htmlID = elementHTMLID;
+	
+			
+			/*
+			if (elementType.equals("checkbox"))
+				htmlID = valueHTMLID;
+				*/
+			
+	
+			List<Map<String, Object>> rangeList = highlightRangeMap.get(htmlID);
+			if (rangeList == null) {
+				rangeList = new ArrayList<Map<String, Object>>();
+				highlightRangeMap.put(htmlID, rangeList);
+			}
+	
+			boolean inserted = false;
+			int index = 0;
+			for (Map<String, Object> rangeMap2 : rangeList) {
+				if (((Integer) rangeMap2.get("start")) > ((Integer) rangeMap.get("start"))) {
+					rangeList.add(index, rangeMap);
+					inserted = true;
+					break;
+				}
+	
+				index++;
+			}
+	
+			if (!inserted)
+				rangeList.add(rangeMap);
+			
+			elementSlotNum++;
+		}
+		
+		stmt.execute("update " + schema + "frame_instance_element_repeat set repeat_num = " + elementSlotNum);
+		
+		//String crfJSON = loadCRFSearch(projID, frameInstanceID);
+		
+		String crfJSON = "";
+		
+		return "[" + crfJSON + "," + gson.toJson(frameList) + "," + gson.toJson(highlightRangeMap) + "]";
+	}
+	
 
 	public String getFrameData(int frameInstanceID) throws SQLException {
 		List<Map<String, Object>> frameList = new ArrayList<Map<String, Object>>();
@@ -1317,7 +1439,7 @@ public class DataAccess {
 			rangeMap.put("annotID", annotID);
 			rangeMap.put("start", start);
 			rangeMap.put("end", end);
-			rangeMap.put("annotID", annotType);
+			rangeMap.put("annotType", annotType);
 			rangeMap.put("docNamespace", docNamespace);
 			rangeMap.put("docTable", docTable);
 			rangeMap.put("docID", docID);
@@ -2518,17 +2640,20 @@ public class DataAccess {
 	{
 		try {
 			Connection conn = DB.getConnection();
+			Connection conn2 = DB.getConnection();
 			String rq = getReservedQuote(conn);
-			PreparedStatement pstmt = conn.prepareStatement("update " + schema + "document_status set status = 1, user_id = ? where document_namespace = ? and document_table = ? and document_id = ?");
-			PreparedStatement pstmt2 = conn.prepareStatement("update " + schema + "annotation set provenance = 'validation-tool' where document_id = ? and provenance = '##auto'");
+			PreparedStatement pstmt = conn2.prepareStatement("update " + schema + "document_status set status = 1, user_id = ? where document_namespace = ? and document_table = ? and document_id = ?");
+			PreparedStatement pstmt2 = conn2.prepareStatement("update " + schema + "annotation set provenance = 'validation-tool' where document_id = ? and provenance = '##auto'");
 			PreparedStatement pstmt3 = conn.prepareStatement("select count(*) from " + schema + "frame_instance_data_history where frame_instance_id = ?");
 			PreparedStatement pstmt4 = conn.prepareStatement("update " + schema + "frame_instance_status set status = ?, user_id = ? where frame_instance_id = ?");
 			PreparedStatement pstmt5 = conn.prepareStatement("select user_id from " + schema + rq + "user" + rq +" where user_name = ?");
 			PreparedStatement pstmt6 = conn.prepareStatement("insert into " + schema + "frame_instance_status (frame_instance_id, status, user_id) values (?,?,?)");
-			PreparedStatement pstmt7 = conn.prepareStatement("insert into " + schema + "document_status (document_namespace, document_table, document_id, status, user_id) values (?,?,?,-2,?)");
+			PreparedStatement pstmt7 = conn2.prepareStatement("insert into " + schema + "document_status (document_namespace, document_table, document_id, status, user_id) values (?,?,?,-2,?)");
 			PreparedStatement pstmt8 = conn.prepareStatement("select count(*) from " + schema + "frame_instance_status where frame_instance_id = ?");
-			PreparedStatement pstmt9 = conn.prepareStatement("select count(*) from " + schema + "document_status where document_id = ?");
+			PreparedStatement pstmt9 = conn.prepareStatement("select count(*) from " + schema + "document_status where document_name_space = ? and document_table = ? and document_id = ?");
 			PreparedStatement pstmt10 = conn.prepareStatement("select status from " + schema + "frame_instance_status where frame_instance_id = ?");
+			
+			conn2.setAutoCommit(false);
 			
 			Statement stmt = conn.createStatement();
 			
@@ -2564,6 +2689,7 @@ public class DataAccess {
 				//only update status of document if the frame instance was actually validated by the user
 				//this means the user performed some action (as indicated by the undo/redo log)
 				boolean docExists = false;
+				int count = 0;
 
 				while (rs.next()) {
 					String docNamespace = rs.getString(1);
@@ -2571,7 +2697,9 @@ public class DataAccess {
 					long docID = rs.getLong(3);
 					
 					int docCount = 0;
-					pstmt9.setLong(1, docID);
+					pstmt9.setString(1, docNamespace);
+					pstmt9.setString(2, docTable);
+					pstmt9.setLong(3, docID);
 					ResultSet rs2 = pstmt9.executeQuery();
 					if (rs2.next()) {
 						docCount = rs2.getInt(1);
@@ -2587,18 +2715,18 @@ public class DataAccess {
 							pstmt7.setString(2, docTable);
 							pstmt7.setLong(3, docID);
 							pstmt7.setInt(4, userID);
-							pstmt7.execute();
+							pstmt7.addBatch();
 						}
 						else {
 							pstmt.setInt(1, userID);
 							pstmt.setString(2, docNamespace);
 							pstmt.setString(3, docTable);
 							pstmt.setLong(4, docID);
-							pstmt.execute();
+							pstmt.addBatch();
 						}
 		
 						pstmt2.setLong(1, docID);
-						pstmt2.execute();
+						pstmt2.addBatch();
 					}
 					/*
 					else {
@@ -2609,7 +2737,21 @@ public class DataAccess {
 						pstmt.execute();
 					}
 					*/
+					
+					count++;
+					if (count >= 100) {
+						pstmt.executeBatch();
+						pstmt2.executeBatch();
+						pstmt7.executeBatch();
+						conn2.commit();
+						count = 0;
+					}
 				}
+				
+				pstmt.executeBatch();
+				pstmt2.executeBatch();
+				pstmt7.executeBatch();
+				conn2.commit();
 				
 				int currFrameInstanceStatus = -3;
 				pstmt10.setInt(1, frameInstanceID);
