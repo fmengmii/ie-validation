@@ -2691,6 +2691,8 @@ public class DataAccess {
 				boolean docExists = false;
 				int count = 0;
 
+				System.out.println("updatevalidated 1");
+				
 				while (rs.next()) {
 					String docNamespace = rs.getString(1);
 					String docTable = rs.getString(2);
@@ -2707,6 +2709,8 @@ public class DataAccess {
 					
 					if (docCount > 0)
 						docExists = true;
+					
+					System.out.println("updatevalidated 2");
 
 
 					if (validated) {
@@ -2724,9 +2728,13 @@ public class DataAccess {
 							pstmt.setLong(4, docID);
 							pstmt.addBatch();
 						}
+						
+						System.out.println("updatevalidated 3");
 		
 						pstmt2.setLong(1, docID);
 						pstmt2.addBatch();
+						
+						System.out.println("updatevalidated 4");
 					}
 					/*
 					else {
@@ -2746,12 +2754,16 @@ public class DataAccess {
 						conn2.commit();
 						count = 0;
 					}
+					
+					System.out.println("updatevalidated 5");
 				}
 				
 				pstmt.executeBatch();
 				pstmt2.executeBatch();
 				pstmt7.executeBatch();
 				conn2.commit();
+				
+				System.out.println("updatevalidated 6");
 				
 				int currFrameInstanceStatus = -3;
 				pstmt10.setInt(1, frameInstanceID);
@@ -2782,6 +2794,8 @@ public class DataAccess {
 					pstmt4.setInt(3, frameInstanceID);
 					pstmt4.execute();
 				}
+				
+				System.out.println("updatevalidated 7");
 			//}
 
 			pstmt.close();
@@ -3002,6 +3016,8 @@ public class DataAccess {
 			else
 				updateValidationStatus(frameInstanceID, userName, false);
 		}
+		
+		System.out.println("clearundo finished updatevalidation!");
 		
 		stmt.execute("insert into " + schema + "frame_instance_data_history2 "
 				+ "select * from " + schema + "frame_instance_data_history where user_name = '" + userName + "'");
