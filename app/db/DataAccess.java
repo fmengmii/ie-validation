@@ -30,7 +30,7 @@ public class DataAccess {
 	
 	private Map<String, Database> dbMap;
 	
-	private String[] annotColors = {"lightgray", "darkgray", "lightslategray", "antiquewhite", "tan", "wheat", "aquamarine", "lightseagreen", "palegreen", "olive", "mediumorchid", 
+	private String[] annotColors = {"lightgray", "lightslategray", "antiquewhite", "tan", "wheat", "aquamarine", "lightseagreen", "palegreen", "olive", "mediumorchid", 
 		"lavender", "peachpuff", "lightsalmon" ,"palevioletred", "mistyrose"};
 
 	/*
