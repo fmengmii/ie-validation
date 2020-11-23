@@ -29,6 +29,9 @@ public class DataAccess {
 	private String userName;
 	
 	private Map<String, Database> dbMap;
+	
+	private String[] annotColors = {"lighgray", "darkgray", "lightslategray", "antiquewhite", "tan", "wheat", "aquamarine", "lightseagreen", "palegreen", "olive", "mediumorchid", 
+		"lavender", "peachpuff", "lightsalmon" ,"palevioletred", "mistyrose"};
 
 	/*
 	private String docTable = "";
@@ -2317,12 +2320,15 @@ public class DataAccess {
 				if (annotMap.get(Long.toString(start)) != null)
 					continue;
 				
+				int colorIndex = preloadAnnotList.indexOf(annotType);
+				String color = annotColors[colorIndex];
+				
 				
 				Map<String, Object> annot = new HashMap<String, Object>();
 				annot.put("start", start);
 				annot.put("end", end);
 				annot.put("annotType", annotType);
-				annot.put("color", "lightgray");
+				annot.put("color", color);
 	
 				boolean inserted = false;
 				for (int i=0; i<annotList.size(); i++) {
@@ -2368,12 +2374,14 @@ public class DataAccess {
 				if (annotMap.get(Long.toString(start)) != null)
 					continue;
 				
+				int colorIndex = preloadAnnotList.indexOf(annotType);
+				String color = annotColors[colorIndex];
 				
 				Map<String, Object> annot = new HashMap<String, Object>();
 				annot.put("start", start);
 				annot.put("end", end);
 				annot.put("annotType", annotType);
-				annot.put("color", "lightgray");
+				annot.put("color", color);
 	
 				boolean inserted = false;
 				for (int i=0; i<annotList.size(); i++) {
