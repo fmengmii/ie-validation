@@ -551,6 +551,7 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		//$('#docPanel').jqxPanel('append', "<div style='margin:10px;'>" + text + "</div>");
 		//$('#docPanel').val("<div style='margin:10px;'>" + text + "</div>");
 		$('#docPanel').val(text);
+		$('#docPanel').scrollTop(0);
 
 		annotList = docData["annotList"];
 		//clog("annotList: " + JSON.stringify(annotList));
