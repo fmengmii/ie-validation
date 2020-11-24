@@ -12,7 +12,6 @@ gridData2[1] = new Array();
 
 var gridIndex = 0;
 
-
 var frameInstanceData;
 var highlightStart;
 var highlightEnd;
@@ -70,6 +69,9 @@ var history = new Object();
 var processID = 1;
 
 var userActions = 0;
+
+var docListBoxSource = [];
+
 
 
 $(document).ready(function () {
@@ -129,7 +131,6 @@ $(document).ready(function () {
 
    $('#dialogNextEntity').jqxWindow('close');
 
-   var docListBoxSource = [];
    $("#docListBox").jqxListBox({ selectedIndex: 0, source: docListBoxSource, width: '95%', height: '90%'});
    $('#docListBox').on('select', function(event) {
 
@@ -1430,7 +1431,7 @@ function loadCRF(crfName)
 
 function loadProject(projName)
 {
-	$("#validatedButtonDiv").hide();
+	//$("#validatedButtonDiv").hide();
 	openDialogLoad();
 	var loadProjectAjax = jsRoutes.controllers.Application.loadProject(projName);
 	$.ajax({
@@ -1523,7 +1524,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 	//offset = $("#dataElementTable").jqxDataTable('scrollOffset');
 	clog("loadFrameInstance, frameInstanceID: " + frameInstanceID + " clearDoc: " + clearDoc);
 	
-    $("#validatedButtonDiv").hide();
+    //$("#validatedButtonDiv").hide();
     
     //validate curr frame instance
     //clog("currFrameInstanceID: " + currFrameInstanceID);
@@ -1686,7 +1687,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		
 		
 		            //load document list into listbox
-		            var docListBoxSource = [];
+		            docListBoxSource = [];
 		            for (var i = 0; i < docList.length; i++) {
 		                var oneDoc = {};
 		                oneDoc["label"] = docList[i]["docName"];
@@ -3565,4 +3566,30 @@ function search()
 		clog("search result: " + data);
 		var dataObj = JSON.parse(data);
 	});
+}
+
+function prevDoc()
+{
+	clog("prev doc: " + docSelectIndex);
+	if (docSelectIndex > 0) {
+		docSelectIndex--;
+		getDocument(docListBoxSource[docSelectIndex]["value"], docSelectIndex, true, null, function () {
+			   //clog("HERERERE!");
+		 	   getHighlightRanges();
+			   highlightText();
+		   });
+	}
+}
+
+function nextDoc()
+{
+	clog("next doc: " + docSelectIndex);
+	if (docSelectIndex < docListBoxSource.length-1) {
+		docSelectIndex++;
+		getDocument(docListBoxSource[docSelectIndex]["value"], docSelectIndex, true, null, function () {
+			   //clog("HERERERE!");
+		 	   getHighlightRanges();
+			   highlightText();
+		   });
+	}
 }

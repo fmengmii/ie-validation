@@ -327,10 +327,12 @@
 						<textarea id='docPanel' readonly style="height:90%;width:90%"
 								    onmousemove="onRightClick(event)"></textarea>
 						<!--<textarea id='docPanel' readonly style="height:90%;width:90%" onclick=docPanelSelect(event);></textarea>-->
-						<div id="validatedButtonDiv">
-							<!--<button type="button" onclick="location.href='/validated'" id="validatedButton" value="validated">Validated</button>-->
-							<button type="button" onclick="frameInstanceValidated()" id="validatedButton" value="validated">Validated</button>
+						
+						<div id="docNavDiv">
+							<button type="button" onclick="prevDoc()" id="prevDocButton" value="prevDoc">Prev Doc</button>
+							<button type="button" onclick="nextDoc()" id="nextDocButton" value="nextDoc">Next Doc</button>
 						</div>
+						
 					</div>
 	        	</div>
         	</div>
