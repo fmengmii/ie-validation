@@ -30,7 +30,7 @@ public class DataAccess {
 	
 	private Map<String, Database> dbMap;
 	
-	private String[] annotColors = {"lightgray", "lightslategray", "antiquewhite", "tan", "wheat", "aquamarine", "lightseagreen", "palegreen", "olive", "mediumorchid", 
+	private String[] annotColors = {"lightgray", "antiquewhite", "tan", "wheat", "aquamarine", "lightseagreen", "palegreen", "olive", "mediumorchid", 
 		"lavender", "peachpuff", "lightsalmon" ,"palevioletred", "mistyrose"};
 
 	/*
@@ -2174,15 +2174,19 @@ public class DataAccess {
 		
 		//preload
 		List<String> preloadAnnotList = new ArrayList<String>();
+		List<String> preloadAnnotColorList= new ArrayList<String>();
 		List<String> preloadValList = new ArrayList<String>();
-		rs = stmt.executeQuery("select distinct value from " + schema + "project_preload where project_id = " + projID + " and type = 1");
+		List<String> preloadValColorList = new ArrayList<String>();
+		rs = stmt.executeQuery("select distinct value, color from " + schema + "project_preload where project_id = " + projID + " and type = 1");
 		while (rs.next()) {
 			preloadAnnotList.add(rs.getString(1));
+			preloadAnnotColorList.add(rs.getString(2));
 		}
 		
-		rs = stmt.executeQuery("select distinct value from " + schema + "project_preload where project_id = " + projID + " and type = 2");
+		rs = stmt.executeQuery("select distinct value, color from " + schema + "project_preload where project_id = " + projID + " and type = 2");
 		while (rs.next()) {
 			preloadValList.add(rs.getString(1));
+			preloadValColorList.add(rs.getString(2));
 		}
 
 		
@@ -2321,7 +2325,9 @@ public class DataAccess {
 					continue;
 				
 				int colorIndex = preloadAnnotList.indexOf(annotType);
-				String color = annotColors[colorIndex];
+				String color = preloadAnnotColorList.get(colorIndex);
+				if (color == null)
+					color = annotColors[colorIndex];
 				
 				
 				Map<String, Object> annot = new HashMap<String, Object>();
@@ -2375,7 +2381,9 @@ public class DataAccess {
 					continue;
 				
 				int colorIndex = preloadAnnotList.indexOf(annotType);
-				String color = annotColors[colorIndex];
+				String color = preloadAnnotColorList.get(colorIndex);
+				if (color == null)
+					color = annotColors[colorIndex];
 				
 				Map<String, Object> annot = new HashMap<String, Object>();
 				annot.put("start", start);
