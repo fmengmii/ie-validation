@@ -545,89 +545,6 @@ public class DataAccess {
 		Statement stmt = conn.createStatement();
 		String rq = getReservedQuote(conn);
 		
-		
-		//UNDO/REDO
-		//stmt.execute("delete from " + schema + "annotation_history");
-		//stmt.execute("delete from " + schema + "frame_instance_data_history");
-
-		//schema = (String) Cache.get("schemaName");
-
-
-
-		/*
-		List<Map<String, Object>> frameList = new ArrayList<Map<String, Object>>();
-		Map<String, Map<String, Object>> highlightRangeMap = new HashMap<String, Map<String, Object>>();
-
-		//Map<Integer, Integer> sectionNumMap = new HashMap<Integer, Integer>();
-		//Map<String, Integer> elementNumMap = new HashMap<String, Integer>();
-		//int currSectionNum = 0;
-		//int currElementNum = 0;
-		//String currElementID = "";
-
-		ResultSet rs = stmt.executeQuery("select a.value, a.section_slot_number, a.element_slot_number, a.element_id, b.html_id, c.start, c." + rq + "end" + rq + ", "
-			+ "a.document_namespace, a.document_table, a.document_id, c.features, d.html_id, e.element_type_name "
-			+ "from " + schema + "frame_instance_data a, " + schema + "element b, " + schema + "annotation c, " + schema + "value d, " + schema + "element_type e "
-			+ "where a.element_id = b.element_id and a.annotation_id = c.id and "
-			+ "c.id = a.annotation_id and c.document_namespace = a.document_namespace and c.document_table = a.document_table and c.document_id = a.document_id and "
-			+ "a.frame_instance_id = " + frameInstanceID + " and b.element_type = e.element_type_id and a.slot_id = d.slot_id "
-			+ "order by a.element_id, a.section_slot_number, a.element_slot_number");
-
-		while (rs.next()) {
-			String value = rs.getString(1);
-			int sectionSlotNum = rs.getInt(2);
-			int elementSlotNum = rs.getInt(3);
-			String elementID = rs.getString(4);
-			String elementHTMLID = rs.getString(5);
-			int start = rs.getInt(6);
-			int end = rs.getInt(7);
-			String docNamespace = rs.getString(8);
-			String docTable = rs.getString(9);
-			long docID = rs.getLong(10);
-			String features = rs.getString(11);
-			String valueHTMLID = rs.getString(12);
-			String elementType = rs.getString(13);
-
-			Map<String, Object> frameMap = new HashMap<String, Object>();
-			frameMap.put("frameInstanceID", frameInstanceID);
-			frameMap.put("value", value);
-			frameMap.put("section_slot_number", sectionSlotNum);
-			frameMap.put("element_slot_number", elementSlotNum);
-
-			//if (slotNum > 1) {
-			elementID += "_" + sectionSlotNum + "_" + elementSlotNum;
-			elementHTMLID += "_" + sectionSlotNum + "_" + elementSlotNum;
-			valueHTMLID += "_" + sectionSlotNum + "_" + elementSlotNum;
-			//}
-
-			frameMap.put("elementID", elementID);
-			frameMap.put("elementHTMLID", elementHTMLID);
-			frameMap.put("valueHTMLID", valueHTMLID);
-			//frameMap.put("start", start);
-			//frameMap.put("end", end);
-			frameMap.put("docNamespace", docNamespace);
-			frameMap.put("docTable", docTable);
-			frameMap.put("docID", docID);
-			frameMap.put("features", features);
-			frameMap.put("elementType", elementType);
-
-			frameList.add(frameMap);
-
-			Map<String, Object> rangeMap = new HashMap<String, Object>();
-			rangeMap.put("start", start);
-			rangeMap.put("end", end);
-			rangeMap.put("docNamespace", docNamespace);
-			rangeMap.put("docTable", docTable);
-			rangeMap.put("docID", docID);
-
-			String htmlID = elementHTMLID;
-
-			if (elementType.equals("checkbox"))
-				htmlID = valueHTMLID;
-
-			highlightRangeMap.put(htmlID, rangeMap);
-		}
-		*/
-
 
 		String frameDataStr = getFrameData(frameInstanceID);
 
@@ -2666,7 +2583,7 @@ public class DataAccess {
 			PreparedStatement pstmt6 = conn.prepareStatement("insert into " + schema + "frame_instance_status (frame_instance_id, status, user_id) values (?,?,?)");
 			PreparedStatement pstmt7 = conn2.prepareStatement("insert into " + schema + "document_status (document_namespace, document_table, document_id, status, user_id) values (?,?,?,-2,?)");
 			PreparedStatement pstmt8 = conn.prepareStatement("select count(*) from " + schema + "frame_instance_status where frame_instance_id = ?");
-			PreparedStatement pstmt9 = conn.prepareStatement("select count(*) from " + schema + "document_status where document_name_space = ? and document_table = ? and document_id = ?");
+			PreparedStatement pstmt9 = conn.prepareStatement("select count(*) from " + schema + "document_status where document_namespace = ? and document_table = ? and document_id = ?");
 			PreparedStatement pstmt10 = conn.prepareStatement("select status from " + schema + "frame_instance_status where frame_instance_id = ?");
 			
 			conn2.setAutoCommit(false);
