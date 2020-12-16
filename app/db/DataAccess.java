@@ -254,7 +254,7 @@ public class DataAccess {
 		ResultSet rs = stmt2.executeQuery("select document_key, document_text_column, document_name, document_features, "
 				+ "frame_instance_id from " + schema + "frame_instance_document "
 				+ "where document_namespace = '" + docNamespace + "' and document_table = '" + docTable
-				+ "' and document_id = " + docID + " and disabled = 0");
+				+ "' and document_id = " + docID);
 
 		String docKey = "";
 		String docTextColumn = "";
@@ -661,7 +661,7 @@ public class DataAccess {
 		Statement stmt = conn.createStatement();
 
 		ResultSet rs = stmt.executeQuery("select document_namespace, document_table, document_id, document_key, document_text_column, document_name from " + schema + "frame_instance_document "
-				+ "where frame_instance_id = " + frameInstanceID + " order by document_order");
+				+ "where frame_instance_id = " + frameInstanceID + " and disabled = 0 order by document_order");
 
 		while (rs.next()) {
 			String docNamespace = rs.getString(1);
