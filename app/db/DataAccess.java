@@ -254,7 +254,7 @@ public class DataAccess {
 		ResultSet rs = stmt2.executeQuery("select document_key, document_text_column, document_name, document_features, "
 				+ "frame_instance_id from " + schema + "frame_instance_document "
 				+ "where document_namespace = '" + docNamespace + "' and document_table = '" + docTable
-				+ "' and document_id = " + docID);
+				+ "' and document_id = " + docID + " and disabled = 0");
 
 		String docKey = "";
 		String docTextColumn = "";
@@ -2624,7 +2624,6 @@ public class DataAccess {
 				boolean docExists = false;
 				int count = 0;
 
-				System.out.println("updatevalidated 1");
 				
 				while (rs.next()) {
 					String docNamespace = rs.getString(1);
@@ -2643,7 +2642,6 @@ public class DataAccess {
 					if (docCount > 0)
 						docExists = true;
 					
-					System.out.println("updatevalidated 2");
 
 
 					if (validated) {
@@ -2662,12 +2660,10 @@ public class DataAccess {
 							pstmt.addBatch();
 						}
 						
-						System.out.println("updatevalidated 3");
 		
 						pstmt2.setLong(1, docID);
 						pstmt2.addBatch();
 						
-						System.out.println("updatevalidated 4");
 					}
 					/*
 					else {
@@ -2688,7 +2684,6 @@ public class DataAccess {
 						count = 0;
 					}
 					
-					System.out.println("updatevalidated 5");
 				}
 				
 				pstmt.executeBatch();
@@ -2696,7 +2691,6 @@ public class DataAccess {
 				pstmt7.executeBatch();
 				conn2.commit();
 				
-				System.out.println("updatevalidated 6");
 				
 				int currFrameInstanceStatus = -3;
 				pstmt10.setInt(1, frameInstanceID);
@@ -2728,7 +2722,6 @@ public class DataAccess {
 					pstmt4.execute();
 				}
 				
-				System.out.println("updatevalidated 7");
 			//}
 
 			pstmt.close();
