@@ -557,10 +557,10 @@ public class DataAccess {
 
 		ResultSet rs = stmt.executeQuery("select document_namespace, document_table, document_key, document_text_column, document_id from "
 				+ schema + "frame_instance_document "
-				+ "where frame_instance_id = " + frameInstanceID);
+				+ "where frame_instance_id = " + frameInstanceID + " and disabled = 0");
 		System.out.println("select document_namespace, document_table, document_key, document_text_column, document_id from "
 				+ schema + "frame_instance_document "
-				+ "where frame_instance_id = " + frameInstanceID);
+				+ "where frame_instance_id = " + frameInstanceID + " and disabled = 0");
 		if (rs.next()) {
 			docNamespace = rs.getString(1);
 			docTable = rs.getString(2);
