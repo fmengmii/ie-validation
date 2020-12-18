@@ -1289,6 +1289,9 @@ public class DataAccess {
 		
 		//String crfJSON = loadCRFSearch(projID, frameInstanceID);
 		
+		stmt.close();
+		conn.close();
+		
 		String crfJSON = "";
 		
 		return "[" + crfJSON + "," + gson.toJson(frameList) + "," + gson.toJson(highlightRangeMap) + "]";
