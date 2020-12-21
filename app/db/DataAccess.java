@@ -2737,6 +2737,7 @@ public class DataAccess {
 			pstmt8.close();
 			stmt.close();
 			conn.close();
+			conn2.close();
 
 			return true;
 		}
