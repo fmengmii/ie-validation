@@ -3250,7 +3250,7 @@ function docPanelClick(cursorPosition, dblClick)
 
 		annotListLocal.forEach(function (annot) {
 			//clog("start: " + annot['start'] + " end: " + annot['end']);
-			if (annot['start'] <= cursorPosition && annot['end'] >= cursorPosition) {
+			if (annot['docID'] == docID && annot['start'] <= cursorPosition && annot['end'] >= cursorPosition) {
 				highlightElementID = elementID;
 				//annotClickedList.push(annot);
 				//elementStart = annot['start'];
