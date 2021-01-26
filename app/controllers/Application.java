@@ -331,11 +331,16 @@ public class Application extends Controller
     	try {
 	    	System.out.println("docID: " + docID);
 	    	//session("docID", Integer.toString(docID));
+	    	
+	    	long currDocID = Long.parseLong(session("docID"));
+	    	
 	    	session("docID", docID);
 	    	gson = new Gson();
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
 	    	DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
+	    	da.setCurrDocID(currDocID);
+	    	
 	    	Map<String, String> docMap = da.getDocument(docNamespace, docTable, Long.parseLong(docID), session("docEntityColumn"));
 
 	    	int crfID =  Integer.parseInt(session("crfID"));

@@ -219,6 +219,10 @@ public class DataAccess {
 	public long getCurrDocID() {
 		return currDocID;
 	}
+	
+	public void setCurrDocID(long docID) {
+		currDocID = docID;
+	}
 
 	public List<Map<String, String>> getProjects() throws SQLException {
 		List<Map<String, String>> crfList = new ArrayList<Map<String, String>>();
@@ -249,6 +253,12 @@ public class DataAccess {
 		Connection conn2 = DB.getConnection();
 		Statement stmt2 = conn2.createStatement();
 		Map<String, String> docMap = new HashMap<String, String>();
+		
+		
+		//update doc status for curr doc ID
+		stmt.execute("update " + schema + "document_status set status = 1 where document_id = " + currDocID + " and document_name_space = '" + docNamespace + "' "
+			+ "and document_table = '" + docTable + "'");
+		
 
 		//get the key and text column names
 		ResultSet rs = stmt2.executeQuery("select document_key, document_text_column, document_name, document_features, "
