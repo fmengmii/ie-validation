@@ -256,8 +256,9 @@ public class DataAccess {
 		
 		
 		//update doc status for curr doc ID
-		stmt.execute("update " + schema + "document_status set status = 1 where document_id = " + currDocID + " and document_name_space = '" + docNamespace + "' "
-			+ "and document_table = '" + docTable + "'");
+		if (currDocID >= 0)
+			stmt.execute("update " + schema + "document_status set status = 1 where document_id = " + currDocID + " and document_name_space = '" + docNamespace + "' "
+					+ "and document_table = '" + docTable + "'");
 		
 
 		//get the key and text column names

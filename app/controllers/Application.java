@@ -332,7 +332,10 @@ public class Application extends Controller
 	    	System.out.println("docID: " + docID);
 	    	//session("docID", Integer.toString(docID));
 	    	
-	    	long currDocID = Long.parseLong(session("docID"));
+	    	String currDocIDStr = session("docID");
+	    	long currDocID = -1;
+	    	if (currDocIDStr != null)
+	    		currDocID = Long.parseLong(session("docID"));
 	    	
 	    	session("docID", docID);
 	    	gson = new Gson();
