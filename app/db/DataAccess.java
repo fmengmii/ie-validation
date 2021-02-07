@@ -2798,7 +2798,8 @@ public class DataAccess {
 			return false;
 		}
 	}
-	c boolean updateValidationStatusDoc(String docNamespace, String docTable, long docID, String userName)
+	
+	boolean updateValidationStatusDoc(String docNamespace, String docTable, long docID, String userName)
 	{
 		try {
 			Connection conn = DB.getConnection();

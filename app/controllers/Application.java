@@ -615,8 +615,8 @@ public class Application extends Controller
     				currDocID = Long.parseLong(currDocIDStr);
     			
     			if (currDocID >= 0) {
-    				updateValidationStatusDoc(currDocNamespace, currDocTable, currDocID, un);
-    				clearUndoHistoryDoc(un); // clears whenever you load a new document
+    				da.updateValidationStatusDoc(currDocNamespace, currDocTable, currDocID, un);
+    				da.clearUndoHistoryDoc(un); // clears whenever you load a new document
     			}
     		}
     		
