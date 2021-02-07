@@ -2599,7 +2599,7 @@ public class DataAccess {
 		return lastIndex;
 	}
 	
-	public boolean updateValidationStatusFrameInstance(int frameInstanceID, String userName)
+	public void updateValidationStatusFrameInstance(int frameInstanceID, String userName)
 	{
 		try {
 			Connection conn = DB.getConnection();
@@ -2799,7 +2799,7 @@ public class DataAccess {
 		}
 	}
 	
-	public boolean updateValidationStatusDoc(String docNamespace, String docTable, long docID, String userName)
+	public void updateValidationStatusDoc(String docNamespace, String docTable, long docID, String userName)
 	{
 		try {
 			Connection conn = DB.getConnection();
@@ -2893,12 +2893,10 @@ public class DataAccess {
 			conn.close();
 			conn2.close();
 
-			return true;
 		}
 		catch(SQLException e)
 		{
 			Logger.error("updateValidationStatus got error: " + e.toString() );
-			return false;
 		}
 	}
 	
