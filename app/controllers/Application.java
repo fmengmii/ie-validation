@@ -361,7 +361,7 @@ public class Application extends Controller
 	    	}
 	    	
 	    	Map<String, String> docMap = da.getDocument(docNamespace, docTable, Long.parseLong(docID), session("docEntityColumn"));
-	    	session("undoNum", 0);
+	    	session("undoNum", "0");
 
 	    	int crfID =  Integer.parseInt(session("crfID"));
 	    	int projID = Integer.parseInt(session("projID"));
