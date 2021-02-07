@@ -133,7 +133,7 @@ public class Application extends Controller
                 //return index();
                 loggedIn = true;
 				session("userName", un);
-				da.clearUndoHistory(un, -1, 0);
+				da.clearUndoHistoryDoc(un);
             } else {
 
                 //return ok(login.render(false));
@@ -323,6 +323,7 @@ public class Application extends Controller
     	//String docTextColumn = form.get("docTextColumn");
 
     	double annotThreshold = Double.parseDouble(session("annotThreshold"));
+    	String un = session("userName");
 
     	System.out.println("docNamespace: " + docNamespace + " docTable: " + docTable + " docID: " + docID);
     	String docText = "";
@@ -336,15 +337,31 @@ public class Application extends Controller
 	    	long currDocID = -1;
 	    	if (currDocIDStr != null)
 	    		currDocID = Long.parseLong(session("docID"));
+	    	String currDocNamespace = session("docNamespace");
+	    	String currDocTable = session("docTable");
 	    	
+	    	//set current doc info
 	    	session("docID", docID);
+	    	session("docNamespace", docNamespace);
+	    	session("docTable", docTable);
+	    	
+	    	
 	    	gson = new Gson();
 	    	List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
 	    	DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
 	    	da.setCurrDocID(currDocID);
+	    	da.setUserName(un);
+	    	
+	    	
+	    	//update validation status and clear undo history
+	    	if (currDocID >= 0) {
+		    	da.updateValidationStatusDoc(currDocNamespace, currDocTable, currDocID, un);
+				da.clearUndoHistoryDoc(un); // clears whenever you load a new document
+	    	}
 	    	
 	    	Map<String, String> docMap = da.getDocument(docNamespace, docTable, Long.parseLong(docID), session("docEntityColumn"));
+	    	session("undoNum", 0);
 
 	    	int crfID =  Integer.parseInt(session("crfID"));
 	    	int projID = Integer.parseInt(session("projID"));
@@ -586,18 +603,35 @@ public class Application extends Controller
 	    	
     		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
     		if (oldFrameInstanceID != frameInstanceID) {
-    			da.clearUndoHistory(un, oldFrameInstanceID, userActions);
-    			session("undoNum", "0");
+    			//da.clearUndoHistory(un, oldFrameInstanceID, userActions);
+    			da.updateValidationStatusFrameInstance(oldFrameInstanceID, un);
+    			//session("undoNum", "0");
+    			
+    			String currDocNamespace = session("docNamespace");
+    			String currDocTable = session("docTable");
+    			String currDocIDStr = session("docID");
+    			long currDocID = -1;
+    			if (currDocIDStr != null)
+    				currDocID = Long.parseLong(currDocIDStr);
+    			
+    			if (currDocID >= 0) {
+    				updateValidationStatusDoc(currDocNamespace, currDocTable, currDocID, un);
+    				clearUndoHistoryDoc(un); // clears whenever you load a new document
+    			}
     		}
     		
     		int projID = Integer.parseInt(session("projID"));
     		frameInstanceStr = da.loadFrameInstance(un, frameInstanceID, projID, loadStatus, session("docEntityColumn")); // was changed
+    		String currDocNamespace = da.getCurrDocNamespace();
+    		String currDocTable = da.getCurrDocTable();
     		long docID = da.getCurrDocID();
-    		session("docID", Long.toString(docID));
+    		
+    		session("docNamespace", currDocNamespace);
+    		session("docTable", currDocTable);
+    		session("docID", Long.toString(docID));  		
 
     		String sectionListStr = gson.toJson(sectionList);
     		session("sectionList", sectionListStr);
-
     	}
     	catch(Exception e)
     	{

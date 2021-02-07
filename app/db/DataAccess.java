@@ -23,6 +23,8 @@ public class DataAccess {
 	//private String rq;
 	private List<Map<String, Object>> sectionList;
 	private int crfID;
+	private String currDocNamespace;
+	private String currDocTable;
 	private long currDocID;
 	private int undoNum;  //undoNum is the sequence number for UNDO/REDO - undoAction: 0=add, 1=delete, 2=add and add element, 3=delete and remove element
 	private int addRemoveElement; // 0 = no action, 1=add element, 2=remove element
@@ -215,6 +217,16 @@ public class DataAccess {
 
 		return crfID;
 	}
+	
+	public String getCurrDocNamespace()
+	{
+		return currDocNamespace;
+	}
+	
+	public String getCurrDocTable()
+	{
+		return currDocTable;
+	}
 
 	public long getCurrDocID() {
 		return currDocID;
@@ -246,7 +258,9 @@ public class DataAccess {
 
 	public Map<String, String> getDocument(String docNamespace, String docTable, long docID, String docEntityColumn) throws SQLException {
 		// new code
-		clearHistory(); // clears whenever you load a new document
+		//updateValidationStatusDoc(docNamespace, docTable, docID, userName);
+		//clearUndoHistoryDoc(userName); // clears whenever you load a new document
+		
 		String docText = "";
 		Connection conn = DB.getConnection("doc");
 		Statement stmt = conn.createStatement();
@@ -579,6 +593,8 @@ public class DataAccess {
 			docTextCol = rs.getString(4);
 			docID = rs.getLong(5);
 
+			currDocNamespace = docNamespace;
+			currDocTable = docTable;
 			currDocID = docID;
 		}
 
@@ -2582,6 +2598,30 @@ public class DataAccess {
 
 		return lastIndex;
 	}
+	
+	public boolean updateValidationStatusFrameInstance(int frameInstanceID, String userName)
+	{
+		try {
+			Connection conn = DB.getConnection();
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery("select count(a.*) from " + schema + "document_status a, " + schema + "frame_instance_document b "
+				+ "where a.document_namespace = b.document_namespace and a.document_table = b.document_table and a.document_id = b.document_id "
+				+ "and a.status = 1");
+			
+			int count = 0;
+			if (rs.next()) {
+				count = rs.getInt(1);
+			}
+			
+			if (count > 0) {
+				stmt.execute("update " + schema + "frame_instance_status set status = 1 where frame_instance_id = " + frameInstanceID);
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
 
 	public boolean updateValidationStatus(int frameInstanceID, String userName, boolean validated)
 	{
@@ -2630,7 +2670,7 @@ public class DataAccess {
 				
 			
 				rs = stmt.executeQuery("select document_namespace, document_table, document_id from "
-						+ schema + "frame_instance_document where frame_instance_id = " + frameInstanceID);
+						+ schema + "frame_instance_document where frame_instance_id = " + frameInstanceID + " and disabled = 0");
 	
 	
 				//only update status of document if the frame instance was actually validated by the user
@@ -2758,6 +2798,113 @@ public class DataAccess {
 			return false;
 		}
 	}
+	c boolean updateValidationStatusDoc(String docNamespace, String docTable, long docID, String userName)
+	{
+		try {
+			Connection conn = DB.getConnection();
+			Connection conn2 = DB.getConnection();
+			String rq = getReservedQuote(conn);
+			PreparedStatement pstmt = conn2.prepareStatement("update " + schema + "document_status set status = 1, user_id = ? where document_namespace = ? and document_table = ? and document_id = ?");
+			PreparedStatement pstmt2 = conn2.prepareStatement("update " + schema + "annotation set provenance = 'validation-tool' where document_id = ? and provenance = '##auto'");
+			PreparedStatement pstmt3 = conn.prepareStatement("select count(*) from " + schema + "frame_instance_data_history where document_namespace = ? "
+				+ "and document_table = ? and document_id = ?");
+			PreparedStatement pstmt4 = conn.prepareStatement("update " + schema + "frame_instance_status set status = ?, user_id = ? where frame_instance_id = ?");
+			PreparedStatement pstmt5 = conn.prepareStatement("select user_id from " + schema + rq + "user" + rq +" where user_name = ?");
+			PreparedStatement pstmt6 = conn.prepareStatement("insert into " + schema + "frame_instance_status (frame_instance_id, status, user_id) values (?,?,?)");
+			PreparedStatement pstmt7 = conn2.prepareStatement("insert into " + schema + "document_status (document_namespace, document_table, document_id, status, user_id) values (?,?,?,-2,?)");
+			PreparedStatement pstmt8 = conn.prepareStatement("select count(*) from " + schema + "frame_instance_status where frame_instance_id = ?");
+			PreparedStatement pstmt9 = conn.prepareStatement("select count(*) from " + schema + "document_status where document_namespace = ? and document_table = ? and document_id = ?");
+			PreparedStatement pstmt10 = conn.prepareStatement("select status from " + schema + "frame_instance_status where frame_instance_id = ?");
+			
+			//conn2.setAutoCommit(false);
+			
+			Statement stmt = conn.createStatement();
+			
+			int userID = -1;
+			ResultSet rs = stmt.executeQuery("select user_id from " + schema + rq + "user" + rq + " where user_name = '" + userName + "'");
+			if (rs.next()) {
+				userID = rs.getInt(1);
+			}
+			
+			
+
+			int historyCount = 0;
+			pstmt3.setString(1, docNamespace);
+			pstmt3.setString(2, docTable);
+			pstmt3.setLong(3, docID);
+			rs = pstmt3.executeQuery();
+			if (rs.next()) {
+				historyCount = rs.getInt(1);
+			}
+			
+			if (historyCount >= 0) {
+				//only update status of document if the frame instance was actually validated by the user
+				//this means the user performed some action (as indicated by the undo/redo log)
+				boolean docExists = false;
+				int count = 0;
+
+				
+				
+				
+				int docCount = 0;
+				pstmt9.setString(1, docNamespace);
+				pstmt9.setString(2, docTable);
+				pstmt9.setLong(3, docID);
+				ResultSet rs2 = pstmt9.executeQuery();
+				if (rs2.next()) {
+					docCount = rs2.getInt(1);
+				}
+				
+				if (docCount > 0)
+					docExists = true;
+			
+
+				if (docCount == 0) {
+					pstmt7.setString(1, docNamespace);
+					pstmt7.setString(2, docTable);
+					pstmt7.setLong(3, docID);
+					pstmt7.setInt(4, userID);
+					pstmt7.execute();
+				}
+				else {
+					pstmt.setInt(1, userID);
+					pstmt.setString(2, docNamespace);
+					pstmt.setString(3, docTable);
+					pstmt.setLong(4, docID);
+					pstmt.execute();
+				}
+					
+	
+				pstmt2.setLong(1, docID);
+				pstmt2.execute();
+				
+			}
+
+			pstmt.close();
+			pstmt2.close();
+			pstmt3.close();
+			pstmt4.close();
+			pstmt5.close();
+			pstmt6.close();
+			pstmt7.close();
+			pstmt8.close();
+			stmt.close();
+			conn.close();
+			conn2.close();
+
+			return true;
+		}
+		catch(SQLException e)
+		{
+			Logger.error("updateValidationStatus got error: " + e.toString() );
+			return false;
+		}
+	}
+	
+	
+	
+	
+	
 
 	/*
 	public boolean updateValidationStatus ( int docID ) {
@@ -2936,29 +3083,55 @@ public class DataAccess {
 		}
 	}
 	
-	public void clearUndoHistory(String userName, int frameInstanceID, int userActions) throws SQLException
+	public void clearUndoHistory(String userName, int frameInstanceID, int documentID, int userActions) throws SQLException
 	{
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 		
 		if (frameInstanceID >= 0) {
+			/*
 			int count = 0;
-			ResultSet rs = stmt.executeQuery("select count(*) from " + schema + "frame_instance_data_history where frame_instance_id = " + frameInstanceID);
+			ResultSet rs = stmt.executeQuery("select count(*) from " + schema + "frame_instance_data_history where frame_instance_id = " + frameInstanceID + " and document_id = " + documentID);
 			if (rs.next()) {
 				count = rs.getInt(1);
 			}
 			
-			System.out.println("clearundo: frameInstanceID: " + frameInstanceID + " count: " + count);
+			System.out.println("clearundo: frameInstanceID: " + frameInstanceID + " documentID: " + documentID + " count: " + count);
+			*/
 			
 			//update validation status
-			if (count > 0 || userActions > 0) {
-				updateValidationStatus(frameInstanceID, userName, true);
-			}
-			else
-				updateValidationStatus(frameInstanceID, userName, false);
+			//if (count > 0 || userActions > 0) {
+				updateValidationStatus(frameInstanceID, userName);
+			//}
+			//else
+				//updateValidationStatus(frameInstanceID, userName, false);
 		}
 		
 		System.out.println("clearundo finished updatevalidation!");
+		
+		stmt.execute("insert into " + schema + "frame_instance_data_history2 "
+				+ "select * from " + schema + "frame_instance_data_history where user_name = '" + userName + "'");
+			
+		stmt.execute("delete from " + schema + "annotation_history where user_name = '" + userName + "'");
+		stmt.execute("delete from " + schema + "frame_instance_data_history where user_name = '" + userName + "'");
+		
+		
+		System.out.println("clearundo finished!");
+		
+		conn.close();
+	}
+	
+	public void clearUndoHistoryDoc(String userName) throws SQLException
+	{
+		Connection conn = DB.getConnection();
+		Statement stmt = conn.createStatement();
+		
+		/*
+		if (frameInstanceID >= 0 && docID >= 0) {
+				updateValidationStatusDoc(frameInstanceID, docNamespace, docTable, docID, userName);
+		}
+		*/
+		
 		
 		stmt.execute("insert into " + schema + "frame_instance_data_history2 "
 				+ "select * from " + schema + "frame_instance_data_history where user_name = '" + userName + "'");

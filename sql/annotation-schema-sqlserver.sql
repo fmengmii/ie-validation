@@ -456,7 +456,8 @@ CREATE TABLE SCHEMA."value" (
 CREATE TABLE SCHEMA."project_preload" (
   "project_id" int DEFAULT NULL,
   "value" varchar(500) DEFAULT NULl,
-  "type" int DEFAULT NULL
+  "type" int DEFAULT NULL,
+  "color" varchar(50) NULL
 );
 
 
@@ -497,6 +498,11 @@ CREATE TABLE SCHEMA."annotation_history" (
   "user_name" varchar(100) DEFAULT NULL
 );
 
+create index "idx_annot_type" on SCHEMA."annotation_history" ("annotation_type");
+create index "idx_annot_start`" on SCHEMA."annotation_history" ("start");
+create index "idx_prov" on SCHEMA."annotation_history" ("provenance");
+create index "idx_id" on SCHEMA."annotation_history" ("id");
+create index "idx_annot_doc_id" on SCHEMA."annotation_history" ("document_id");
 
 
 CREATE TABLE SCHEMA."frame_instance_data_history" (

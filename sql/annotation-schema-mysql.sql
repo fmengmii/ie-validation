@@ -472,7 +472,8 @@ CREATE TABLE `value` (
 CREATE TABLE `project_preload` (
   `project_id` int(11) DEFAULT NULL,
   `value` varchar(500) DEFAULT NULL,
-  `type` int(11) DEFAULT NULL
+  `type` int(11) DEFAULT NULL,
+  `color` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
