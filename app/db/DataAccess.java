@@ -268,12 +268,6 @@ public class DataAccess {
 		Statement stmt2 = conn2.createStatement();
 		Map<String, String> docMap = new HashMap<String, String>();
 		
-		
-		//update doc status for curr doc ID
-		if (currDocID >= 0)
-			stmt.execute("update " + schema + "document_status set status = 1 where document_id = " + currDocID + " and document_name_space = '" + docNamespace + "' "
-					+ "and document_table = '" + docTable + "'");
-		
 
 		//get the key and text column names
 		ResultSet rs = stmt2.executeQuery("select document_key, document_text_column, document_name, document_features, "
