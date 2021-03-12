@@ -256,6 +256,7 @@ CREATE TABLE SCHEMA."frame_instance_annotation" (
     "document_name" varchar(500) DEFAULT NULL,
     "document_order" int DEFAULT NULL,
     "document_features" varchar(max) DEFAULT NULL,
+    "disabled" tinyint DEFAULT NULL,
     PRIMARY KEY ("frame_instance_id", "document_id")
   );
   

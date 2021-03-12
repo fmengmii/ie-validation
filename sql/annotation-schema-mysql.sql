@@ -269,6 +269,7 @@ CREATE TABLE `frame_instance_annotation` (
     `document_name` varchar(500) DEFAULT NULL,
     `document_order` int(11) DEFAULT NULL,
     `document_features` text DEFAULT NULL,
+    `disabled` tinyint DEFAULT NULL,
     KEY `idx_document_id` (`document_id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

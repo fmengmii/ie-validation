@@ -3094,7 +3094,7 @@ public class DataAccess {
 			
 			//update validation status
 			//if (count > 0 || userActions > 0) {
-				updateValidationStatus(frameInstanceID, userName);
+				//updateValidationStatus(frameInstanceID, userName);
 			//}
 			//else
 				//updateValidationStatus(frameInstanceID, userName, false);
