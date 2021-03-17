@@ -2610,6 +2610,8 @@ public class DataAccess {
 			if (count > 0) {
 				stmt.execute("update " + schema + "frame_instance_status set status = 1 where frame_instance_id = " + frameInstanceID);
 			}
+			
+			conn.close();
 		}
 		catch(Exception e)
 		{
