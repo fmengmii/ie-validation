@@ -529,7 +529,7 @@ public class DataAccess {
 		crfID = -1;
 		//schema = (String) Cache.get("schemaName");
 
-		ResultSet rs = stmt.executeQuery("select crf_id from " + schema + "crf_project where crf_project_id = " + projID);
+		ResultSet rs = stmt.executeQuery("select crf_id from " + schema + "crf_project where project_id = " + projID);
 		if (rs.next())
 			crfID = rs.getInt(1);
 
