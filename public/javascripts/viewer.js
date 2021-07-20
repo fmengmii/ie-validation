@@ -72,6 +72,8 @@ var userActions = 0;
 
 var docListBoxSource = [];
 
+var collapseFormElementFlag = false;
+
 
 
 $(document).ready(function () {
@@ -3469,6 +3471,9 @@ function stopEvent(event) {
 
 function collapseFormElement(element)
 {
+	
+	if (!collapseFormElementFlag)
+		return;
 	
 	/*
 	$('#dataElementTable input:radio').each(function (i, el) {
