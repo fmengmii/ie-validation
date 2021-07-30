@@ -2,6 +2,7 @@ package db;
 
 import play.Logger;
 import play.db.*;
+import utils.db.DBConnection;
 
 import java.sql.*;
 import java.util.*;
@@ -2168,7 +2169,8 @@ public class DataAccess {
 		
 		//get annotations for these documents
 		List<Map<String, Object>> annotList = new ArrayList<Map<String, Object>>();
-		Map<String, Boolean> annotMap = new HashMap<String, Boolean>();
+		Map<String, Integer> annotMap = new HashMap<String, Integer>();
+		
 		
 		PreparedStatement pstmt = conn.prepareStatement("select a.display_name from " + schema + "element a, " + schema + "slot b, " + schema + "value c, " + schema + "element_value d "
 			+ "where b.annotation_type = ? and b.slot_id = c.slot_id and c.value_id = d.value_id and d.element_id = a.element_id");
@@ -2202,7 +2204,7 @@ public class DataAccess {
 
 			annotList.add(annot);
 			
-			annotMap.put(Long.toString(start), true);
+			annotMap.put(Long.toString(start), 0);
 		}
 		
 		
@@ -2609,6 +2611,26 @@ public class DataAccess {
 			
 			if (count > 0) {
 				stmt.execute("update " + schema + "frame_instance_status set status = 1 where frame_instance_id = " + frameInstanceID);
+			}
+			else {
+				count = 0;
+				ResultSet rs2 = stmt.executeQuery("select count(*) from " + schema + "frame_instance_data_history where user_name = '" + userName + "'");
+				if (rs2.next()) {
+					count = rs2.getInt(1);
+				}
+				
+				if (count > 0) {
+					String rq = DBConnection.reservedQuote;
+					int userID = -1;
+					rs2 = stmt.executeQuery("select user_id from " + schema + rq + "user" + rq + " where user_name = '" + userName + "'");
+					
+					if (rs2.next()) {
+						userID = rs2.getInt(1);
+					}
+					
+					stmt.execute("insert into " + schema + "frame_instance_status (frame_instance_id, status, user_id) "
+						+ "values (" + frameInstanceID + ",-2," + userName + ")");
+				}
 			}
 			
 			conn.close();
