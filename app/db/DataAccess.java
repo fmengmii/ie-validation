@@ -2620,7 +2620,7 @@ public class DataAccess {
 				*/
 				
 				//if (count > 0) {
-					String rq = DBConnection.reservedQuote;
+				String rq = getReservedQuote(conn);
 					int userID = -1;
 					System.out.println("select user_id from " + schema + rq + "user" + rq + " where user_name = '" + userName + "'");
 					ResultSet rs2 = stmt.executeQuery("select user_id from " + schema + rq + "user" + rq + " where user_name = '" + userName + "'");
