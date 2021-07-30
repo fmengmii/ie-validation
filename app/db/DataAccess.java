@@ -2600,9 +2600,7 @@ public class DataAccess {
 		try {
 			Connection conn = DB.getConnection();
 			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery("select count(*) from " + schema + "document_status a, " + schema + "frame_instance_document b "
-				+ "where a.document_namespace = b.document_namespace and a.document_table = b.document_table and a.document_id = b.document_id "
-				+ "and a.status = 1");
+			ResultSet rs = stmt.executeQuery("select count(*) from " + schema + "frame_instance_status where frame_instance_id = " + frameInstanceID);
 			
 			int count = 0;
 			if (rs.next()) {
