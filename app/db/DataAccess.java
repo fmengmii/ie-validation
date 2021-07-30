@@ -2613,24 +2613,26 @@ public class DataAccess {
 				stmt.execute("update " + schema + "frame_instance_status set status = 1 where frame_instance_id = " + frameInstanceID);
 			}
 			else {
+				/*
 				count = 0;
 				ResultSet rs2 = stmt.executeQuery("select count(*) from " + schema + "frame_instance_data_history where user_name = '" + userName + "'");
 				if (rs2.next()) {
 					count = rs2.getInt(1);
 				}
+				*/
 				
-				if (count > 0) {
+				//if (count > 0) {
 					String rq = DBConnection.reservedQuote;
 					int userID = -1;
-					rs2 = stmt.executeQuery("select user_id from " + schema + rq + "user" + rq + " where user_name = '" + userName + "'");
+					ResultSet rs2 = stmt.executeQuery("select user_id from " + schema + rq + "user" + rq + " where user_name = '" + userName + "'");
 					
 					if (rs2.next()) {
 						userID = rs2.getInt(1);
 					}
 					
 					stmt.execute("insert into " + schema + "frame_instance_status (frame_instance_id, status, user_id) "
-						+ "values (" + frameInstanceID + ",-2," + userName + ")");
-				}
+						+ "values (" + frameInstanceID + ",-2," + userID + ")");
+				//}
 			}
 			
 			conn.close();
