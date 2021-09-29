@@ -2119,16 +2119,21 @@ public class DataAccess {
 		List<String> preloadAnnotColorList= new ArrayList<String>();
 		List<String> preloadValList = new ArrayList<String>();
 		List<String> preloadValColorList = new ArrayList<String>();
-		rs = stmt.executeQuery("select distinct value, color from " + schema + "project_preload where project_id = " + projID + " and type = 1");
+		Map<String, Integer> preloadAnnotWeightMap = new HashMap<String, Integer>();
+		Map<String, Integer> preloadValWeightMap = new HashMap<String, Integer>();
+		
+		rs = stmt.executeQuery("select distinct value, color, order from " + schema + "project_preload where project_id = " + projID + " and type = 1");
 		while (rs.next()) {
 			preloadAnnotList.add(rs.getString(1));
 			preloadAnnotColorList.add(rs.getString(2));
+			preloadAnnotWeightMap.put(rs.getString(2), Integer.parseInt(rs.getString(3)));
 		}
 		
-		rs = stmt.executeQuery("select distinct value, color from " + schema + "project_preload where project_id = " + projID + " and type = 2");
+		rs = stmt.executeQuery("select distinct value, color, order from " + schema + "project_preload where project_id = " + projID + " and type = 2");
 		while (rs.next()) {
 			preloadValList.add(rs.getString(1));
 			preloadValColorList.add(rs.getString(2));
+			preloadValWeightMap.put(rs.getString(2), Integer.parseInt(rs.getString(3)));
 		}
 
 		
@@ -2259,6 +2264,9 @@ public class DataAccess {
 					+ " and score > " + annotThreshold + " and annotation_type in "
 					+ strBlder2.toString() + " order by start");
 	
+
+			List<Map<String, Object>> q = new ArrayList<Map<String, Object>>();
+			
 			while (rs.next()) {
 				long start = rs.getLong(1);
 				long end = rs.getLong(2);
@@ -2278,21 +2286,77 @@ public class DataAccess {
 				annot.put("end", end);
 				annot.put("annotType", annotType);
 				annot.put("color", color);
-	
+				
+				int weight = preloadAnnotWeightMap.get(annotType);
 				boolean inserted = false;
-				for (int i=0; i<annotList.size(); i++) {
-					Map<String, Object> annot2 = annotList.get(i);
-					
-					if (start < ((Long) annot2.get("start"))) {
-						annotList.add(i, annot);
-						inserted = true;
-						break;
-					}
+				
+				if (q.size() == 0) {
+					q.add(annot);
+					continue;
 				}
 				
-				if (!inserted)
-					annotList.add(annot);
+				for (int i=0; i<q.size(); i++) {
+					Map<String, Object> annot2 = q.get(i);
+					long start2 = (Long) annot2.get("start");
+					long end2 = (Long) annot2.get("end");
+					String color2 = (String) annot2.get("color");
+					int weight2 = preloadAnnotWeightMap.get(color2);
+					
+					if (start >= end2) {
+						if (!inserted)
+							q.add(i, annot);
+						
+						break;
+					}
+					
+					//add this annot to annotList
+					if (end2 <= start) {
+						annotList.add(annot2);
+						q.remove(i);
+						i--;
+						continue;
+					}
+					
+					if (weight > weight2) {
+						annot2.put("end", start);
+						
+						if (start2 >= end) {
+							q.remove(i);
+							i--;
+						}
+						
+						if (!inserted) {
+							q.add(i, annot);
+							inserted = true;
+						}
+						
+						if (end2 > end) {							
+							Map<String, Object> annot3 = new HashMap<String, Object>();
+							annot3.put("start", end);
+							annot3.put("end", end2);
+							annot3.put("color", color2);
+							
+							q.add(i+1, annot3);
+							i++;
+						}
+					}
+					else {
+						if (end2 >= end)
+							continue;
+						else {
+							annot.put("start", end2);
+							
+							if (!inserted) {
+								q.add(i+1, annot);
+								inserted = true;
+							}
+						}
+					}
+				}	
 			}
+		
+			for (Map<String, Object> annot : q)
+				annotList.add(annot);
 		}
 		
 		if (preloadValList.size() > 0) {
