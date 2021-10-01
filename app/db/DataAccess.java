@@ -2122,14 +2122,14 @@ public class DataAccess {
 		Map<String, Integer> preloadAnnotWeightMap = new HashMap<String, Integer>();
 		Map<String, Integer> preloadValWeightMap = new HashMap<String, Integer>();
 		
-		rs = stmt.executeQuery("select distinct value, color, order from " + schema + "project_preload where project_id = " + projID + " and type = 1");
+		rs = stmt.executeQuery("select distinct value, color, weight from " + schema + "project_preload where project_id = " + projID + " and type = 1");
 		while (rs.next()) {
 			preloadAnnotList.add(rs.getString(1));
 			preloadAnnotColorList.add(rs.getString(2));
 			preloadAnnotWeightMap.put(rs.getString(2), Integer.parseInt(rs.getString(3)));
 		}
 		
-		rs = stmt.executeQuery("select distinct value, color, order from " + schema + "project_preload where project_id = " + projID + " and type = 2");
+		rs = stmt.executeQuery("select distinct value, color, weight from " + schema + "project_preload where project_id = " + projID + " and type = 2");
 		while (rs.next()) {
 			preloadValList.add(rs.getString(1));
 			preloadValColorList.add(rs.getString(2));
