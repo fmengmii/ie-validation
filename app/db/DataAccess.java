@@ -2263,6 +2263,12 @@ public class DataAccess {
 					+ "document_table = '" + docTable + "' and document_id = " + docID
 					+ " and score > " + annotThreshold + " and annotation_type in "
 					+ strBlder2.toString() + " order by start");
+			
+			System.out.println("select start, " + rq + "end" + rq + ", annotation_type from "
+					+ schema + "annotation where document_namespace = '" + docNamespace + "' and "
+					+ "document_table = '" + docTable + "' and document_id = " + docID
+					+ " and score > " + annotThreshold + " and annotation_type in "
+					+ strBlder2.toString() + " order by start");
 	
 
 			List<Map<String, Object>> q = new ArrayList<Map<String, Object>>();
