@@ -2306,7 +2306,8 @@ public class DataAccess {
 					long start2 = (Long) annot2.get("start");
 					long end2 = (Long) annot2.get("end");
 					String color2 = (String) annot2.get("color");
-					int weight2 = preloadAnnotWeightMap.get(color2);
+					String annotType2 = (String) annot2.get("annotType");
+					int weight2 = preloadAnnotWeightMap.get(annotType2);
 					
 					if (start >= end2) {
 						if (!inserted)
