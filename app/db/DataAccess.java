@@ -2126,14 +2126,14 @@ public class DataAccess {
 		while (rs.next()) {
 			preloadAnnotList.add(rs.getString(1));
 			preloadAnnotColorList.add(rs.getString(2));
-			preloadAnnotWeightMap.put(rs.getString(3), Integer.parseInt(rs.getString(3)));
+			preloadAnnotWeightMap.put(rs.getString(2), Integer.parseInt(rs.getString(3)));
 		}
 		
 		rs = stmt.executeQuery("select distinct value, color, weight from " + schema + "project_preload where project_id = " + projID + " and type = 2");
 		while (rs.next()) {
 			preloadValList.add(rs.getString(1));
 			preloadValColorList.add(rs.getString(2));
-			preloadValWeightMap.put(rs.getString(3), Integer.parseInt(rs.getString(3)));
+			preloadValWeightMap.put(rs.getString(2), Integer.parseInt(rs.getString(3)));
 		}
 
 		
