@@ -242,7 +242,7 @@ public class DataAccess {
 
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
-		ResultSet rs = stmt.executeQuery("select project_id, name from " + schema + "project");
+		ResultSet rs = stmt.executeQuery("select project_id, name from " + schema + "project order by name");
 		while (rs.next()) {
 			String crfProjID = rs.getString(1);
 			String name = rs.getString(2);
