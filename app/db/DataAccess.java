@@ -2311,7 +2311,7 @@ public class DataAccess {
 					
 					if (start >= end2) {
 						if (!inserted)
-							q.add(i, annot);
+							q.add(annot);
 						
 						break;
 					}
