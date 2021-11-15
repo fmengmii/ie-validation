@@ -3133,7 +3133,7 @@ function setHTMLElements()
 
 			else if (elType == "checkbox" || elType == "radio") {
 				element.prop('checked', true);
-				//clog("set to true");
+				clog("set to true");
 			}
 
 		}
