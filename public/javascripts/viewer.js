@@ -1218,7 +1218,7 @@ function rowSelect(row)
 								highlightRangeMap = dataObj[1];
 								
 								//add row if repeatable
-								clog("highlight add element: " + elementHTMLID);
+								clog("highlight add element: " + elementHTMLID + ", elementType: " + elementType);
 								if (document.getElementById(elementHTMLID + '_add') != null || document.getElementById(elementHTMLID + '_remove') != null) {
 									addElement(elementHTMLID + '_add');
 								}
@@ -1918,6 +1918,9 @@ function addElement(id)
 			break;
 		
 		var repeatNum = parseInt(htmlID.substring(index+1));
+		var htmlID2 = htmlID.substring(0, index);
+		index = htmlID2.lastIndexOf("_");
+		var repeatSecNum = parseInt(htmlID2.substring(index+1));
 	}
 	
 	clog("i: " + i + "htmlID: " + htmlID);
@@ -1929,12 +1932,27 @@ function addElement(id)
 	   newRow[j] = gridData[gridIndex][i-1][j];
 	
 	gridData[gridIndex].splice(i-1, 0, newRow);
-	gridData[gridIndex][i]["value"] = "<input type='text' id='" + id + "'  name='"+ id + "' /><input type='button' id='" + id + "_remove' value='-' onclick='removeElement(this.id)'/>"
-	gridData[gridIndex][i]["elementHTMLID"] = id;
-	
-	gridData2[gridIndex].splice(i-1, 0, newRow);
-	gridData2[gridIndex][i]["value"] = "<input type='text' id='" + id + "'  name='"+ id + "' /><input type='button' id='" + id + "_remove' value='-' onclick='removeElement(this.id)'/>"
-	gridData2[gridIndex][i]["elementHTMLID"] = id;
+	clog("griddata value: " + gridData[gridIndex][i-1]["value"]);
+	clog("griddata elementType: " + gridData[gridIndex][i-1]["elementType"]);
+	var htmlStr = gridData[gridIndex][i-1]["value"];
+
+	var elementType = gridData[gridIndex][i-1]["elementType"];
+	if (elementType == 'text') {
+		gridData[gridIndex][i]["value"] = "<input type='text' id='" + id + "'  name='"+ id + "' /><input type='button' id='" + id + "_remove' value='-' onclick='removeElement(this.id)'/>"
+		gridData[gridIndex][i]["elementHTMLID"] = id;
+		
+		gridData2[gridIndex].splice(i-1, 0, newRow);
+		gridData2[gridIndex][i]["value"] = "<input type='text' id='" + id + "'  name='"+ id + "' /><input type='button' id='" + id + "_remove' value='-' onclick='removeElement(this.id)'/>"
+		gridData2[gridIndex][i]["elementHTMLID"] = id;
+	}
+	else if (elementType == 'checkbox') {
+		gridData[gridIndex][i]["value"] = htmlStr.replace(/_\d_\d/g, "_" + repeatSecNum + "_" + (repeatNum+1));
+		gridData[gridIndex][i]["elementHTMLID"] = id;
+		
+		gridData2[gridIndex].splice(i-1, 0, newRow);
+		gridData2[gridIndex][i]["value"] = htmlStr.replace(/_\d_\d/g, "_" + repeatSecNum + "_" + (repeatNum+1));
+		gridData2[gridIndex][i]["elementHTMLID"] = id;
+	}
 	
 	//elementHTMLIDMap[id] = i;
 	refreshElementHTMLIDMap();
@@ -2404,6 +2422,13 @@ function valueClickCallback(add)
 			var dataObj = JSON.parse(data);
 			frameInstanceData = dataObj[0];
 			highlightRangeMap = dataObj[1];
+			
+			//add row if repeatable
+			var parentID = clickValueElement.parentElement.parentElement.id;
+			clog("parentID: " + parentID);
+			if (document.getElementById(parentID + '_add') != null || document.getElementById(parentID + '_remove') != null) {
+				addElement(parentID + '_add');
+			}
 
 			var elType = clickValueElement.getAttribute('type').toLowerCase();
 			if (elType != 'checkbox')
