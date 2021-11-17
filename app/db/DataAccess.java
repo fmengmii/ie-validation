@@ -1327,6 +1327,8 @@ public class DataAccess {
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 		String rq = getReservedQuote(conn);
+		
+		PreparedStatement pstmt = conn.prepareStatement("select count(*) from " + schema + "element_value where element_id = ?");
 
 		ResultSet rs = stmt.executeQuery("select a.value, a.section_slot_number, a.element_slot_number, a.element_id, b.html_id, c.id, "
 				+ "c.start, c." + rq + "end" + rq + ", c.annotation_type, "
@@ -1391,7 +1393,14 @@ public class DataAccess {
 
 			String htmlID = elementHTMLID;
 
-			if (elementType.equals("checkbox"))
+			int valCount = 0;
+			pstmt.setInt(1, elementID);
+			ResultSet rs2 = pstmt.executeQuery();
+			if (rs2.next()) {
+				valCount = rs2.getInt(1);
+			}
+			
+			if (elementType.equals("checkbox") && valCount > 1)
 				htmlID = valueHTMLID;
 
 			List<Map<String, Object>> rangeList = highlightRangeMap.get(htmlID);

@@ -504,9 +504,15 @@ function getDocument(docInfoStr, index, clear, options, callback)
 
 	docSelectIndex = index;
 
-	$('#docListBox').jqxListBox('refresh');
-	$('#docListBox').jqxListBox('ensureVisible', index);
-	$('#docListBox').jqxListBox('selectedIndex', index);
+	if (options != null) {
+		$('#docListBox').jqxListBox('refresh');
+		$('#docListBox').jqxListBox('ensureVisible', index);
+		$('#docListBox').jqxListBox('selectIndex', index);
+	}
+	else {
+		var item = $('#docListBox').jqxListBox('getItem', index);
+		$('#docListBox').jqxListBox('updateAt', {label: item["label"], value: item["value"]}, index);
+	}
 
 	//clear highlight
 	//highlightRange.start = 0;
@@ -1946,11 +1952,16 @@ function addElement(id)
 		gridData2[gridIndex][i]["elementHTMLID"] = id;
 	}
 	else if (elementType == 'checkbox') {
-		gridData[gridIndex][i]["value"] = htmlStr.replace(/_\d_\d/g, "_" + repeatSecNum + "_" + (repeatNum+1));
+		var htmlStr2 = htmlStr.replace(/_\d_\d/g, "_" + repeatSecNum + "_" + (repeatNum+1));
+		htmlStr2 = htmlStr2.replace("_add", "_remove");
+		htmlStr2 = htmlStr2.replace("addElement", "removeElement");
+		htmlStr2 = htmlStr2.replace("'+'", "'-'");
+		clog("htmlStr2: " + htmlStr2);
+		gridData[gridIndex][i]["value"] = htmlStr2;
 		gridData[gridIndex][i]["elementHTMLID"] = id;
 		
 		gridData2[gridIndex].splice(i-1, 0, newRow);
-		gridData2[gridIndex][i]["value"] = htmlStr.replace(/_\d_\d/g, "_" + repeatSecNum + "_" + (repeatNum+1));
+		gridData2[gridIndex][i]["value"] = htmlStr2;
 		gridData2[gridIndex][i]["elementHTMLID"] = id;
 	}
 	
@@ -2525,11 +2536,16 @@ function valueMouseover(valueElement)
 
 	clog("rowStart: " + rowStart);
 	clog("rowEnd: " + rowEnd);
+	
 
-	var elementIndex = elementHTMLIDMap[valueElement.parentElement.id];
+	var elementIndex = elementHTMLIDMap[valueElement.parentElement.parentElement.id];
 
 	var selection = $("#dataElementTable").jqxDataTable('getSelection');
-	if (selection == undefined || selection[0] == undefined || selection[0]["elementHTMLID"] != valueElement.parentElement.id)
+	clog("selection: " + selection[0]["elementHTMLID"]);
+	clog("parentID: " + valueElement.parentElement.parentElement.id);
+
+	
+	if (selection == undefined || selection[0] == undefined || selection[0]["elementHTMLID"] != valueElement.parentElement.parentElement.id)
 		return;
 
 	var rowData = gridData2[gridIndex][elementIndex];
