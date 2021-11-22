@@ -507,12 +507,14 @@ function getDocument(docInfoStr, index, clear, options, callback)
 	if (options != null) {
 		$('#docListBox').jqxListBox('refresh');
 		$('#docListBox').jqxListBox('ensureVisible', index);
-		$('#docListBox').jqxListBox('selectIndex', index);
 	}
 	else {
 		var item = $('#docListBox').jqxListBox('getItem', index);
 		$('#docListBox').jqxListBox('updateAt', {label: item["label"], value: item["value"]}, index);
 	}
+	
+	$('#docListBox').jqxListBox('selectIndex', index);
+
 
 	//clear highlight
 	//highlightRange.start = 0;
