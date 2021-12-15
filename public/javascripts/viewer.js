@@ -2019,11 +2019,14 @@ function removeElement(id)
 			id = id.substring(0, index);
 			index = id.lastIndexOf("_");
 			var repeatNum = parseInt(id.substring(index+1));
+			var htmlID2 = id.substring(0, index);
+			index = htmlID2.lastIndexOf("_");
+			var repeatSecNum = parseInt(htmlID2.substring(index+1));
 
 			var gridElementIndex = elementHTMLIDMap[id];
 			clog("remove element: " + id + " gridIndex: " + gridElementIndex);
-
 			
+
 			gridData[gridIndex].splice(gridElementIndex, 1);
 			gridData2[gridIndex].splice(gridElementIndex, 1);
 			
@@ -2033,10 +2036,29 @@ function removeElement(id)
 				var elementHTMLID = gridData[gridIndex][index]["elementHTMLID"];
 				var index2 = elementHTMLID.lastIndexOf("_");
 				elementHTMLID = elementHTMLID.substring(0, index2+1) + repeatNum2;
-				gridData[gridIndex][index]["elementHTMLID"] = elementHTMLID;
-				gridData[gridIndex][index]["value"] = "<input type='text' id='" + elementHTMLID + "'  name='"+ elementHTMLID + "' /><input type='button' id='" + elementHTMLID + "_remove' value='-' onclick='removeElement(this.id)'/>"
-				gridData2[gridIndex][index]["elementHTMLID"] = elementHTMLID;
-				gridData2[gridIndex][index]["value"] = "<input type='text' id='" + elementHTMLID + "'  name='"+ elementHTMLID + "' /><input type='button' id='" + elementHTMLID + "_remove' value='-' onclick='removeElement(this.id)'/>"
+				
+				var elementType = gridData[gridIndex][index-1]["elementType"];
+				
+				if (elementType == 'text') {
+					gridData[gridIndex][index]["elementHTMLID"] = elementHTMLID;
+					gridData[gridIndex][index]["value"] = "<input type='text' id='" + elementHTMLID + "'  name='"+ elementHTMLID + "' /><input type='button' id='" + elementHTMLID + "_remove' value='-' onclick='removeElement(this.id)'/>"
+					gridData2[gridIndex][index]["elementHTMLID"] = elementHTMLID;
+					gridData2[gridIndex][index]["value"] = "<input type='text' id='" + elementHTMLID + "'  name='"+ elementHTMLID + "' /><input type='button' id='" + elementHTMLID + "_remove' value='-' onclick='removeElement(this.id)'/>"
+				}				
+				else if (elementType == 'checkbox') {
+					var htmlStr = gridData[gridIndex][index-1]["value"];
+					var htmlStr2 = htmlStr.replace(/_\d_\d/g, "_" + repeatSecNum + "_" + repeatNum2);
+					htmlStr2 = htmlStr2.replace("_add", "_remove");
+					htmlStr2 = htmlStr2.replace("addElement", "removeElement");
+					htmlStr2 = htmlStr2.replace("'+'", "'-'");
+					clog("htmlStr2: " + htmlStr2);
+					gridData[gridIndex][index]["value"] = htmlStr2;
+					gridData[gridIndex][index]["elementHTMLID"] = elementHTMLID;
+					
+					gridData2[gridIndex][index]["value"] = htmlStr2;
+					gridData2[gridIndex][index]["elementHTMLID"] = elementHTMLID;
+				}
+				
 				repeatNum2++;
 			}
 			

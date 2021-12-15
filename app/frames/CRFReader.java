@@ -306,8 +306,11 @@ public class CRFReader
 		String htmlStr = null;
 		if (elementType.equals("radio") || elementType.equals("checkbox")) {
 			htmlStr = "<form id='" + htmlID + "'>" + getMultiValueHTML(elementType, htmlID, values, repeatStr) + " </form>";
-			if (repeat == -1 || repeat > 1)
+			if ((repeat == -1 || repeat > 1) && elementRepeatNum ==  0)
 				htmlStr += "<input type='button' id='" + htmlID + "_add' value='+' onclick='addElement(this.id)'/>";
+			if (elementRepeatNum > 0) {
+				htmlStr += "<input type='button' id='" + htmlID + "_remove' value='-' onclick='removeElement(this.id)'/>";
+			}
 		}
 		else if (elementType.equals("text")) {
 			htmlStr = "<input type='text' id='" + htmlID + "' " + " name='" + htmlID + "' />";
