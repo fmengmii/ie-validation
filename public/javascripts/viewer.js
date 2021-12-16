@@ -2025,6 +2025,8 @@ function removeElement(id)
 
 			var gridElementIndex = elementHTMLIDMap[id];
 			clog("remove element: " + id + " gridIndex: " + gridElementIndex);
+			var removeElementID = gridData[gridIndex][gridElementIndex]["elementHTMLID"];
+			removeElementID = removeElementID.substring(0, removeElementID.lastIndexOf("_"));
 			
 
 			gridData[gridIndex].splice(gridElementIndex, 1);
@@ -2034,7 +2036,11 @@ function removeElement(id)
 			var repeatNum2 = repeatNum;
 			for (index = gridElementIndex; index<gridData[gridIndex].length; index++) {
 				var elementHTMLID = gridData[gridIndex][index]["elementHTMLID"];
+				
 				var index2 = elementHTMLID.lastIndexOf("_");
+				if (elementHTMLID.substring(0, index2) != removeElementID)
+					break;
+				
 				elementHTMLID = elementHTMLID.substring(0, index2+1) + repeatNum2;
 				
 				var elementType = gridData[gridIndex][index-1]["elementType"];
@@ -2068,6 +2074,7 @@ function removeElement(id)
 			for (index=0; index<frameInstanceData.length; index++) {
 				//frameInstanceData[index]["elementHTMLID"] = gridData[index]["elementHTMLID"];
 				var elementHTMLID = frameInstanceData[index]["elementHTMLID"];
+				var elementType = frameInstanceData[index]["elementType"];
 				var index2 = elementHTMLID.lastIndexOf("_");
 				repeatNum2 = parseInt(frameInstanceData[index]["elementHTMLID"].substring(index2+1));
 				
@@ -2082,7 +2089,14 @@ function removeElement(id)
 				else if (repeatNum2 > repeatNum) {
 					elementHTMLID = elementHTMLID.substring(0, index2+1) + (repeatNum2-1);
 					frameInstanceData[index]["elementHTMLID"] = elementHTMLID;
-					//clog("frameinstancedata[" + index + "]: " + frameInstanceData[index]["elementHTMLID"] + ", " + frameInstanceData[index]["value"]);
+					
+					if (elementType == 'checkbox' || elementType == 'radio') {
+						var valueHTMLID = frameInstanceData[index]["valueHTMLID"];
+						var index3 = valueHTMLID.lastIndexOf("_");
+						valueHTMLID = valueHTMLID.substring(0, index3+1) + (repeatNum2-1);
+						frameInstanceData[index]["valueHTMLID"] = valueHTMLID;
+					}
+					
 				}
 				
 				clog("frameinstancedata[" + index + "]: " + frameInstanceData[index]["elementHTMLID"] + ", " + frameInstanceData[index]["value"]);
