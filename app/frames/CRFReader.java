@@ -653,11 +653,11 @@ public class CRFReader
 		
 		
 		PreparedStatement pstmtSectionInfo = conn.prepareStatement("select a.element_id, a.display_name, a.html_id, c.element_type_name, a.repeat "
-				+ "from " + schema + "element a, " + schema + "crf_section b, " + schema + "element_type c "
+				+ "from " + schema + "element a, " + schema + "crf_section b, " + schema + "element_type c, " + schema + "element_order d "
 				+ "where a.section_id = b.section_id and b.crf_id = ? and "
 				+ "b.section_id = ? and "
-				+ "c.element_type_id = a.element_type "
-				+ "order by element_id");
+				+ "c.element_type_id = a.element_type and a.element_id = d.element_id "
+				+ "order by d.element_order");
 		
 		
 		System.out.println("readCRFFromDB: coming sectionList size=" + sectionList.size());
