@@ -167,6 +167,18 @@ CREATE TABLE SCHEMA."element_value" (
   PRIMARY KEY ("element_id","value_id")
 );
 
+
+--
+-- Table structure for table `element_order`
+--
+
+CREATE TABLE SCHEMA."element_order" (
+	"element_id" int NOT NULL,
+	"element_order" int NOT NULL,
+	PRIMARY KEY ("element_id")
+) 
+
+
 --
 -- Table structure for table "frame"
 --
@@ -458,7 +470,8 @@ CREATE TABLE SCHEMA."project_preload" (
   "project_id" int DEFAULT NULL,
   "value" varchar(500) DEFAULT NULl,
   "type" int DEFAULT NULL,
-  "color" varchar(50) NULL
+  "color" varchar(50) NULL,
+  "order" int DEFAULT 0
 );
 
 

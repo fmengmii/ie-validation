@@ -178,6 +178,18 @@ CREATE TABLE `element_value` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+
+--
+-- Table structure for table `element_order`
+--
+
+CREATE TABLE `element_order` (
+	`element_id` int(11) NOT NULL,
+	`element_order` int(11) NOT NULL,
+	PRIMARY KEY (`element_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 --
 -- Table structure for table `frame`
 --
@@ -474,7 +486,8 @@ CREATE TABLE `project_preload` (
   `project_id` int(11) DEFAULT NULL,
   `value` varchar(500) DEFAULT NULL,
   `type` int(11) DEFAULT NULL,
-  `color` varchar(50) DEFAULT NULL
+  `color` varchar(50) DEFAULT NULL,
+  `order` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
