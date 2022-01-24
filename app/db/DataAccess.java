@@ -2131,7 +2131,7 @@ public class DataAccess {
 		Map<String, Integer> preloadAnnotWeightMap = new HashMap<String, Integer>();
 		Map<String, Integer> preloadValWeightMap = new HashMap<String, Integer>();
 		
-		rs = stmt.executeQuery("select distinct value, color, weight from " + schema + "project_preload where project_id = " + projID + " and type = 1");
+		rs = stmt.executeQuery("select distinct value, color, weight from " + schema + "project_preload where (project_id = " + projID + " or project_id = -1) and type = 1");
 		while (rs.next()) {
 			preloadAnnotList.add(rs.getString(1));
 			preloadAnnotColorList.add(rs.getString(2));
@@ -2371,8 +2371,22 @@ public class DataAccess {
 				}	
 			}
 		
-			for (Map<String, Object> annot : q)
-				annotList.add(annot);
+			for (Map<String, Object> annot : q) {
+				long start = (Long) annot.get("start");
+				boolean inserted = false;
+				for (int i=0; i<annotList.size(); i++) {
+					Map<String, Object> annot2 = annotList.get(i);
+					if (start < ((Long) annot2.get("start"))) {
+						annotList.add(i, annot);
+						inserted = true;
+						break;
+					}
+					annotList.add(annot);
+				}
+				
+				if (!inserted)
+					annotList.add(annot);
+			}
 		}
 		
 		if (preloadValList.size() > 0) {
