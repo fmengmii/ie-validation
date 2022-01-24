@@ -2381,7 +2381,6 @@ public class DataAccess {
 						inserted = true;
 						break;
 					}
-					annotList.add(annot);
 				}
 				
 				if (!inserted)
