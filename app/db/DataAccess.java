@@ -432,6 +432,9 @@ public class DataAccess {
 		String rq = getReservedQuote(conn);
 		Statement stmt = conn.createStatement();
 		
+		PreparedStatement pstmt = conn.prepareStatement("select count(*) from " + schema + "frame_instance_document where frame_instance_id = ? "
+			+ "and disabled = 0");
+		
 		List<Map<String, Object>> frameList = new ArrayList<Map<String, Object>>();
 
 		int lastFrameInstanceID = -1;
@@ -470,6 +473,16 @@ public class DataAccess {
 		int index = 1;
 		while (rs.next()) {
 			int frameInstanceID = rs.getInt(1);
+			
+			pstmt.setLong(1, frameInstanceID);
+			int count = 0;
+			ResultSet rs2 = pstmt.executeQuery();
+			if (rs2.next()) {
+				count = rs2.getInt(1);
+			}
+			
+			if (count == 0)
+				continue;
 			
 			String name = rs.getString(2);
 			String userName = rs.getString(3);
