@@ -102,7 +102,7 @@ public class Application extends Controller
     	session("orderTable", orderTable);
     	
     	String annotTable = Play.application().configuration().getString("annotTable");
-    	session("annotTable", orderTable);
+    	session("annotTable", annotTable);
     	
     	String loadStatus = Play.application().configuration().getString("loadStatus");
     	if (loadStatus == null)
