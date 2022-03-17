@@ -917,7 +917,7 @@ public class Application extends Controller
 
     		List<Map<String, Object>> sectionList = new ArrayList<Map<String, Object>>();
 	    	sectionList = gson.fromJson(session("sectionList"), sectionList.getClass());
-    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), sectionList);
+    		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), session("annotTable"), sectionList);
     		da.clearDocumentHistory(frameInstanceID);
     	}
     	catch(Exception e)

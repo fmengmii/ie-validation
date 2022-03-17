@@ -43,7 +43,7 @@ public class DataAccess {
 	private String docTextCol = "";
 	private int docID = -1;
 	*/
-
+  
 
 	public DataAccess(String schema, String docSchema, String annotTable, List<Map<String, Object>> sectionList) {
 		this.schema = schema;
@@ -2158,7 +2158,7 @@ public class DataAccess {
 			preloadAnnotWeightMap.put(rs.getString(1), Integer.parseInt(rs.getString(3)));
 		}
 		
-		rs = stmt.executeQuery("select distinct value, color, weight from " + schema + "project_preload where project_id = " + projID + " and type = 2");
+		rs = stmt.executeQuery("select distinct value, color, weight from " + schema + "project_preload where (project_id = " + projID + " or project_id = -1) and type = 2");
 		while (rs.next()) {
 			preloadValList.add(rs.getString(1));
 			preloadValColorList.add(rs.getString(2));
