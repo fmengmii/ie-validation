@@ -2371,6 +2371,7 @@ public class DataAccess {
 							annot3.put("start", end);
 							annot3.put("end", end2);
 							annot3.put("color", color2);
+							annot3.put("annotType", annotType);
 							
 							q.add(i+1, annot3);
 							i++;
