@@ -1105,18 +1105,18 @@ public class DataAccess {
 
 
 			stmt.execute("insert into " + schema + annotTable + " (id, document_namespace, document_table, document_id, annotation_type, start, "
-					+ rq + "end" + rq + ", value, features, provenance) "
+					+ rq + "end" + rq + ", value, features, provenance, score) "
 					+ "values "
 					+ "(" + annotID + ",'" + docNamespace + "','" + docTable + "'," + docID + ",'" + annotType + "'," + start + "," + end + ",'"
-					+ value + "', '" + features + "', 'validation-tool')");
+					+ value + "', '" + features + "', 'validation-tool', 1.0)");
 			
 
 			System.out.println("insert into " + schema + annotTable + " (id, document_namespace, document_table, document_id, annotation_type, start, "
-					+ rq + "end" + rq + ", value, features, provenance) "
+					+ rq + "end" + rq + ", value, features, provenance, score) "
 					+ "values "
 					+ "(" + annotID + ",'" + docNamespace + "','" + docTable +
 					"'," + docID + ",'" + annotType + "'," + start + "," + end + ",'"
-					+ value + "', '" + features + "', 'validation-tool')");
+					+ value + "', '" + features + "', 'validation-tool', 1.0)");
 			
 			
 			System.out.println("add annotation 7");
