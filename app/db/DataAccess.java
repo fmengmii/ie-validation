@@ -2323,7 +2323,7 @@ public class DataAccess {
 				annot.put("color", color);
 				
 				int weight = preloadAnnotWeightMap.get(annotType);
-				boolean inserted = false;
+				boolean insert = false;
 				
 				if (q.size() == 0) {
 					q.add(annot);
@@ -2338,58 +2338,88 @@ public class DataAccess {
 					String annotType2 = (String) annot2.get("annotType");
 					int weight2 = preloadAnnotWeightMap.get(annotType2);
 					
-					if (start >= end2) {
-						if (!inserted)
-							q.add(annot);
-						
-						break;
-					}
-					
-					//add this annot to annotList
-					if (end2 <= start) {
+					if (start >= end2) {						
 						annotList.add(annot2);
 						q.remove(i);
 						i--;
+						
+						if (!insert) {
+							insert = true;
+						}
+						
 						continue;
 					}
 					
-					if (weight > weight2) {
-						annot2.put("end", start);
-						
-						if (start2 >= end) {
-							q.remove(i);
-							i--;
+					if (start <= start2 && end > start2 && end <= end2) {
+						if (weight > weight2) {
+							start2 = end;
+							if (start2 > end2) {
+								annot2.put("start", start);
+								annot2.put("end", end);
+								annot2.put("color", color);
+								annot2.put("annotType", annotType);
+							}
+							else {
+								annot2.put("start", end);
+								q.add(i, annot);
+							}
 						}
-						
-						if (!inserted) {
+						else {
+							start = end2;
+							if (start < end) {
+								annot.put("end", start2);
+								q.add(i, annot);
+							}
+						}
+					}
+					else if (start <= start2 && end >= end2) {
+						if (weight > weight2) {
+							annot2.put("start", start);
+							annot2.put("end", end);
+							annot2.put("color", color);
+							annot2.put("annotType", annotType);
+						}
+						else {
+							annot.put("end", start2);
+							
+							Map<String, Object> annot3 = new HashMap<String, Object>();
+							annot3.put("start", end2);
+							annot3.put("end", end);
+							annot3.put("color", color);
+							annot3.put("annotType", annotType);
+							
 							q.add(i, annot);
-							inserted = true;
+							q.add(i+1, annot3);
 						}
-						
-						if (end2 > end) {							
+					}
+					else if (start > start2 && end < end2) {
+						if (weight > weight2) {
+							annot2.put("end", start);
+							
 							Map<String, Object> annot3 = new HashMap<String, Object>();
 							annot3.put("start", end);
 							annot3.put("end", end2);
 							annot3.put("color", color2);
-							annot3.put("annotType", annotType);
+							annot3.put("annotType", annotType2);
 							
-							q.add(i+1, annot3);
-							i++;
+							q.add(i+1, annot);
+							q.add(i+2, annot3);
 						}
 					}
-					else {
-						if (end2 >= end)
-							continue;
+					else if (start > start2 && start < end2 && end > end2) {
+						if (weight > weight2) {
+							annot2.put("end", start);
+						}
 						else {
 							annot.put("start", end2);
-							
-							if (!inserted) {
-								q.add(i+1, annot);
-								inserted = true;
-							}
 						}
+						
+						q.add(i+1, annot);
 					}
-				}	
+				}
+				
+				if (insert)
+					q.add(annot);
 			}
 		
 			for (Map<String, Object> annot : q) {
