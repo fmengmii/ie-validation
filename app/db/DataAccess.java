@@ -2361,7 +2361,7 @@ public class DataAccess {
 							}
 							else {
 								annot2.put("start", end);
-								q.add(i, annot);
+								q.add(i+1, annot);
 							}
 						}
 						else {
@@ -2389,7 +2389,7 @@ public class DataAccess {
 							annot3.put("annotType", annotType);
 							
 							q.add(i, annot);
-							q.add(i+1, annot3);
+							q.add(i+2, annot3);
 						}
 					}
 					else if (start > start2 && end < end2) {
