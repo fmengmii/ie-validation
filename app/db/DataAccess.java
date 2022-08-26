@@ -2323,7 +2323,7 @@ public class DataAccess {
 				annot.put("color", color);
 				
 				int weight = preloadAnnotWeightMap.get(annotType);
-				boolean insert = false;
+				boolean inserted = false;
 				
 				if (q.size() == 0) {
 					q.add(annot);
@@ -2343,14 +2343,13 @@ public class DataAccess {
 						q.remove(i);
 						i--;
 						
-						if (!insert) {
-							insert = true;
-						}
-						
 						continue;
 					}
 					
+					
 					if (start <= start2 && end > start2 && end <= end2) {
+						inserted = true;
+						
 						if (weight > weight2) {
 							start2 = end;
 							if (start2 > end2) {
@@ -2362,6 +2361,7 @@ public class DataAccess {
 							else {
 								annot2.put("start", end);
 								q.add(i+1, annot);
+								i++;
 							}
 						}
 						else {
@@ -2373,6 +2373,8 @@ public class DataAccess {
 						}
 					}
 					else if (start <= start2 && end >= end2) {
+						inserted = true;
+						
 						if (weight > weight2) {
 							annot2.put("start", start);
 							annot2.put("end", end);
@@ -2390,9 +2392,14 @@ public class DataAccess {
 							
 							q.add(i, annot);
 							q.add(i+2, annot3);
+							
+							annot = annot3;
+							i+=2;
 						}
 					}
-					else if (start > start2 && end < end2) {
+					else if (start >= start2 && end <= end2) {
+						inserted = true;
+						
 						if (weight > weight2) {
 							annot2.put("end", start);
 							
@@ -2404,9 +2411,14 @@ public class DataAccess {
 							
 							q.add(i+1, annot);
 							q.add(i+2, annot3);
+							i+=2;
 						}
+
+						break;
 					}
 					else if (start > start2 && start < end2 && end > end2) {
+						inserted = true;
+						
 						if (weight > weight2) {
 							annot2.put("end", start);
 						}
@@ -2415,10 +2427,11 @@ public class DataAccess {
 						}
 						
 						q.add(i+1, annot);
+						i++;
 					}
 				}
 				
-				if (insert)
+				if (!inserted)
 					q.add(annot);
 			}
 		
