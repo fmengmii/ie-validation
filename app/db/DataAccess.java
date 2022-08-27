@@ -2339,7 +2339,22 @@ public class DataAccess {
 					int weight2 = preloadAnnotWeightMap.get(annotType2);
 					
 					if (start >= end2) {						
-						annotList.add(annot2);
+						boolean inserted2 = false;
+						for (int j=0; j<annotList.size(); j++) {
+							Map<String, Object> annot3 = annotList.get(j);
+							
+							if (start < ((Long) annot3.get("start"))) {
+								annotList.add(i, annot2);
+								inserted2 = true;
+								break;
+							}
+						}
+						
+						if (!inserted2)
+							annotList.add(annot2);
+						
+						
+						
 						q.remove(i);
 						i--;
 						
