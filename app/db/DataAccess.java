@@ -2343,7 +2343,7 @@ public class DataAccess {
 						for (int j=0; j<annotList.size(); j++) {
 							Map<String, Object> annot3 = annotList.get(j);
 							
-							if (start < ((Long) annot3.get("start"))) {
+							if (start2 < ((Long) annot3.get("start"))) {
 								annotList.add(i, annot2);
 								inserted2 = true;
 								break;
