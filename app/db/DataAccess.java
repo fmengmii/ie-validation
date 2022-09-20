@@ -2216,6 +2216,8 @@ public class DataAccess {
 				+ " and score > " + annotThreshold + " and annotation_type in "
 				+ strBlder.toString() + " and provenance != '##auto-recheck' order by start");
 
+		List<Map<String, Object>> annotList2 = new ArrayList<Map<String, Object>>();
+		
 		while (rs.next()) {
 			long start = rs.getLong(1);
 			long end = rs.getLong(2);
@@ -2235,8 +2237,9 @@ public class DataAccess {
 			annot.put("annotType", annotType);
 			annot.put("annotDisplay", annotDisplay);
 			annot.put("color", color);
+			annot.put("weight", 1000);
 
-			annotList.add(annot);
+			annotList2.add(annot);
 			
 			annotMap.put(Long.toString(start), 0);
 		}
@@ -2300,8 +2303,7 @@ public class DataAccess {
 					+ strBlder2.toString() + " order by start");
 	
 
-			List<Map<String, Object>> q = new ArrayList<Map<String, Object>>();
-			
+
 			while (rs.next()) {
 				long start = rs.getLong(1);
 				long end = rs.getLong(2);
@@ -2323,12 +2325,40 @@ public class DataAccess {
 				annot.put("color", color);
 				
 				int weight = preloadAnnotWeightMap.get(annotType);
+				
+				annot.put("weight", weight);
+				
 				boolean inserted = false;
+				for (int i=0; i<annotList2.size(); i++) {
+					long start2 = (long) annotList2.get(i).get("start");
+					if (start < start2) {
+						annotList2.add(i, annot);
+						inserted = true;
+						break;
+					}
+				}
+				
+				if (!inserted)
+					annotList2.add(annot);
+			}
+				
+			
+			//resolve overlapping annots based on weights
+			List<Map<String, Object>> q = new ArrayList<Map<String, Object>>();
+
+			boolean inserted = false;
+			for (Map<String, Object> annot : annotList2) {
 				
 				if (q.size() == 0) {
 					q.add(annot);
 					continue;
 				}
+				
+				long start = (long) annot.get("start");
+				long end = (long) annot.get("end");
+				int weight = (int) annot.get("weight");
+				String color = (String) annot.get("color");
+				String annotType = (String) annot.get("annotType");
 				
 				for (int i=0; i<q.size(); i++) {
 					Map<String, Object> annot2 = q.get(i);
@@ -2452,7 +2482,7 @@ public class DataAccess {
 		
 			for (Map<String, Object> annot : q) {
 				long start = (Long) annot.get("start");
-				boolean inserted = false;
+				inserted = false;
 				for (int i=0; i<annotList.size(); i++) {
 					Map<String, Object> annot2 = annotList.get(i);
 					if (start < ((Long) annot2.get("start"))) {
