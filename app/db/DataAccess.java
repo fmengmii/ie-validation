@@ -2420,7 +2420,7 @@ public class DataAccess {
 						}
 					}
 					else if (start <= start2 && end >= end2) {
-						
+						inserted = true;
 						if (weight > weight2) {
 							annot2.put("start", start);
 							annot2.put("end", end);
@@ -2433,7 +2433,6 @@ public class DataAccess {
 								annot.put("end", start2);
 								q.add(i, annot);
 								i++;
-								inserted = true;
 							}
 
 							if (end2 > end) {
@@ -2448,7 +2447,6 @@ public class DataAccess {
 								
 								annot = annot3;
 								i++;
-								inserted = true;
 							}
 						}
 					}
