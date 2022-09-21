@@ -2349,6 +2349,8 @@ public class DataAccess {
 			boolean inserted = false;
 			for (Map<String, Object> annot : annotList2) {
 				
+				System.out.println("annot: " + annot.get("annotType") + ", " + annot.get("start") + ", " + annot.get("end") + ", " + annot.get("weight"));
+				
 				if (q.size() == 0) {
 					q.add(annot);
 					continue;
@@ -2362,6 +2364,8 @@ public class DataAccess {
 				
 				for (int i=0; i<q.size(); i++) {
 					Map<String, Object> annot2 = q.get(i);
+					System.out.println("annot2: " + annot2.get("annotType") + ", " + annot2.get("start") + ", " + annot2.get("end") + ", " + annot.get("weight"));
+					
 					long start2 = (Long) annot2.get("start");
 					long end2 = (Long) annot2.get("end");
 					String color2 = (String) annot2.get("color");
@@ -2393,7 +2397,7 @@ public class DataAccess {
 					}
 					
 					
-					if (start <= start2 && end > start2 && end <= end2) {
+					if (start < start2 && end > start2 && end < end2) {
 						inserted = true;
 						
 						if (weight > weight2) {
@@ -2450,7 +2454,7 @@ public class DataAccess {
 							}
 						}
 					}
-					else if (start >= start2 && end <= end2) {
+					else if (start > start2 && end < end2) {
 						inserted = true;
 						
 						if (weight > weight2) {
