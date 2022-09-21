@@ -2351,7 +2351,6 @@ public class DataAccess {
 				
 				System.out.println("annot: " + annot.get("annotType") + ", " + annot.get("start") + ", " + annot.get("end") + ", " + annot.get("weight"));
 				
-				
 				long start = (long) annot.get("start");
 				long end = (long) annot.get("end");
 				int weight = (int) annot.get("weight");
@@ -2390,9 +2389,6 @@ public class DataAccess {
 						i--;
 						continue;
 					}
-					
-
-					
 					
 					if (start < start2 && end > start2 && end < end2) {
 						inserted = true;
