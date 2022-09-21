@@ -2910,6 +2910,7 @@ function getHighlightRanges()
 	//clog("gethighlightranges: " + JSON.stringify(highlightRangeList));
 	//clog("annot list: " + JSON.stringify(annotList));
 
+/*
 	highlightRanges = [];
 	highlightIndexes = [];
 
@@ -2939,11 +2940,6 @@ function getHighlightRanges()
 		
 
 		var annot = annotList2[i];
-
-		/*
-		if (annot["start"] < 0)
-			continue;
-			*/
 
 		var range = [];
 
@@ -2981,12 +2977,7 @@ function getHighlightRanges()
 			lastHighlight = true;
 
 			if (annot["end"] < lastEnd) {
-				/*
-				var range2 = [];
-				range2.push(annot["end"]);
-				range2.push(lastEnd);
-				highlightRanges.push(range2);
-				 */
+
 
 				var annot2 = {};
 				annot2["start"] = annot["end"];
@@ -3050,6 +3041,7 @@ function getHighlightRanges()
 			lastColor = annot["color"];
 		}
 	}
+*/
 
 	clog("annot list: " + JSON.stringify(annotList));
 	//clog("annot list2: " + JSON.stringify(annotList2));
