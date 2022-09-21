@@ -565,7 +565,7 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		$('#docPanel').scrollTop(0);
 
 		annotList = docData["annotList"];
-		//clog("annotList: " + JSON.stringify(annotList));
+		clog("annotList orig: " + JSON.stringify(annotList));
 		//getHighlightRanges();
 		//highlightText();
 
@@ -2907,10 +2907,10 @@ function getHighlightRangesNoOverlap()
 
 function getHighlightRanges()
 {
-	//clog("gethighlightranges: " + JSON.stringify(highlightRangeList));
-	//clog("annot list: " + JSON.stringify(annotList));
+	clog("gethighlightranges: " + JSON.stringify(highlightRangeList));
+	clog("annot list: " + JSON.stringify(annotList));
 
-/*
+
 	highlightRanges = [];
 	highlightIndexes = [];
 
@@ -3041,7 +3041,7 @@ function getHighlightRanges()
 			lastColor = annot["color"];
 		}
 	}
-*/
+
 
 	clog("annot list: " + JSON.stringify(annotList));
 	//clog("annot list2: " + JSON.stringify(annotList2));
