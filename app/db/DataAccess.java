@@ -2403,6 +2403,7 @@ public class DataAccess {
 								annot2.put("end", end);
 								annot2.put("color", color);
 								annot2.put("annotType", annotType);
+								annot2.put("weight", weight);
 							}
 							else {
 								annot2.put("start", end);
@@ -2426,6 +2427,7 @@ public class DataAccess {
 							annot2.put("end", end);
 							annot2.put("color", color);
 							annot2.put("annotType", annotType);
+							annot2.put("weight", weight);
 						}
 						else {
 							annot.put("end", start2);
@@ -2435,6 +2437,7 @@ public class DataAccess {
 							annot3.put("end", end);
 							annot3.put("color", color);
 							annot3.put("annotType", annotType);
+							annot3.put("weight", weight);
 							
 							q.add(i, annot);
 							q.add(i+2, annot3);
@@ -2454,6 +2457,7 @@ public class DataAccess {
 							annot3.put("end", end2);
 							annot3.put("color", color2);
 							annot3.put("annotType", annotType2);
+							annot3.put("weight", weight2);
 							
 							q.add(i+1, annot);
 							q.add(i+2, annot3);
