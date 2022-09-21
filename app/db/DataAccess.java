@@ -2467,8 +2467,6 @@ public class DataAccess {
 							q.add(i+2, annot3);
 							i+=2;
 						}
-
-						break;
 					}
 					else if (start > start2 && start < end2 && end > end2) {
 						inserted = true;

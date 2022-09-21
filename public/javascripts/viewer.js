@@ -565,7 +565,7 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		$('#docPanel').scrollTop(0);
 
 		annotList = docData["annotList"];
-		//clog("annot list orig: " + JSON.stringify(annotList));
+		clog("annot list orig: " + JSON.stringify(annotList));
 		//getHighlightRanges();
 		//highlightText();
 
