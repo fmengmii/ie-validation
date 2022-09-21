@@ -565,7 +565,7 @@ function getDocument(docInfoStr, index, clear, options, callback)
 		$('#docPanel').scrollTop(0);
 
 		annotList = docData["annotList"];
-		clog("annotList orig: " + JSON.stringify(annotList));
+		//clog("annot list orig: " + JSON.stringify(annotList));
 		//getHighlightRanges();
 		//highlightText();
 
@@ -2907,8 +2907,8 @@ function getHighlightRangesNoOverlap()
 
 function getHighlightRanges()
 {
-	clog("gethighlightranges: " + JSON.stringify(highlightRangeList));
-	clog("annot list: " + JSON.stringify(annotList));
+	//clog("gethighlightranges: " + JSON.stringify(highlightRangeList));
+	//clog("annot list: " + JSON.stringify(annotList));
 
 
 	highlightRanges = [];

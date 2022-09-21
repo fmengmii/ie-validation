@@ -2210,7 +2210,7 @@ public class DataAccess {
 			+ "where b.annotation_type = ? and b.slot_id = c.slot_id and c.value_id = d.value_id and d.element_id = a.element_id");
 		
 		//rs = stmt.executeQuery("select distinct start, " + rq + "end" + rq + ", annotation_type from " + schema + annotTable + " where document_namespace = '" + docNamespace + "' and "
-		rs = stmt.executeQuery("select start, " + rq + "end" + rq + ", annotation_type from "
+		rs = stmt.executeQuery("select distinct start, " + rq + "end" + rq + ", annotation_type from "
 				+ schema + annotTable + " where document_namespace = '" + docNamespace + "' and "
 				+ "document_table = '" + docTable + "' and document_id = " + docID
 				+ " and score > " + annotThreshold + " and annotation_type in "
@@ -2430,20 +2430,25 @@ public class DataAccess {
 							annot2.put("weight", weight);
 						}
 						else {
-							annot.put("end", start2);
-							
-							Map<String, Object> annot3 = new HashMap<String, Object>();
-							annot3.put("start", end2);
-							annot3.put("end", end);
-							annot3.put("color", color);
-							annot3.put("annotType", annotType);
-							annot3.put("weight", weight);
-							
-							q.add(i, annot);
-							q.add(i+2, annot3);
-							
-							annot = annot3;
-							i+=2;
+							if (start < start2) {
+								annot.put("end", start2);
+								q.add(i, annot);
+								i++;
+							}
+
+							if (end2 > end) {
+								Map<String, Object> annot3 = new HashMap<String, Object>();
+								annot3.put("start", end2);
+								annot3.put("end", end);
+								annot3.put("color", color);
+								annot3.put("annotType", annotType);
+								annot3.put("weight", weight);							
+								
+								q.add(i+1, annot3);
+								
+								annot = annot3;
+								i++;
+							}
 						}
 					}
 					else if (start >= start2 && end <= end2) {
