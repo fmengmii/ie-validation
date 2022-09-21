@@ -2427,6 +2427,7 @@ public class DataAccess {
 							annot2.put("color", color);
 							annot2.put("annotType", annotType);
 							annot2.put("weight", weight);
+							inserted = true;
 						}
 						else {
 							if (start < start2) {
