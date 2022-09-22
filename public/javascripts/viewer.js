@@ -1586,7 +1586,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		        cache: false
 		    }).done(function(data) {
 		
-		    	//clog(data);
+		    	clog(data);
 		        var dataObj = JSON.parse(data);
 		
 		        //load highlight range map
