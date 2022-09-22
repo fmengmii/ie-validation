@@ -801,7 +801,7 @@ public class DataAccess {
 			int elementID = -1;
 			String elementType = "";
 			ResultSet rs = stmt.executeQuery("select a.element_id, b.slot_id, d.element_type_name from " + schema + "element_value a, " + schema + "value b, "
-					+ schema + "element c, " + schema + "element_type d, " + schema + "crf_element e"
+					+ schema + "element c, " + schema + "element_type d, " + schema + "crf_element e "
 					+ "where b.html_id = '" + htmlID + "' and b.value_id = a.value_id and a.element_id = c.element_id and c.element_type = d.element_type_id "
 					+ "and e.crf_id = " + crfID + " and e.element_id = c.element_id");
 			
@@ -2352,7 +2352,7 @@ public class DataAccess {
 			boolean inserted = false;
 			for (Map<String, Object> annot : annotList2) {
 				
-				System.out.println("annot: " + annot.get("annotType") + ", " + annot.get("start") + ", " + annot.get("end") + ", " + annot.get("weight"));
+				//System.out.println("annot: " + annot.get("annotType") + ", " + annot.get("start") + ", " + annot.get("end") + ", " + annot.get("weight"));
 				
 				long start = (long) annot.get("start");
 				long end = (long) annot.get("end");
@@ -2362,7 +2362,7 @@ public class DataAccess {
 				
 				for (int i=0; i<q.size(); i++) {
 					Map<String, Object> annot2 = q.get(i);
-					System.out.println("annot2: " + annot2.get("annotType") + ", " + annot2.get("start") + ", " + annot2.get("end") + ", " + annot2.get("weight"));
+					//System.out.println("annot2: " + annot2.get("annotType") + ", " + annot2.get("start") + ", " + annot2.get("end") + ", " + annot2.get("weight"));
 					
 					long start2 = (Long) annot2.get("start");
 					long end2 = (Long) annot2.get("end");
