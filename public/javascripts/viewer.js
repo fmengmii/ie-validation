@@ -1634,7 +1634,11 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		            var annotFeatures = frameInstanceData[i]["features"];
 		
 		            var elementIndex = elementIDMap[elementID];
+
 		            clog("elementID: " + elementID);
+		            clog("gridData[gridIndex][elementIndex]: \n" + JSON.stringify(gridData[gridIndex][elementIndex]));
+		            clog("docNamespaceLocal: " + docNamespaceLocal);
+		            
 		            //gridData[elementIndex]["start"] = start;
 		            //gridData[elementIndex]["end"] = end;
 		            //gridData[elementIndex]["elementValue"] = value;
