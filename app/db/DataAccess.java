@@ -149,11 +149,13 @@ public class DataAccess {
 			String action = rs.getString(2);
 			String htmlID = rs.getString(3);
 			String extraInformation = rs.getString(4);
+			String sectionID = rs.getString(5);
 			Map<String, String> map = new HashMap<String, String>();
 			map.put("processID", processID);
 			map.put("action", action);
 			map.put("htmlID", htmlID);
 			map.put("extraInfo", extraInformation);
+			map.put("sectionID", sectionID);
 			history.add(map);
 		}
 
@@ -171,12 +173,12 @@ public class DataAccess {
 		conn.close();
 	}
 
-	public String getElementID(String htmlID) throws SQLException {
+	public String getElementID(String htmlID, int sectionID) throws SQLException {
 		String elementID = "";
 		htmlID = htmlID.substring(0, htmlID.length() - 4);
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
-		ResultSet rs = stmt.executeQuery("select element_id from " + schema + "element where html_id = '" + htmlID + "'");
+		ResultSet rs = stmt.executeQuery("select element_id from " + schema + "element where html_id = '" + htmlID + "' and section_id = " + sectionID);
 
 		if (rs.next()) {
 			elementID = rs.getString(1);
@@ -799,8 +801,9 @@ public class DataAccess {
 			int elementID = -1;
 			String elementType = "";
 			ResultSet rs = stmt.executeQuery("select a.element_id, b.slot_id, d.element_type_name from " + schema + "element_value a, " + schema + "value b, "
-					+ schema + "element c, " + schema + "element_type d "
-					+ "where b.html_id = '" + htmlID + "' and b.value_id = a.value_id and a.element_id = c.element_id and c.element_type = d.element_type_id");
+					+ schema + "element c, " + schema + "element_type d, " + schema + "crf_element e"
+					+ "where b.html_id = '" + htmlID + "' and b.value_id = a.value_id and a.element_id = c.element_id and c.element_type = d.element_type_id "
+					+ "and e.crf_id = " + crfID + " and e.element_id = c.element_id");
 			
 			
 			//System.out.println("add annotation 3");

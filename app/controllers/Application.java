@@ -186,11 +186,12 @@ public class Application extends Controller
                 String action = mostRecentAction.get("action");
                 String htmlID = mostRecentAction.get("htmlID");
                 String extraInfo = mostRecentAction.get("extraInfo");
+                int sectionID = Integer.parseInt(mostRecentAction.get("sectionID"));
                 
                 // System.out.println(action + " " + htmlID);
                 
                 if(action.equals("add")) {
-                    String elementID = da.getElementID(htmlID);
+                    String elementID = da.getElementID(htmlID, sectionID);
                     clearElement(elementID, htmlID);
                     //da.deleteMostRecentHistory();
                 }
