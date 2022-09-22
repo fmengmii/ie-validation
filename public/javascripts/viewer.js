@@ -1596,6 +1596,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		        var crfData = dataObj[1];
 		        loadCRFData(crfData);
 		        
+		        clog("crfData: \n" + JSON.stringify(crfData));
 		        clog("gridData: \n" + JSON.stringify(gridData));
 		        
 		        
