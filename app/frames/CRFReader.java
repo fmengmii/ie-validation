@@ -141,7 +141,8 @@ public class CRFReader
 		//get elementID
 		int elementID = -1;
 		Statement stmt = conn.createStatement();
-		ResultSet rs = stmt.executeQuery("select element_id from " + schema + "element where html_id = '" + rootHTMLID + "'");
+		ResultSet rs = stmt.executeQuery("select a.element_id from " + schema + "element a, " + schema + "crf_element b "
+			+ "where a.html_id = '" + rootHTMLID + "' and a.element_id = b.element_id and b.crf_id = " + crfID);
 		if (rs.next()) {
 			elementID = rs.getInt(1);
 		}
