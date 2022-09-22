@@ -1635,6 +1635,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		
 		            var elementIndex = elementIDMap[elementID];
 
+
 		            clog("elementID: " + elementID + " gridIndex: " + gridIndex + " elementInde: " + elementIndex);
 		            clog("gridData[gridIndex][elementIndex]: \n" + JSON.stringify(gridData[gridIndex][elementIndex]));
 		            clog("docNamespaceLocal: " + docNamespaceLocal);
