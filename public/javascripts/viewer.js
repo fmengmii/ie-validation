@@ -1586,7 +1586,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		        cache: false
 		    }).done(function(data) {
 		
-		    	clog(data);
+		    	//clog(data);
 		        var dataObj = JSON.parse(data);
 		
 		        //load highlight range map
@@ -1595,6 +1595,8 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		
 		        var crfData = dataObj[1];
 		        loadCRFData(crfData);
+		        
+		        clog("gridData: \n" + JSON.stringify(gridData));
 		        
 		        
 		        //reload crf select elements
@@ -1613,6 +1615,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 		
 		
 		        frameInstanceData = dataObj[3];
+		        clog("frameInstanceData: \n" + JSON.stringify(frameInstanceData));
 		        
 		        
 		        for (var i=0; i<frameInstanceData.length; i++) {
