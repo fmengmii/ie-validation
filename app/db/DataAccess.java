@@ -2504,6 +2504,7 @@ public class DataAccess {
 			}
 		}
 		
+		//TODO: integrate preloadValList into preloadAnnotList
 		if (preloadValList.size() > 0) {
 			
 			String valueStr = "value";
@@ -2558,6 +2559,10 @@ public class DataAccess {
 					annotList.add(annot);
 			}
 		}
+		
+		//not preload annotations, so set annotList to annotList2 (user-defined annotations)
+		if (annotList.size() == 0)
+			annotList = annotList2;
 
 		stmt.close();
 		conn.close();
