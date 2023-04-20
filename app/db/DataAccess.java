@@ -2393,32 +2393,7 @@ public class DataAccess {
 						continue;
 					}
 					
-					if (start < start2 && end > start2 && end < end2) {
-						inserted = true;
-						
-						if (weight > weight2) {
-							start2 = end;
-							if (start2 > end2) {
-								annot2.put("start", start);
-								annot2.put("end", end);
-								annot2.put("color", color);
-								annot2.put("annotType", annotType);
-								annot2.put("weight", weight);
-							}
-							else {
-								annot2.put("start", end);
-								q.add(i+1, annot);
-								i++;
-							}
-						}
-						else {
-							start = end2;
-							if (start < end) {
-								annot.put("end", start2);
-								q.add(i, annot);
-							}
-						}
-					}
+					
 					else if (start <= start2 && end >= end2) {
 						inserted = true;
 						if (weight > weight2) {
@@ -2450,6 +2425,34 @@ public class DataAccess {
 							}
 						}
 					}
+					
+					else if (start <= start2 && end > start2 && end <= end2) {
+						inserted = true;
+						
+						if (weight > weight2) {
+							start2 = end;
+							if (start2 > end2) {
+								annot2.put("start", start);
+								annot2.put("end", end);
+								annot2.put("color", color);
+								annot2.put("annotType", annotType);
+								annot2.put("weight", weight);
+							}
+							else {
+								annot2.put("start", end);
+								q.add(i+1, annot);
+								i++;
+							}
+						}
+						else {
+							start = end2;
+							if (start < end) {
+								annot.put("end", start2);
+								q.add(i, annot);
+							}
+						}
+					}
+					
 					else if (start > start2 && end < end2) {
 						inserted = true;
 						
@@ -2468,7 +2471,7 @@ public class DataAccess {
 							i+=2;
 						}
 					}
-					else if (start > start2 && start < end2 && end > end2) {
+					else if (start >= start2 && start < end2 && end >= end2) {
 						inserted = true;
 						
 						if (weight > weight2) {
