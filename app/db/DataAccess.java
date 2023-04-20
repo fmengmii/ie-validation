@@ -2261,8 +2261,10 @@ public class DataAccess {
 			long end = rs.getLong(2);
 			String annotType = rs.getString(3);
 			
+			
 			if (annotMap.get(Long.toString(start)) != null)
 				continue;
+				
 			
 			String color = "lightcoral";
 			
@@ -2312,8 +2314,10 @@ public class DataAccess {
 				long end = rs.getLong(2);
 				String annotType = rs.getString(3);
 				
+				/*
 				if (annotMap.get(Long.toString(start)) != null)
 					continue;
+					*/
 				
 				int colorIndex = preloadAnnotList.indexOf(annotType);
 				String color = preloadAnnotColorList.get(colorIndex);
