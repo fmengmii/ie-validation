@@ -18,7 +18,7 @@ GET		/remove/section/:sectionName/:repeatIndex			controllers.Application.removeS
 GET		/add/element/:htmlID								controllers.Application.addElement(htmlID : String)
 GET		/remove/element/:elementID/:htmlID					controllers.Application.removeElement(elementID: String, htmlID: String)
 GET		/get/project/:projID								controllers.Application.loadProject(projID: Int)
-GET		/get/frameinstance/:frameInstanceID					controllers.Application.loadFrameInstance(frameInstanceID: Int, annotatedDocs: Bool, userActions: Int)
+GET		/get/frameinstance/:frameInstanceID					controllers.Application.loadFrameInstance(frameInstanceID: Int, annotatedDocs: Boolean, userActions: Int)
 POST	/add/annotation										controllers.Application.addAnnotation()
 GET		/clear/element/:elementID/:htmlID					controllers.Application.clearElement(elementID: String, htmlID: String)
 POST	/clear												controllers.Application.clearAll()
