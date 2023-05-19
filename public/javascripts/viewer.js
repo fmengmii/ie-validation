@@ -625,7 +625,7 @@ function highlightByWord() {
   }
 }
 
-function annotatedDocs() {
+function annotatedDocsToggle() {
   var buttonText = document.getElementById("annotDocButton");
   if(buttonText.textContent == "Annotated Docs: Off") {
     buttonText.textContent = "Annotated Docs: On";
