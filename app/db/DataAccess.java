@@ -436,7 +436,7 @@ public class DataAccess {
 	}
 	 */
 
-	public String loadProject(String username, int projID, boolean orderTable) throws SQLException {
+	public String loadProject(String username, int projID, boolean orderTable, boolean annotatedDocs) throws SQLException {
 		Connection conn = DB.getConnection();
 		String rq = getReservedQuote(conn);
 		Statement stmt = conn.createStatement();
@@ -457,26 +457,43 @@ public class DataAccess {
 		
 		System.out.println("username: " + username + " lastFrameInstanceID load: " + lastFrameInstanceID);
 		
+		
+		
+		String existsAnnotation = " and exists (select e.* from " + schema + "frame_instance_document e, " + schema + annotTable + " f "
+			+ "where e.document_namespace = f.document_namespace and e.document_table = f.document_table and e.document_id = f.document_id "
+			+ "and e.frame_instance_id = a.frame_instance_id and f.provenance = 'validation-tool')";
+		
+		
 		if (orderTable) {
-			rs = stmt.executeQuery("select a.frame_instance_id, b.name, d.user_name, a.order_num "
+			String queryStr = "select a.frame_instance_id, b.name, d.user_name, a.order_num "
 				+ "from " + schema + "frame_instance_order a "
 				+ "join " + schema + "frame_instance b on a.frame_instance_id = b.frame_instance_id and a.project_id = " + projID
 				+ " left join " + schema + "frame_instance_status c on b.frame_instance_id = c.frame_instance_id "
-				+ "left join " + schema + rq + "user" + rq + " d on c.user_id = d.user_id "
-				+ "order by a.order_num");
+				+ "left join " + schema + rq + "user" + rq + " d on c.user_id = d.user_id";
+			
+			if (annotatedDocs)
+				queryStr += existsAnnotation;
+
+			queryStr += " order by a.order_num";
+			
+			System.out.println(queryStr);
+			rs = stmt.executeQuery(queryStr);
 		}
 		else {
-			System.out.println("select a.frame_instance_id, b.name, d.user_name "
+			String queryStr = "select a.frame_instance_id, b.name, d.user_name "
 				+ "from " + schema + "project_frame_instance a "
 				+ "join " + schema + "frame_instance b on a.frame_instance_id = b.frame_instance_id and a.project_id = " + projID
 				+ " left join " + schema + "frame_instance_status c on b.frame_instance_id = c.frame_instance_id "
-				+ "left join " + schema + rq + "user" + rq + " d on c.user_id = d.user_id order by frame_instance_id");
+				+ "left join " + schema + rq + "user" + rq + " d on c.user_id = d.user_id";
+					
+			if (annotatedDocs)
+				queryStr += existsAnnotation;
 			
-			rs = stmt.executeQuery("select a.frame_instance_id, b.name, d.user_name "
-				+ "from " + schema + "project_frame_instance a "
-				+ "join " + schema + "frame_instance b on a.frame_instance_id = b.frame_instance_id and a.project_id = " + projID
-				+ " left join " + schema + "frame_instance_status c on b.frame_instance_id = c.frame_instance_id "
-				+ "left join " + schema + rq + "user" + rq + " d on c.user_id = d.user_id order by frame_instance_id");
+			
+			queryStr += " order by frame_instance_id";
+			
+			System.out.println(queryStr);	
+			rs = stmt.executeQuery(queryStr);
 		}
 
 		int index = 1;

@@ -1455,7 +1455,7 @@ function loadProject(projName)
 {
 	//$("#validatedButtonDiv").hide();
 	openDialogLoad();
-	var loadProjectAjax = jsRoutes.controllers.Application.loadProject(projName);
+	var loadProjectAjax = jsRoutes.controllers.Application.loadProject(projName, annotatedDocs);
 	$.ajax({
 		type: 'GET',
 		url: loadProjectAjax.url,
