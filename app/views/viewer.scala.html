@@ -280,10 +280,13 @@
 		
 		<!--new code-->
 		<button type="button" onclick="highlightByWord()" id="highlightButton" value="Word Highlighting: Off">Word Highlighting: Off</button>
+		<button type="button" onclick="annotatedDocs()" id="annotDocButton" value="Annotated Docs: Off">Annotated Docs: Off</button>
         <a href="@routes.Application.logout()"><button type="button" onclick="logout()">Log Out</button></a>
         <!--end of new code-->
 		@if(session.containsKey("userName")){
 			<text class="userName">User: @session.get("userName")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text>
+			
+
 		}
 		
 	</div>

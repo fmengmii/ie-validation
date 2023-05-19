@@ -587,7 +587,7 @@ public class Application extends Controller
     	return ok(resultStr);
     }
 
-    public Result loadFrameInstance(int frameInstanceID, int userActions)
+    public Result loadFrameInstance(int frameInstanceID, boolean annotatedDocs, int userActions)
     {
     	String frameInstanceStr = "";
     	int oldFrameInstanceID = Integer.parseInt(session("frameInstanceID"));    	
@@ -625,7 +625,7 @@ public class Application extends Controller
     		}
     		
     		int projID = Integer.parseInt(session("projID"));
-    		frameInstanceStr = da.loadFrameInstance(un, frameInstanceID, projID, loadStatus, session("docEntityColumn")); // was changed
+    		frameInstanceStr = da.loadFrameInstance(un, frameInstanceID, projID, loadStatus, session("docEntityColumn"), annotatedDocs); // was changed
     		String currDocNamespace = da.getCurrDocNamespace();
     		String currDocTable = da.getCurrDocTable();
     		long docID = da.getCurrDocID();

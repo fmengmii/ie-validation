@@ -65,6 +65,7 @@ var crfSelectDisabled2 = false;
 //var username;
 //var password;
 var wordBasedHighlighting = false;
+var annotatedDocs = false;
 var history = new Object();
 var processID = 1;
 
@@ -621,6 +622,17 @@ function highlightByWord() {
   } else {
     buttonText.textContent = "Word Highlighting: Off";
     wordBasedHighlighting = false;
+  }
+}
+
+function annotatedDocs() {
+  var buttonText = document.getElementById("annotDocButton");
+  if(buttonText.textContent == "Annotated Docs: Off") {
+    buttonText.textContent = "Annotated Docs: On";
+    annotatedDocs = true;
+  } else {
+    buttonText.textContent = "Annotated Docs: Off";
+    annotatedDocs = false;
   }
 }
 
@@ -1579,7 +1591,7 @@ function loadFrameInstance(frameInstanceID, clearDoc)
 			currFrameInstanceID = frameInstanceID;
 			docSelectIndex = -1;
 		
-		    var loadFrameInstanceAjax = jsRoutes.controllers.Application.loadFrameInstance(frameInstanceID, userActions);
+		    var loadFrameInstanceAjax = jsRoutes.controllers.Application.loadFrameInstance(frameInstanceID, annotatedDocs, userActions);
 		    $.ajax({
 		        type: 'GET',
 		        url: loadFrameInstanceAjax.url,
@@ -3677,4 +3689,5 @@ function nextDoc()
 			   highlightText();
 		   });
 	}
+	
 }

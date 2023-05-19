@@ -582,7 +582,7 @@ public class DataAccess {
 		return crfStr;
 	}
 
-	public String loadFrameInstance(String username, int frameInstanceID, int projID, boolean loadStatus, String docEntityColumn) throws SQLException {
+	public String loadFrameInstance(String username, int frameInstanceID, int projID, boolean loadStatus, String docEntityColumn, boolean annotatedDocs) throws SQLException {
 		Connection conn = DB.getConnection();
 		Statement stmt = conn.createStatement();
 		String rq = getReservedQuote(conn);
@@ -597,12 +597,23 @@ public class DataAccess {
 		String docKey = "";
 		String docTextCol = "";
 
-		ResultSet rs = stmt.executeQuery("select document_namespace, document_table, document_key, document_text_column, document_id from "
-				+ schema + "frame_instance_document "
-				+ "where frame_instance_id = " + frameInstanceID + " and disabled = 0");
-		System.out.println("select document_namespace, document_table, document_key, document_text_column, document_id from "
-				+ schema + "frame_instance_document "
-				+ "where frame_instance_id = " + frameInstanceID + " and disabled = 0");
+		String queryStr = "select document_namespace, document_table, document_key, document_text_column, document_id from "
+			+ schema + "frame_instance_document "
+			+ "where frame_instance_id = " + frameInstanceID + " and disabled = 0";
+		
+		if (annotatedDocs) {
+			queryStr = "select distinct a.document_namespace, a.document_table, a.document_key, a.document_text_column, a.document_id from "
+				+ schema + "frame_instance_document a, " +  schema + annotTable + " b "
+				+ "where a.frame_instance_id = " + frameInstanceID + " and a.disabled = 0 "
+				+ "and a.document_namespace = b.document_namespace and a.document_table = b.document_table and a.document_id = b.document_id "
+				+ "and b.provenance = 'validation-tool'";
+		}
+		
+		
+		
+		ResultSet rs = stmt.executeQuery(queryStr);
+		System.out.println(queryStr);
+		
 		if (rs.next()) {
 			docNamespace = rs.getString(1);
 			docTable = rs.getString(2);
