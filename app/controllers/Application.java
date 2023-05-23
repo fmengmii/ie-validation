@@ -545,7 +545,7 @@ public class Application extends Controller
     		DataAccess da = new DataAccess(session("schemaName"), session("docSchemaName"), session("annotTable"), sectionList);
     		boolean orderTable = Boolean.parseBoolean(session("orderTable"));
     		
-    		System.out.println("orderTable: " + orderTable);
+    		System.out.println("orderTable: " + orderTable + " annotatedDocs: " + annotatedDocs);
     		
     		frameList = da.loadProject(un, projID, orderTable, annotatedDocs); // was changed
 

@@ -455,7 +455,7 @@ public class DataAccess {
 			lastFrameInstanceID = rs.getInt(1);
 		}
 		
-		System.out.println("username: " + username + " lastFrameInstanceID load: " + lastFrameInstanceID);
+		System.out.println("username: " + username + " lastFrameInstanceID load: " + lastFrameInstanceID + " annotatedDocs: " + annotatedDocs);
 		
 		
 		
