@@ -530,7 +530,7 @@ public class Application extends Controller
     	return ok();
     }
 
-    public Result loadProject(int projID, boolean annotatedDoc)
+    public Result loadProject(int projID, boolean annotatedDocs)
     {
     	String frameList = "";
     	session("projID", Integer.toString(projID));
