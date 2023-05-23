@@ -547,7 +547,7 @@ public class Application extends Controller
     		
     		System.out.println("orderTable: " + orderTable);
     		
-    		frameList = da.loadProject(un, projID, orderTable); // was changed
+    		frameList = da.loadProject(un, projID, orderTable, annotatedDocs); // was changed
 
 			// **** add by wyu for repeat number ****
 			String queryPatternString = "\\{\"lastFrameInstanceID\":(\\d+),\"lastFrameInstanceIndex\":(\\d+)\\}$";
