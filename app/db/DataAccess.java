@@ -486,8 +486,8 @@ public class DataAccess {
 				+ " left join " + schema + "frame_instance_status c on b.frame_instance_id = c.frame_instance_id "
 				+ "left join " + schema + rq + "user" + rq + " d on c.user_id = d.user_id";
 					
-			//if (annotatedDocs)
-			//	queryStr += existsAnnotation;
+			if (annotatedDocs)
+				queryStr += existsAnnotation;
 			
 			
 			queryStr += " order by frame_instance_id";
