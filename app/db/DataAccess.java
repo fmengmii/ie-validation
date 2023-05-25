@@ -486,8 +486,8 @@ public class DataAccess {
 				+ " left join " + schema + "frame_instance_status c on b.frame_instance_id = c.frame_instance_id "
 				+ "left join " + schema + rq + "user" + rq + " d on c.user_id = d.user_id";
 					
-			if (annotatedDocs)
-				queryStr += existsAnnotation;
+			//if (annotatedDocs)
+			//	queryStr += existsAnnotation;
 			
 			
 			queryStr += " order by frame_instance_id";
@@ -618,6 +618,7 @@ public class DataAccess {
 			+ schema + "frame_instance_document "
 			+ "where frame_instance_id = " + frameInstanceID + " and disabled = 0";
 		
+		/*
 		if (annotatedDocs) {
 			queryStr = "select distinct a.document_namespace, a.document_table, a.document_key, a.document_text_column, a.document_id from "
 				+ schema + "frame_instance_document a, " +  schema + annotTable + " b "
@@ -625,6 +626,7 @@ public class DataAccess {
 				+ "and a.document_namespace = b.document_namespace and a.document_table = b.document_table and a.document_id = b.document_id "
 				+ "and b.provenance = 'validation-tool'";
 		}
+		*/
 		
 		
 		
