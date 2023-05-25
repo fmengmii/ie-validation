@@ -459,7 +459,7 @@ public class DataAccess {
 		
 		
 		
-		String existsAnnotation = " and exists (select e.* from " + schema + "frame_instance_document e, " + schema + annotTable + " f "
+		String existsAnnotation = " and exists (select f.* from " + schema + "frame_instance_document e, " + schema + annotTable + " f "
 			+ "where e.document_namespace = f.document_namespace and e.document_table = f.document_table and e.document_id = f.document_id "
 			+ "and e.frame_instance_id = a.frame_instance_id and f.provenance = 'validation-tool')";
 		
@@ -487,10 +487,15 @@ public class DataAccess {
 				+ "left join " + schema + rq + "user" + rq + " d on c.user_id = d.user_id";
 					
 			if (annotatedDocs)
-				queryStr += existsAnnotation;
+				queryStr = "select a.frame_instance_id, b.name, d.user_name "
+				+ "from " + schema + "project_frame_instance a "
+				+ "join " + schema + "frame_instance b on a.frame_instance_id = b.frame_instance_id and a.project_id = " + projID
+				+ existsAnnotation
+				+ " left join " + schema + "frame_instance_status c on b.frame_instance_id = c.frame_instance_id "
+				+ "left join " + schema + rq + "user" + rq + " d on c.user_id = d.user_id";
 			
 			
-			queryStr += " order by frame_instance_id";
+			queryStr += " order by a.frame_instance_id";
 			
 			System.out.println(queryStr);	
 			rs = stmt.executeQuery(queryStr);
