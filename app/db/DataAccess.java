@@ -2252,7 +2252,7 @@ public class DataAccess {
 				+ schema + annotTable + " where document_namespace = '" + docNamespace + "' and "
 				+ "document_table = '" + docTable + "' and document_id = " + docID
 				+ " and score > " + annotThreshold + " and annotation_type in "
-				+ strBlder.toString() + " and provenance != '##auto-recheck' order by start");
+				+ strBlder.toString() + " and provenance = 'validation-tool' order by start");
 
 		List<Map<String, Object>> annotList2 = new ArrayList<Map<String, Object>>();
 		
