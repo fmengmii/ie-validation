@@ -36,6 +36,8 @@ public class DataAccess {
 	
 	private String[] annotColors = {"lightgray", "antiquewhite", "tan", "wheat", "aquamarine", "lightseagreen", "palegreen", "olive", "mediumorchid", 
 		"lavender", "peachpuff", "lightsalmon" ,"palevioletred", "mistyrose"};
+	
+	@Inject Database db;
 
 	/*
 	private String docTable = "";
@@ -77,7 +79,7 @@ public class DataAccess {
 
 	//new code
 	public boolean authenticate(String username, String password) throws SQLException {
-		Connection conn = DB.getConnection();
+		Connection conn = db.getConnection();
 		Statement stmt = conn.createStatement();
 
 		String rq = getReservedQuote(conn);

@@ -2,7 +2,7 @@ package controllers;
 
 import play.*;
 import play.data.*;
-import play.db.DB;
+import play.db.Database;
 import play.mvc.*;
 import views.html.*;
 
