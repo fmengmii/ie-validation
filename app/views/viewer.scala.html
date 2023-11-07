@@ -1,4 +1,4 @@
-@(projList: Array[Map[String, String]], colNames:String, colValues:String, username:String)
+@(projList: Array[Map[String, String]], colNames:String, colValues:String, username:String)(implicit request: play.api.mvc.RequestHeader)
 
 <!DOCTYPE html>
 <html>
@@ -283,7 +283,7 @@
 		<button type="button" onclick="annotatedDocsToggle()" id="annotDocButton" value="Annotated Docs: Off">Annotated Docs: Off</button>
         <a href="@routes.Application.logout()"><button type="button" onclick="logout()">Log Out</button></a>
         <!--end of new code-->
-		@if(session.containsKey("userName")){
+		@if(request.session.containsKey("userName")){
 			<text class="userName">User: @session.get("userName")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text>
 			
 
