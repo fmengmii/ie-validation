@@ -283,7 +283,7 @@
 		<button type="button" onclick="annotatedDocsToggle()" id="annotDocButton" value="Annotated Docs: Off">Annotated Docs: Off</button>
         <a href="@routes.Application.logout()"><button type="button" onclick="logout()">Log Out</button></a>
         <!--end of new code-->
-		@if(request.session.containsKey("userName")){
+		@if(request.session.get("userName") != null){
 			<text class="userName">User: @session.get("userName")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text>
 			
 
