@@ -284,7 +284,7 @@
         <a href="@routes.Application.logout()"><button type="button" onclick="logout()">Log Out</button></a>
         <!--end of new code-->
 		@if(request.session.get("userName") != null){
-			<text class="userName">User: @session.get("userName")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text>
+			<text class="userName">User: @request.session.get("userName")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text>
 			
 
 		}
