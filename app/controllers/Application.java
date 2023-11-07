@@ -13,6 +13,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.omg.CORBA.Request;
+
 import com.google.gson.Gson;
 
 import db.DataAccess;
@@ -314,7 +316,7 @@ public class Application extends Controller
     		array[i] = crfList.get(i);
     	}
 
-        return ok(annotViewer.render(array));
+        return ok(annotViewer.render(array), request().getHeader());
     }
 
     public Result getDocument()

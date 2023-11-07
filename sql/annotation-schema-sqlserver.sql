@@ -471,7 +471,8 @@ CREATE TABLE SCHEMA."project_preload" (
   "value" varchar(500) DEFAULT NULl,
   "type" int DEFAULT NULL,
   "color" varchar(50) NULL,
-  "order" int DEFAULT 0
+  "order" int DEFAULT 0,
+  "weight" int DEFAULT 0
 );
 
 
